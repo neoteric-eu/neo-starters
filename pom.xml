@@ -15,6 +15,9 @@
             <name>Neoteric</name>
             <url>http://www.neoteric.eu</url>
     </organization>
+    <scm>
+        <url>https://github.com/neoteric-eu/neo-starters</url>
+    </scm>
     
     
     
