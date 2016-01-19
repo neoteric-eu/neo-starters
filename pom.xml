@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>com.neoteric.starter</groupId>
-    <artifactId>neo-starters-build</artifactId>
+    <artifactId>neo-starter-build</artifactId>
     <version>0.1.0.SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <name>Neo Starters build</name>
-    <description>Neo Starters build project</description>
+    <name>Neo Starters Build</name>
+    <description>Neo Starter Build</description>
     <url>http://github.com/neoteric-eu/neo-starters</url>
     <organization>
             <name>Neoteric</name>
