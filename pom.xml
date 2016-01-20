@@ -38,6 +38,7 @@
 
     <properties>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven.build.timestamp.format>yyMMddHHmmss</maven.build.timestamp.format>
     </properties>
 
     <modules>
@@ -60,7 +61,7 @@
             <configuration>
                 <autoVersionSubmodules>true</autoVersionSubmodules>
                 <developmentVersion>0.1.0-SNAPSHOT</developmentVersion>
-                <releaseVersion>0.1.0-${maven.build.timestamp}</releaseVersion>
+                <releaseVersion>0.1.0.${maven.build.timestamp}</releaseVersion>
             </configuration>
             </plugin>
         </plugins>
