@@ -58,6 +58,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>${maven-release-plugin.version}</version>
             <configuration>
+                <autoVersionSubmodules>true</autoVersionSubmodules>
                 <developmentVersion>0.1.0-SNAPSHOT</developmentVersion>
                 <releaseVersion>0.1.0-${maven.build.timestamp}</releaseVersion>
             </configuration>
