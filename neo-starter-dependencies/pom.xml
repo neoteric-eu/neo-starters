@@ -43,6 +43,20 @@
         <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
     </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>neoteric-os-releases</id>
+            <name>Neoteric OpenSource releases</name>
+            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>neoteric-os-snapshots</id>
+            <name>Neoteric OpenSource snapshots</name>
+            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <issueManagement>
         <system>Github</system>
         <url>https://github.com/neoteric-eu/neo-starters/issues</url>

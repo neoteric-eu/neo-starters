@@ -62,6 +62,7 @@
                 <autoVersionSubmodules>true</autoVersionSubmodules>
                 <developmentVersion>0.1.0-SNAPSHOT</developmentVersion>
                 <releaseVersion>0.1.0.${maven.build.timestamp}</releaseVersion>
+                <tagNameFormat>0.1.0.${maven.build.timestamp}</tagNameFormat>
             </configuration>
             </plugin>
         </plugins>
