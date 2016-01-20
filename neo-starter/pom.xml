@@ -10,11 +10,11 @@
         <relativePath>../neo-starter-dependencies</relativePath>
     </parent>
 
-    <packaging>pom</packaging>
-    <artifactId>neo-starter-parent</artifactId>
+    <packaging>jar</packaging>
+    <artifactId>neo-starter</artifactId>
 
-    <name>Neo Starter Parent</name>
-    <description>Neo Starter Parent - base for actual Microservice</description>
+    <name>Neo Starter</name>
+    <description>Basic Neo Starter</description>
     <url>http://github.com/neoteric-eu/neo-starters</url>
     <organization>
         <name>Neoteric</name>
@@ -30,29 +30,5 @@
         <system>Github</system>
         <url>https://github.com/neoteric-eu/neo-starters/issues</url>
     </issueManagement>
-
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.neoteric.starter</groupId>
-                <artifactId>neo-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>
