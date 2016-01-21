@@ -32,16 +32,6 @@
     </issueManagement>
 
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.neoteric.starter</groupId>
-                <artifactId>neo-starter</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>

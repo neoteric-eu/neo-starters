@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neoteric.starter</groupId>
@@ -26,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Libraries -->
-        <feign.version>8.11.0</feign.version>
+        <feign.version>8.12.1</feign.version>
         <swagger-jersey2-jaxrs.version>1.5.6</swagger-jersey2-jaxrs.version>
         <junit.version>4.11</junit.version>
         <assertj-core.version>3.2.0</assertj-core.version>
@@ -36,13 +37,15 @@
 
         <!-- Plugins -->
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
+        <maven-source-plugin.version>2.4</maven-source-plugin.version>
+        <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
     </properties>
     <scm>
         <url>http://github.com/neoteric-eu/neo-starters</url>
         <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <distributionManagement>
         <repository>
@@ -56,7 +59,7 @@
             <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-    
+
     <issueManagement>
         <system>Github</system>
         <url>https://github.com/neoteric-eu/neo-starters/issues</url>
@@ -78,6 +81,50 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>com.neoteric.starter</groupId>
+                <artifactId>neo-starter</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.neoteric.starter</groupId>
+                <artifactId>request-parameters</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-multipart</artifactId>
+                <version>${jersey2-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-jersey2-jaxrs</artifactId>
+                <version>${swagger-jersey2-jaxrs.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.glassfish.jersey.media</groupId>
+                        <artifactId>jersey-media-multipart</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.glassfish.jersey.containers</groupId>
+                        <artifactId>jersey-container-servlet-core</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>com.netflix.feign</groupId>
+                <artifactId>feign-jackson</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.feign</groupId>
+                <artifactId>feign-jaxrs</artifactId>
+                <version>${feign.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -94,8 +141,19 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>${maven-javadoc-plugin.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
                     <configuration>
                         <requiresUnpack>
                             <dependency>
