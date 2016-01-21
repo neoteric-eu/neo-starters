@@ -1,6 +1,6 @@
 package com.neoteric.starter.request.params;
 
-import com.neoteric.request.RequestParameters;
+import com.neoteric.starter.request.RequestParameters;
 
 public final class RequestParametersHolder {
 

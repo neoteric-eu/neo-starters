@@ -1,7 +1,7 @@
 package com.neoteric.starter.request.params;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neoteric.request.RequestParameters;
+import com.neoteric.starter.request.RequestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
