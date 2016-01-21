@@ -2,9 +2,9 @@ package com.neoteric.starter.request.params;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neoteric.request.FiltersParser;
-import com.neoteric.request.RequestObject;
-import com.neoteric.request.RequestParameters;
+import com.neoteric.starter.request.FiltersParser;
+import com.neoteric.starter.request.RequestObject;
+import com.neoteric.starter.request.RequestParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.ServletRequestBindingException;

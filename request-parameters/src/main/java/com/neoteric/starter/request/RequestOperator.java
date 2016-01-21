@@ -1,4 +1,4 @@
-package com.neoteric.request;
+package com.neoteric.starter.request;
 
 public class RequestOperator implements RequestObject {
 

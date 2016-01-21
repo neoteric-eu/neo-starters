@@ -1,4 +1,4 @@
-package com.neoteric.request;
+package com.neoteric.starter.request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
