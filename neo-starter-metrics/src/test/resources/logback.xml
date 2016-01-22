@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
+        </layout>
+    </appender>
+
+    <logger name="com.neoteric.starter.metrics.report.elastic.ElasticsearchReporterTest" level="ERROR"/>
+    <logger name="node" level="ERROR"/>
+    <logger name="test" level="ERROR"/>
+    <logger name="plugins" level="ERROR"/>
+    <logger name="transport" level="ERROR"/>
+    <logger name="cluster.service" level="ERROR"/>
+    <logger name="cluster.metadata" level="ERROR"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+
+</configuration>

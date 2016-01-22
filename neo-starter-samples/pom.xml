@@ -31,4 +31,7 @@
         <url>https://github.com/neoteric-eu/neo-starters/issues</url>
     </issueManagement>
 
+    <modules>
+        <module>neo-starter-sample-simple</module>
+    </modules>
 </project>

@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.neoteric.starter.metrics.DropwizardMetricsAutoConfiguration,\
+com.neoteric.starter.metrics.DropwizardMetricsReportAutoConfiguration
