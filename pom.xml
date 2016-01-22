@@ -57,6 +57,8 @@
         <!-- Actual starters -->
         <module>neo-starter</module>
         <module>neo-starter-test</module>
+        <module>neo-starter-mongo</module>
+        <module>neo-starter-mongo-test</module>
 
         <module>neo-starter-samples</module>
     </modules>

@@ -1,0 +1,92 @@
+{
+  "$and": [
+    {
+      "$or": [
+        {
+          "name": "John"
+        },
+        {
+          "last": "Doe"
+        }
+      ]
+    },
+    {
+      "createdAt": {
+        "$lt": "timeStamp"
+      }
+    },
+    {
+      "createdAt": {
+        "$in": [
+          [
+            "t4",
+            "t5"
+          ]
+        ]
+      }
+    },
+    {
+      "updatedAt": {
+        "$lt": "timestamp3"
+      }
+    },
+    {
+      "$or": [
+        {
+          "updatedAt": {
+            "$lt": "timeStamp"
+          }
+        },
+        {
+          "updatedAt": {
+            "$gt": "timeStamp2"
+          }
+        }
+      ]
+    }
+  ]
+}
+
+{
+  "$and": [
+    {
+      "$or": [
+        {
+          "name": "John"
+        },
+        {
+          "last": "Doe"
+        }
+      ]
+    },
+    {
+      "createdAt": {
+        "$lt": "timestamp"
+      }
+    },
+    {
+      "createdAt": {
+        "$gt": "t4"
+      }
+    },
+    {
+      "$or": [
+        {
+          "updatedAt": {
+            "$lt": "t1"
+          }
+        },
+        {
+          "updatedAt": {
+            "$gt": "t2"
+          }
+        }
+      ]
+    },
+    {
+      "updatedAt": {
+        "$lt": "timestamp3"
+      }
+    }
+  ]
+}

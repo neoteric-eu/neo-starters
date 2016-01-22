@@ -1,0 +1,52 @@
+{
+  "examples": [
+    {
+      "name": {
+        "$eq": "John"
+      }
+    },
+    {
+      "name": {
+        "$startsWith": "John",
+        "$in": [
+          "Johnny",
+          "Abc"
+        ]
+      }
+    },
+    {
+      "name": {
+        "$or": {
+          "$startsWith": "John",
+          "$in": [
+            "Johnny",
+            "Abc"
+          ]
+        }
+      }
+    },
+    {
+      "$or": {
+        "name": {
+          "$eq": "John"
+        },
+        "last": {
+          "$eq": "Doe"
+        }
+      }
+    },
+    {
+      "$or": {
+        "name": {
+          "$eq": "John"
+        },
+        "last": {
+          "$eq": "Doe"
+        }
+      },
+      "createdAt" : {
+        "$lt" : "timeStamp"
+      }
+    }
+  ]
+}

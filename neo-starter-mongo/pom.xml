@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.neoteric.starter</groupId>
+        <artifactId>neo-starter-dependencies</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../neo-starter-dependencies</relativePath>
+    </parent>
+
+    <packaging>jar</packaging>
+    <artifactId>neo-starter-mongo</artifactId>
+
+    <name>Neo Starter MongoDB</name>
+    <description>Neo Starter for MongoDB applications</description>
+    <url>http://github.com/neoteric-eu/neo-starters</url>
+    <organization>
+        <name>Neoteric</name>
+        <url>http://www.neoteric.eu</url>
+    </organization>
+
+    <scm>
+        <url>http://github.com/neoteric-eu/neo-starters</url>
+        <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/neoteric-eu/neo-starters/issues</url>
+    </issueManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>request-parameters</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+

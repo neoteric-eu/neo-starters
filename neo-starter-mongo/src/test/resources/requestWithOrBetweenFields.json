@@ -1,0 +1,21 @@
+{
+  "$or": {
+    "name": {
+      "$eq": "John"
+    },
+    "last": {
+      "$eq": "Doe"
+    }
+  },
+  "createdAt": {
+    "$lt": "timeStamp",
+    "$in": ["t4", "t5"]
+  },
+  "updatedAt": {
+    "$or": {
+      "$lt": "timeStamp",
+      "$gt": "timeStamp2"
+    },
+    "$lt" : "timestamp3"
+  }
+}
