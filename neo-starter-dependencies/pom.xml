@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neoteric.starter</groupId>
     <artifactId>neo-starter-dependencies</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0.null</version>
     <packaging>pom</packaging>
 
     <name>Neo Starters Dependencies</name>
@@ -49,7 +48,7 @@
         <url>http://github.com/neoteric-eu/neo-starters</url>
         <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>0.1.0.null</tag>
     </scm>
 
     <distributionManagement>
