@@ -29,6 +29,8 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleSerializers;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -40,6 +42,7 @@ import static com.neoteric.starter.metrics.report.elastic.JsonMetrics.*;
 
 public class MetricsElasticsearchModule extends Module {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MetricsElasticsearchModule.class);
     public static final Version VERSION = new Version(3, 1, 0, "", "metrics-elasticsearch-reporter", "metrics-elasticsearch-reporter");
 
     private static void writeAdditionalFields(final Map<String, Object> additionalFields, final JsonGenerator json) throws IOException {
@@ -73,6 +76,7 @@ public class MetricsElasticsearchModule extends Module {
                 json.writeObjectField("value", value);
             } catch (RuntimeException e) {
                 json.writeObjectField("error", e.toString());
+                LOG.debug("Error", e);
             }
             writeAdditionalFields(additionalFields, json);
             json.writeEndObject();

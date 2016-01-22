@@ -291,7 +291,7 @@ public class ElasticsearchReporter extends ScheduledReporter {
             try {
                 connection = openConnection("/_bulk", "POST");
             } catch (ElasticsearchConnectionException e) {
-                LOGGER.error("Could not connect to any configured elasticsearch instances: {}", Arrays.asList(hosts));
+                LOGGER.error("Could not connect to any configured elasticsearch instances: {}", Arrays.asList(hosts), e);
                 return;
             }
 
@@ -357,7 +357,7 @@ public class ElasticsearchReporter extends ScheduledReporter {
         try {
             connection = openConnection("/" + currentIndexName + "/" + jsonMetric.type() + "/_percolate", "POST");
         } catch (ElasticsearchConnectionException e) {
-            LOGGER.error("Could not connect to any configured elasticsearch instances for percolation: {}", Arrays.asList(hosts));
+            LOGGER.error("Could not connect to any configured elasticsearch instances for percolation: {}", Arrays.asList(hosts), e);
             return Collections.emptyList();
         }
 
@@ -474,11 +474,6 @@ public class ElasticsearchReporter extends ScheduledReporter {
             if (isTemplateMissing) {
                 LOGGER.debug("No metrics template found in elasticsearch. Adding...");
                 HttpURLConnection putTemplateConnection = openConnection("/_template/metrics_template", "PUT");
-                if (putTemplateConnection == null) {
-                    LOGGER.error("Error adding metrics template to elasticsearch");
-                    return;
-                }
-
                 JsonGenerator json = new JsonFactory().createGenerator(putTemplateConnection.getOutputStream());
                 json.writeStartObject();
                 json.writeStringField("template", index + "*");

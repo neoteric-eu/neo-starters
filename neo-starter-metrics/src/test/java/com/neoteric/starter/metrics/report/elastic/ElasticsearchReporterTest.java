@@ -83,6 +83,7 @@ public class ElasticsearchReporterTest extends ESIntegTestCase {
 
 
     @Test
+    @SuppressWarnings("squid:S2925")
     public void testThatMappingFromTemplateIsApplied() throws Exception {
         registry.counter(name("test", "cache-evictions")).inc();
         reportAndRefresh();
@@ -190,6 +191,7 @@ public class ElasticsearchReporterTest extends ESIntegTestCase {
     }
 
     @Test
+    @SuppressWarnings("squid:S2925")
     public void testTimer() throws Exception {
         final Timer timer = registry.timer(name("foo", "bar"));
         final Timer.Context timerContext = timer.time();

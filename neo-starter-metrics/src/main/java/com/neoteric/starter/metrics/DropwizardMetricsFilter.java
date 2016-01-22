@@ -131,6 +131,7 @@ public final class DropwizardMetricsFilter extends OncePerRequestFilter {
         try {
             return HttpStatus.valueOf(status).series();
         } catch (Exception ex) {
+            LOG.debug("Unable to match HTTP status: {}", status, ex);
             return null;
         }
     }

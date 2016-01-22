@@ -23,7 +23,7 @@ public class MongoCleanUpListener extends AbstractTestExecutionListener {
         try {
             mongoTemplate = testContext.getApplicationContext().getBean("mongoTemplate", MongoTemplate.class);
         } catch (NoSuchBeanDefinitionException e) {
-            LOG.warn("mongoTemplate bean not found. Skipping collections cleanup.");
+            LOG.warn("mongoTemplate bean not found. Skipping collections cleanup.", e);
             return;
         }
         Arrays.stream(annotation.dropCollections()).forEach(mongoTemplate::dropCollection);
