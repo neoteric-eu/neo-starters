@@ -75,121 +75,71 @@ public class ElasticsearchReporter extends ScheduledReporter {
             this.filter = MetricFilter.ALL;
         }
 
-        /**
-         * Inject your custom definition of how time passes. Usually the default clock is sufficient
-         */
         public Builder withClock(Clock clock) {
             this.clock = clock;
             return this;
         }
 
-        /**
-         * Configure a prefix for each metric name. Optional, but useful to identify single hosts
-         */
         public Builder prefixedWith(String prefix) {
             this.prefix = prefix;
             return this;
         }
 
-        /**
-         * Convert all the rates to a certain timeunit, defaults to seconds
-         */
         public Builder convertRatesTo(TimeUnit rateUnit) {
             this.rateUnit = rateUnit;
             return this;
         }
 
-        /**
-         * Convert all the durations to a certain timeunit, defaults to milliseconds
-         */
         public Builder convertDurationsTo(TimeUnit durationUnit) {
             this.durationUnit = durationUnit;
             return this;
         }
 
-        /**
-         * Allows to configure a special MetricFilter, which defines what metrics are reported
-         */
         public Builder filter(MetricFilter filter) {
             this.filter = filter;
             return this;
         }
 
-        /**
-         * Configure an array of hosts to send data to.
-         * Note: Data is always sent to only one host, but this makes sure, that even if a part of your elasticsearch cluster
-         * is not running, reporting still happens
-         * A host must be in the format hostname:port
-         * The port must be the HTTP port of your elasticsearch instance
-         */
         public Builder hosts(String... hosts) {
             this.hosts = hosts;
             return this;
         }
 
-        /**
-         * The timeout to wait for until a connection attempt is and the next host is tried
-         */
         public Builder timeout(int timeout) {
             this.timeout = timeout;
             return this;
         }
 
-        /**
-         * The index name to index in
-         */
         public Builder index(String index) {
             this.index = index;
             return this;
         }
 
-        /**
-         * The index date format used for rolling indices
-         * This is appended to the index name, split by a '-'
-         */
         public Builder indexDateFormat(String indexDateFormat) {
             this.indexDateFormat = indexDateFormat;
             return this;
         }
 
-        /**
-         * The bulk size per request, defaults to 2500 (as metrics are quite small)
-         */
         public Builder bulkSize(int bulkSize) {
             this.bulkSize = bulkSize;
             return this;
         }
 
-        /**
-         * A metrics filter to define the metrics which should be used for percolation/notification
-         */
         public Builder percolationFilter(MetricFilter percolationFilter) {
             this.percolationFilter = percolationFilter;
             return this;
         }
 
-        /**
-         * An instance of the notifier implemention which should be executed in case of a matching percolation
-         */
         public Builder percolationNotifier(Notifier notifier) {
             this.percolationNotifier = notifier;
             return this;
         }
 
-        /**
-         * Configure the name of the timestamp field, defaults to '@timestamp'
-         */
         public Builder timestampFieldname(String fieldName) {
             this.timestampFieldname = fieldName;
             return this;
         }
 
-        /**
-         * Additional fields to be included for each metric
-         *
-         * @param additionalFields
-         * @return
-         */
         public Builder additionalFields(Map<String, Object> additionalFields) {
             this.additionalFields = additionalFields;
             return this;
@@ -349,9 +299,6 @@ public class ElasticsearchReporter extends ScheduledReporter {
         }
     }
 
-    /**
-     * Execute a percolation request for the specified metric
-     */
     private List<String> getPercolationMatches(JsonMetric jsonMetric) throws IOException {
         HttpURLConnection connection;
         try {
@@ -385,9 +332,6 @@ public class ElasticsearchReporter extends ScheduledReporter {
         return matches;
     }
 
-    /**
-     * Add metric to list of matched percolation if needed
-     */
     private void addJsonMetricToPercolationIfMatching(JsonMetric<? extends Metric> jsonMetric, List<JsonMetric> percolationMetrics) {
         if (percolationFilter != null && percolationFilter.matches(jsonMetric.name(), jsonMetric.value())) {
             percolationMetrics.add(jsonMetric);
@@ -411,10 +355,6 @@ public class ElasticsearchReporter extends ScheduledReporter {
         }
     }
 
-    /**
-     * Create a new connection when the bulk size has hit the limit
-     * Checked on every write of a metric
-     */
     private HttpURLConnection createNewConnectionIfBulkSizeReached(HttpURLConnection connection, int entriesWritten) throws IOException {
         if (entriesWritten % bulkSize == 0) {
             closeConnection(connection);
@@ -424,9 +364,6 @@ public class ElasticsearchReporter extends ScheduledReporter {
         return connection;
     }
 
-    /**
-     * serialize a JSON metric over the outputstream in a bulk request
-     */
     private void writeJsonMetric(JsonMetric jsonMetric, ObjectWriter writer, OutputStream out) throws IOException {
         writer.writeValue(out, new MetricsElasticsearchModule.BulkIndexOperationHeader(currentIndexName, jsonMetric.type()));
         out.write("\n".getBytes());
@@ -436,9 +373,6 @@ public class ElasticsearchReporter extends ScheduledReporter {
         out.flush();
     }
 
-    /**
-     * Open a new HttpUrlConnection, in case it fails it tries for the next host in the configured list
-     */
     private HttpURLConnection openConnection(String uri, String method) {
         for (String host : hosts) {
             try {
@@ -460,10 +394,6 @@ public class ElasticsearchReporter extends ScheduledReporter {
         throw new ElasticsearchConnectionException("Error connecting to elasticsearch host(s): " + Arrays.toString(hosts));
     }
 
-    /**
-     * This index template is automatically applied to all indices which start with the index name
-     * The index template simply configures the name not to be analyzed
-     */
     private void checkForIndexTemplate() {
         try {
             HttpURLConnection connection = openConnection("/_template/metrics_template", "HEAD");

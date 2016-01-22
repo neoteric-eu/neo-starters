@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Implementation based on {@link org.springframework.boot.actuate.autoconfigure.MetricsFilter}.
+ * Implementation based on org.springframework.boot.actuate.autoconfigure.MetricsFilter.
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public final class DropwizardMetricsFilter extends OncePerRequestFilter {
