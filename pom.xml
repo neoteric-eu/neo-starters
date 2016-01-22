@@ -56,6 +56,7 @@
 
         <!-- Actual starters -->
         <module>neo-starter</module>
+        <module>neo-starter-test</module>
 
         <module>neo-starter-samples</module>
     </modules>
