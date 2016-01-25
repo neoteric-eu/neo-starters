@@ -7,23 +7,28 @@ import java.time.ZonedDateTime;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ErrorProperties {
+public class ErrorData {
 
     private final ZonedDateTime timestamp;
+    private final String requestId;
     private final Integer status;
     private final String error;
+    private final Object errorCode;
     private final String path;
+    private final Object message;
     private final String exception;
-    private final String message;
-    private final String requestId;
+    private final String stackTrace;
 
     private final int cachedHashCode;
 
-    public ErrorProperties(Builder builder) {
+    public ErrorData(Builder builder) {
         this.timestamp = builder.timestamp;
         this.path = builder.path;
         this.status = builder.status;
         this.error = builder.error;
+        this.errorCode = builder.errorCode;
+        this.exception = builder.exception;
+        this.stackTrace = builder.stackTrace;
         this.message = builder.message;
         this.requestId = builder.requestId;
         this.cachedHashCode = calculateHashCode();
@@ -41,6 +46,18 @@ public class ErrorProperties {
         return error;
     }
 
+    public Object getErrorCode() {
+        return errorCode;
+    }
+
+    public String getException() {
+        return exception;
+    }
+
+    public String getStackTrace() {
+        return stackTrace;
+    }
+
     public String getPath() {
         return path;
     }
@@ -49,7 +66,7 @@ public class ErrorProperties {
         return status;
     }
 
-    public String getMessage() {
+    public Object getMessage() {
         return message;
     }
 
@@ -63,7 +80,10 @@ public class ErrorProperties {
         private String path;
         private Integer status;
         private String error;
-        private String message;
+        private Object errorCode;
+        private String exception;
+        private String stackTrace;
+        private Object message;
         private String requestId;
 
         public Builder setTimestamp(ZonedDateTime timestamp) {
@@ -86,7 +106,22 @@ public class ErrorProperties {
             return this;
         }
 
-        public Builder setMessage(String message) {
+        public Builder setErrorCode(Object errorCode) {
+            this.errorCode = errorCode;
+            return this;
+        }
+
+        public Builder setException(String exception) {
+            this.exception = exception;
+            return this;
+        }
+
+        public Builder setStackTrace(String stackTrace) {
+            this.stackTrace = stackTrace;
+            return this;
+        }
+
+        public Builder setMessage(Object message) {
             this.message = message;
             return this;
         }
@@ -96,18 +131,21 @@ public class ErrorProperties {
             return this;
         }
 
-        public Builder copy(ErrorProperties other) {
+        public Builder copy(ErrorData other) {
             return this
                     .setTimestamp(other.timestamp)
                     .setPath(other.path)
                     .setStatus(other.status)
                     .setError(other.error)
+                    .setErrorCode(other.errorCode)
+                    .setException(other.exception)
+                    .setStackTrace(other.stackTrace)
                     .setMessage(other.message)
                     .setRequestId(other.requestId);
         }
 
-        public ErrorProperties build() {
-            return new ErrorProperties(this);
+        public ErrorData build() {
+            return new ErrorData(this);
         }
     }
 
@@ -117,7 +155,7 @@ public class ErrorProperties {
     }
 
     private int calculateHashCode() {
-        return Objects.hash(timestamp, path, status, message, requestId);
+        return Objects.hash(timestamp, path, status, message, error, errorCode, exception, stackTrace, requestId);
     }
 
     @Override
@@ -125,14 +163,17 @@ public class ErrorProperties {
         if (this == obj) {
             return true;
         }
-        if (obj == null || !(obj instanceof ErrorProperties)) {
+        if (obj == null || !(obj instanceof ErrorData)) {
             return false;
         }
-        ErrorProperties other = (ErrorProperties) obj;
+        ErrorData other = (ErrorData) obj;
         return Objects.equals(this.timestamp, other.timestamp)
                 && Objects.equals(this.path, other.path)
                 && Objects.equals(this.status, other.status)
                 && Objects.equals(this.error, other.error)
+                && Objects.equals(this.errorCode, other.errorCode)
+                && Objects.equals(this.exception, other.exception)
+                && Objects.equals(this.stackTrace, other.stackTrace)
                 && Objects.equals(this.message, other.message)
                 && Objects.equals(this.requestId, other.requestId);
     }
@@ -144,6 +185,9 @@ public class ErrorProperties {
                 .add("path", path)
                 .add("status", status)
                 .add("error", error)
+                .add("errorCode", errorCode)
+                .add("exception", exception)
+                .add("stackTrace", stackTrace)
                 .add("message", message)
                 .add("requestId", requestId)
                 .add("cachedHashCode", cachedHashCode)

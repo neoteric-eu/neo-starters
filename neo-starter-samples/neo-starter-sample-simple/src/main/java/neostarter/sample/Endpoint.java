@@ -14,6 +14,7 @@ public class Endpoint {
     @GET
     @Path("{name}")
     public String hello(@PathParam("name") String name) {
-        return name;
+
+        throw new IllegalArgumentException("abc");
     }
 }
