@@ -1,9 +1,12 @@
-package com.neoteric.starter.mongo;
+package com.neoteric.starter.mongo.request;
 
 import com.google.common.collect.ImmutableMap;
 import com.neoteric.starter.request.LogicalOperatorType;
 import com.neoteric.starter.request.OperatorType;
 import org.springframework.data.mongodb.core.query.Criteria;
+
+import java.util.List;
+import java.util.regex.Pattern;
 
 public interface Mappings {
 
@@ -29,8 +32,8 @@ public interface Mappings {
             .put(OperatorType.LESS_THAN_EQUAL, Criteria::lte)
             .put(OperatorType.GREATER_THAN, Criteria::gt)
             .put(OperatorType.GREATER_THAN_EQUAL, Criteria::gte)
-            .put(OperatorType.IN, Criteria::in)
-            .put(OperatorType.NOT_IN, Criteria::nin)
-            .put(OperatorType.STARTS_WITH, (criteria, startsWith) -> criteria.regex((String)startsWith)) //TODO: Check it perf.
+            .put(OperatorType.IN, (criteria, in) -> criteria.in(((List) in).stream().toArray(Object[]::new)))
+            .put(OperatorType.NOT_IN, (criteria, nin) -> criteria.nin(((List) nin).stream().toArray(Object[]::new)))
+            .put(OperatorType.STARTS_WITH, (criteria, startsWith) -> criteria.regex(Pattern.compile("^" + startsWith, Pattern.CASE_INSENSITIVE)))
             .build();
 }

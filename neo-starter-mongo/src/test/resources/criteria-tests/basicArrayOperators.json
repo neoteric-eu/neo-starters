@@ -1,0 +1,12 @@
+{
+  "name": {
+    "$in": [
+      "Johnny",
+      "James"
+    ],
+    "$nin": [
+      "James",
+      "Bogdan"
+    ]
+  }
+}

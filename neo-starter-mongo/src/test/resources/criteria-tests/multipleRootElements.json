@@ -1,0 +1,8 @@
+{
+  "count": {
+    "$gt": 2
+  },
+  "name": {
+    "$startsWith": "J"
+  }
+}

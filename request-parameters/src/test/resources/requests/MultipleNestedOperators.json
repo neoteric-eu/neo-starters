@@ -1,0 +1,27 @@
+{
+  "name": {
+    "$startsWith": "John",
+    "$in": [
+      "Johnny",
+      "Abc"
+    ]
+  },
+  "lastName": {
+    "$or": {
+      "$startsWith": "John",
+      "$in": [
+        "Johnny",
+        "Abc"
+      ]
+    }
+  },
+  "$or": {
+    "name": {
+      "$eq": "John"
+    },
+    "last": {
+      "$eq": "Doe"
+    }
+  }
+}
+

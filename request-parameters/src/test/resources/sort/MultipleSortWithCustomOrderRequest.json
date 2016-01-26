@@ -1,0 +1,8 @@
+{
+  "name": "asc",
+  "last": "desc",
+  "$order": [
+    "last",
+    "name"
+  ]
+}

@@ -1,4 +1,4 @@
-package com.neoteric.starter.mongo;
+package com.neoteric.starter.mongo.request;
 
 
 import java.util.Map;
