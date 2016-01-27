@@ -52,6 +52,7 @@
         <!-- Setup -->
         <module>neo-starter-dependencies</module>
         <module>neo-starter-parent</module>
+        <module>neo-starter-parent-neoteric</module>
         <module>request-parameters</module>
 
         <!-- Actual starters -->

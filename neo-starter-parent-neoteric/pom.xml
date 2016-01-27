@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.neoteric.starter</groupId>
+        <artifactId>neo-starter-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+    </parent>
+
+    <packaging>pom</packaging>
+    <artifactId>neo-starter-parent-neoteric</artifactId>
+
+    <name>Neo Starter Neoteric Parent</name>
+    <description>Neo Starter Parent Neoteric - Microservice starter used in Neoteric</description>
+    <url>http://github.com/neoteric-eu/neo-starters</url>
+    <organization>
+        <name>Neoteric</name>
+        <url>http://www.neoteric.eu</url>
+    </organization>
+
+    <scm>
+        <url>http://github.com/neoteric-eu/neo-starters</url>
+        <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <issueManagement>
+        <system>Github</system>
+        <url>https://github.com/neoteric-eu/neo-starters/issues</url>
+    </issueManagement>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/docker</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/docker</targetPath>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/application.yml</include>
+                    <include>**/application.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>**/application.yml</exclude>
+                    <exclude>**/application.properties</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>buildDocker</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>build</goal>
+                            </goals>
+                            <configuration>
+                                <pushImage>false</pushImage>
+                                <imageName>
+                                    ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:${project.version}
+                                </imageName>
+                                <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
+                                <resources>
+                                    <resource>
+                                        <targetPath>/</targetPath>
+                                        <directory>${project.build.directory}</directory>
+                                        <include>${project.build.finalName}.jar</include>
+                                    </resource>
+                                    <resource>
+                                        <targetPath>/</targetPath>
+                                        <directory>${project.build.directory}/classes</directory>
+                                        <include>application.yml</include>
+                                    </resource>
+                                    <resource>
+                                        <targetPath>/</targetPath>
+                                        <directory>${project.build.directory}/classes</directory>
+                                        <include>logback.xml</include>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>tagLatest</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>tag</goal>
+                            </goals>
+                            <configuration>
+                                <pushImage>true</pushImage>
+                                <image>
+                                    ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:${project.version}
+                                </image>
+                                <newName>ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:latest</newName>
+                                <forceTags>true</forceTags>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshots</name>
+            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>
