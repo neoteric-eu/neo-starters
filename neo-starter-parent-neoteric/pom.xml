@@ -69,7 +69,7 @@
                                 <goal>build</goal>
                             </goals>
                             <configuration>
-                                <pushImage>false</pushImage>
+                                <pushImage>push</pushImage>
                                 <imageName>
                                     ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:${project.version}
                                 </imageName>
@@ -83,12 +83,12 @@
                                     <resource>
                                         <targetPath>/</targetPath>
                                         <directory>${project.build.directory}/classes</directory>
-                                        <include>application.yml</include>
+                                        <include>*.yml</include>
                                     </resource>
                                     <resource>
                                         <targetPath>/</targetPath>
                                         <directory>${project.build.directory}/classes</directory>
-                                        <include>logback.xml</include>
+                                        <include>*.xml</include>
                                     </resource>
                                 </resources>
                             </configuration>
@@ -100,7 +100,7 @@
                                 <goal>tag</goal>
                             </goals>
                             <configuration>
-                                <pushImage>true</pushImage>
+                                <pushImage>push</pushImage>
                                 <image>
                                     ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:${project.version}
                                 </image>
