@@ -1,4 +1,4 @@
-package com.neoteric.starter.mongo.request;
+package com.neoteric.starter.mongo.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

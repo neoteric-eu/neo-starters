@@ -1,6 +1,4 @@
-package com.neoteric.starter.mongo.request;
-
-import com.neoteric.starter.mongo.request.FooModel;
+package com.neoteric.starter.mongo.model;
 
 import java.time.ZonedDateTime;
 

@@ -15,15 +15,10 @@
     <name>Request Parameters</name>
     <description>Request Parameters module</description>
 
-    <properties>
-        <logback-classic.version>1.1.2</logback-classic.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback-classic.version}</version>
         </dependency>
         <dependency>
             <groupId>nl.jqno.equalsverifier</groupId>

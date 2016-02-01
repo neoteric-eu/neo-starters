@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.neoteric.starter.mongo.SpringbootTestApplication;
+import com.neoteric.starter.mongo.model.FooModel;
+import com.neoteric.starter.mongo.model.FooModelMother;
 import com.neoteric.starter.mongo.sort.RequestParamsSortOperationsBuilder;
 import com.neoteric.starter.mongo.test.EmbeddedMongoTest;
 import com.neoteric.starter.request.FiltersParser;
