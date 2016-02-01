@@ -37,8 +37,8 @@ public enum OperatorType {
 
     public static OperatorType fromString(String name) {
         OperatorType operatorType = Holder.MAP.get(name);
-        if(operatorType == null) {
-            throw new IllegalStateException(String.format("Unsupported type %s.", name));
+        if (operatorType == null) {
+            throw new IllegalArgumentException(String.format("Unsupported type %s.", name));
         }
         return operatorType;
     }

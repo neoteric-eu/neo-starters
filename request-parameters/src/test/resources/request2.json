@@ -1,0 +1,28 @@
+{
+  "$and": [
+    {
+      "createdAt": {
+        "$lt": "timestamp"
+      }
+    },
+    {
+      "$or": [
+        {
+          "updatedAt": {
+            "$lt": "t1"
+          }
+        },
+        {
+          "updatedAt": {
+            "$gt": "t2"
+          }
+        }
+      ]
+    },
+    {
+      "updatedAt": {
+        "$lt": "timestamp3"
+      }
+    }
+  ]
+}

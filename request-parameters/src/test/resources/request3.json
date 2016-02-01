@@ -1,0 +1,9 @@
+{
+  "name": {
+    "$startsWith": "John",
+    "$in": [
+      "Johnny",
+      "Abc"
+    ]
+  }
+}

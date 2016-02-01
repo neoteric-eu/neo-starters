@@ -1,15 +1,10 @@
 package com.neoteric.starter.request;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 
 public enum LogicalOperatorType {
     OR("$or");
-
-    private static final Logger LOG = LoggerFactory.getLogger(LogicalOperatorType.class);
 
     private String value;
 
@@ -28,8 +23,8 @@ public enum LogicalOperatorType {
 
     public static LogicalOperatorType fromString(String operator) {
         LogicalOperatorType logicalOperatorType = Holder.MAP.get(operator);
-        if(logicalOperatorType == null) {
-            throw new IllegalStateException(String.format("Unsupported type %s.", operator));
+        if (logicalOperatorType == null) {
+            throw new IllegalArgumentException(String.format("Unsupported type %s.", operator));
         }
         return logicalOperatorType;
     }

@@ -25,20 +25,24 @@ public class RequestField implements RequestObject {
 
     @Override
     public String toString() {
-        return "[" + fieldName + "]";
+        return "<" + fieldName + ">";
     }
 
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RequestField that = (RequestField) o;
-        return Objects.equals(fieldName, that.fieldName);
+    public final boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RequestField)) {
+            return false;
+        }
+        RequestField other = (RequestField) o;
+        return Objects.equals(this.fieldName, other.fieldName);
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(fieldName);
     }
 }

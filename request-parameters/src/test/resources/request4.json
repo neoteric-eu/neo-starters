@@ -1,0 +1,13 @@
+{
+  "name": {
+    "$or": {
+      "startsWith": {
+        "$eq" : "xyz"
+      },
+      "$in": [
+        "Johnny",
+        "Abc"
+      ]
+    }
+  }
+}
