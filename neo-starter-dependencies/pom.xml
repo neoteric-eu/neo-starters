@@ -104,32 +104,32 @@
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>request-parameters</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-test</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-metrics</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-mongo</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-mongo-test</artifactId>
-                <version>${parent.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
