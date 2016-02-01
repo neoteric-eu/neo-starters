@@ -4,7 +4,7 @@
 
     <groupId>com.neoteric.starter</groupId>
     <artifactId>neo-starter-build</artifactId>
-    <version>0.1.0.160201160910</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -20,7 +20,7 @@
         <url>https://github.com/neoteric-eu/neo-starters</url>
         <connection>scm:git:ssh://github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-        <tag>0.1.0.160201160910</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
@@ -159,8 +159,7 @@
                                         <xslt in="${sourceFile}" out="${sourceFile}.new" force="true">
                                             <style>
                                                 <string><![CDATA[
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:m="http://maven.apache.org/POM/4.0.0"
-	exclude-result-prefixes="m">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:m="http://maven.apache.org/POM/4.0.0" exclude-result-prefixes="m">
 
 	<xsl:template match="node()|@*">
 		<xsl:copy>
