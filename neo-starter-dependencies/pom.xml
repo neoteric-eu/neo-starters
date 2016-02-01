@@ -16,8 +16,6 @@
     </organization>
 
     <properties>
-        <neostarters.version>0.1.0-SNAPSHOT</neostarters.version>
-
         <spring-boot.version>1.3.1.RELEASE</spring-boot.version>
         <spring-cloud.version>Brixton.M4</spring-cloud.version>
 
@@ -106,32 +104,32 @@
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>request-parameters</artifactId>
-                <version>${neostarters.version}</version>
+                <version>${parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter</artifactId>
-                <version>${neostarters.version}</version>
+                <version>${parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-test</artifactId>
-                <version>${neostarters.version}</version>
+                <version>${parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-metrics</artifactId>
-                <version>${neostarters.version}</version>
+                <version>${parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-mongo</artifactId>
-                <version>${neostarters.version}</version>
+                <version>${parent.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-mongo-test</artifactId>
-                <version>${neostarters.version}</version>
+                <version>${parent.version}</version>
             </dependency>
 
             <dependency>
