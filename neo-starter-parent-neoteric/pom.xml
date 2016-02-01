@@ -6,6 +6,7 @@
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-parent</artifactId>
         <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../neo-starter-parent</relativePath>
     </parent>
 
     <packaging>pom</packaging>
