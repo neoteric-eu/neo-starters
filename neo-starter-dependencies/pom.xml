@@ -37,7 +37,7 @@
         <jersey2-version>2.22.1</jersey2-version>
 
         <!-- Test Libraries -->
-        <assertj.version>3.2.0</assertj.version>
+        <assertj.version>3.3.0</assertj.version>
         <wiremock.version>2.0.6-beta</wiremock.version>
         <rest-assured.version>2.6.0</rest-assured.version>
 
@@ -52,6 +52,11 @@
         <gitlog-maven-plugin.version>1.12.3</gitlog-maven-plugin.version>
         <docker-maven-plugin.version>0.3.258</docker-maven-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
+        <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
+        <jgitflow-maven-plugin.version>1.0-m4.3</jgitflow-maven-plugin.version>
+        <build-helper-maven-plugin.version>1.10</build-helper-maven-plugin.version>
+        <assertj-assertions-generator-maven-plugin.version>1.6.0</assertj-assertions-generator-maven-plugin.version>
+        <maven-scm-plugin.version>1.9.4</maven-scm-plugin.version>
     </properties>
     <scm>
         <url>http://github.com/neoteric-eu/neo-starters</url>
@@ -235,6 +240,31 @@
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>${docker-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>${jacoco-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>external.atlassian.jgitflow</groupId>
+                    <artifactId>jgitflow-maven-plugin</artifactId>
+                    <version>${jgitflow-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.assertj</groupId>
+                    <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+                    <version>${assertj-assertions-generator-maven-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>${maven-scm-plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

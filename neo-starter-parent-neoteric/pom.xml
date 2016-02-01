@@ -32,6 +32,16 @@
         <url>https://github.com/neoteric-eu/neo-starters/issues</url>
     </issueManagement>
 
+    <properties>
+        <docker.repository.host>ntrc-delta.neoteric.eu:5000</docker.repository.host>
+        <docker.image.prefix>neoteric/</docker.image.prefix>
+        <distributionManagement.repository>http://naga.neoteric.eu:8081/nexus/content/repositories/releases/
+        </distributionManagement.repository>
+        <distributionManagement.repository.snapshots>
+            http://naga.neoteric.eu:8081/nexus/content/repositories/snapshots/
+        </distributionManagement.repository.snapshots>
+    </properties>
+
     <build>
         <resources>
             <resource>
@@ -59,6 +69,48 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>com.github.danielflower.mavenplugins</groupId>
+                    <artifactId>gitlog-maven-plugin</artifactId>
+                    <configuration>
+                        <fullGitMessage>true</fullGitMessage>
+                        <excludeCommiters>
+                            <commiter>jenkins</commiter>
+                        </excludeCommiters>
+                        <dateFormat>yyyy-MM-dd</dateFormat>
+                        <markdownChangeLogFilename>CHANGELOG.md</markdownChangeLogFilename>
+                        <generateMarkdownChangeLog>true</generateMarkdownChangeLog>
+                        <generateJSONChangeLog>false</generateJSONChangeLog>
+                        <generatePlainTextChangeLog>false</generatePlainTextChangeLog>
+                        <excludeCommitsPattern>.*\b(updating poms for branch|merging.*into)\b.*</excludeCommitsPattern>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>default-prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-report</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <executions>
@@ -69,9 +121,9 @@
                                 <goal>build</goal>
                             </goals>
                             <configuration>
-                                <pushImage>push</pushImage>
+                                <pushImage>true</pushImage>
                                 <imageName>
-                                    ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:${project.version}
+                                    ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${project.version}
                                 </imageName>
                                 <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
                                 <resources>
@@ -100,25 +152,117 @@
                                 <goal>tag</goal>
                             </goals>
                             <configuration>
-                                <pushImage>push</pushImage>
+                                <pushImage>true</pushImage>
                                 <image>
-                                    ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:${project.version}
+                                    ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${project.version}
                                 </image>
-                                <newName>ntrc-delta.neoteric.eu:5000/neoteric/${project.artifactId}:latest</newName>
+                                <newName>${docker.repository.host}/${docker.image.prefix}${project.artifactId}:latest
+                                </newName>
                                 <forceTags>true</forceTags>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>external.atlassian.jgitflow</groupId>
+                    <artifactId>jgitflow-maven-plugin</artifactId>
+                    <configuration>
+                        <pushFeatures>true</pushFeatures>
+                        <pushHotfixes>true</pushHotfixes>
+                        <pushReleases>true</pushReleases>
+                        <enableSshAgent>true</enableSshAgent>
+                        <flowInitContext>
+                            <masterBranchName>master</masterBranchName>
+                            <developBranchName>development</developBranchName>
+                            <featureBranchPrefix>feature-</featureBranchPrefix>
+                            <releaseBranchPrefix>release-</releaseBranchPrefix>
+                            <hotfixBranchPrefix>hotfix-</hotfixBranchPrefix>
+                            <versionTagPrefix>${project.artifactId}-</versionTagPrefix>
+                        </flowInitContext>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>attach-artifacts</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>attach-artifact</goal>
+                            </goals>
+                            <configuration>
+                                <artifacts>
+                                    <artifact>
+                                        <file>changelog.html</file>
+                                        <type>html</type>
+                                        <classifier>changelog</classifier>
+                                    </artifact>
+                                </artifacts>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>add-changelog-to-git</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>add</goal>
+                                <goal>checkin</goal>
+                            </goals>
+                            <configuration>
+                                <basedir>./</basedir>
+                                <includes>CHANGELOG.md, changelog.html</includes>
+                                <message>Add changelog</message>
+                                <pushChanges>true</pushChanges>
                             </configuration>
                         </execution>
                     </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <groupId>external.atlassian.jgitflow</groupId>
+                <artifactId>jgitflow-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.danielflower.mavenplugins</groupId>
+                <artifactId>gitlog-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
+
 
     <profiles>
         <profile>
             <id>release</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>com.github.danielflower.mavenplugins</groupId>
+                        <artifactId>gitlog-maven-plugin</artifactId>
+                        <configuration>
+                            <outputDirectory>${project.basedir}</outputDirectory>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-scm-plugin</artifactId>
+                    </plugin>
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
@@ -132,12 +276,12 @@
         <repository>
             <id>releases</id>
             <name>Releases</name>
-            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/releases/</url>
+            <url>${distributionManagement.repository}</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>Snapshots</name>
-            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/snapshots/</url>
+            <url>${distributionManagement.repository.snapshots}</url>
         </snapshotRepository>
     </distributionManagement>
 
