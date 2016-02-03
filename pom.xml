@@ -4,7 +4,7 @@
 
     <groupId>com.neoteric.starter</groupId>
     <artifactId>neo-starter-build</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0.160203161740</version>
 
     <packaging>pom</packaging>
 
@@ -20,7 +20,7 @@
         <url>https://github.com/neoteric-eu/neo-starters</url>
         <connection>scm:git:ssh://github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>0.1.0.160203161740</tag>
     </scm>
 
     <distributionManagement>
