@@ -120,7 +120,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <finalName>${project.build.finalName}-exec</finalName>
+                        <classifier>exec</classifier>
                         <requiresUnpack>
                             <dependency>
                                 <groupId>io.swagger</groupId>
