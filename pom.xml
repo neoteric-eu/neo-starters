@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neoteric.starter</groupId>
@@ -160,9 +159,7 @@
                                         <xslt in="${sourceFile}" out="${sourceFile}.new" force="true">
                                             <style>
                                                 <string><![CDATA[
-<xsl:stylesheet version="2.0"
-	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:m="http://maven.apache.org/POM/4.0.0"
-	exclude-result-prefixes="m">
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:m="http://maven.apache.org/POM/4.0.0" exclude-result-prefixes="m">
 
 	<xsl:template match="node()|@*">
 		<xsl:copy>
@@ -170,9 +167,8 @@
 		</xsl:copy>
 	</xsl:template>
 
-	<xsl:template
-		match="m:properties/m:neostarters.version/text()">
-		<xsl:value-of select="/m:project/m:version/text()"/>
+	<xsl:template match="m:properties/m:neostarters.version/text()">
+		<xsl:value-of select="/m:project/m:version/text()" />
 	</xsl:template>
 </xsl:stylesheet>
 				]]>
