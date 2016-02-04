@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.neoteric.starter</groupId>
+        <artifactId>neo-starter-parent</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../neo-starter-parent</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>neo-starter-saas</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>neo-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>neo-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>neoteric</id>
+            <name>Neoteric</name>
+            <url>http://naga.neoteric.eu:8081/nexus/content/groups/neoteric_group</url>
+        </repository>
+    </repositories>
+
+
+</project>
