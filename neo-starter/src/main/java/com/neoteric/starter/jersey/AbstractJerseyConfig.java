@@ -2,6 +2,7 @@ package com.neoteric.starter.jersey;
 
 import com.neoteric.starter.Constants;
 import com.neoteric.starter.error.GlobalExceptionMapper;
+import com.neoteric.starter.error.ResourceNotFoundExceptionMapper;
 import com.neoteric.starter.swagger.SwaggerProperties;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -24,6 +25,7 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
         register(MultiPartFeature.class);
         register(ObjectMapperProvider.class);
         register(GlobalExceptionMapper.class);
+        register(ResourceNotFoundExceptionMapper.class);
         if (swaggerProperties.isEnabled()) {
             this.packages(Constants.SWAGGER_PACKAGE);
         }
