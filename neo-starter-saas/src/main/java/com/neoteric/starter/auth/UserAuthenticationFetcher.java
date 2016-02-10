@@ -5,51 +5,34 @@ import com.google.common.collect.Lists;
 import com.neoteric.starter.auth.basics.AccountStatus;
 import com.neoteric.starter.auth.basics.CustomerBasicInfo;
 import com.neoteric.starter.auth.basics.LoginInfo;
-import com.neoteric.starter.auth.basics.UserSecurityInfo;
+import com.neoteric.starter.auth.basics.UserAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Service
 @EnableFeignClients
-public class AuthenticationCreator {
+public class UserAuthenticationFetcher {
 
     @Autowired
     SaasClient saasClient;
 
-    public Authentication createAuthentication(String token, String customerId) {
-        Optional<UserSecurityInfo> userSecurityInfo = getUserSecurityInfo(token, customerId);
-
-        return userSecurityInfo
-                .map(userInfo -> new PreAuthenticatedAuthenticationToken(
-                        userInfo.getUsername(),
-                        token,
-                        userInfo.getFeatures().stream().map(feature -> new SimpleGrantedAuthority(feature)).collect(Collectors.toList())))
-                .orElseThrow(() -> new BadCredentialsException("invalid token: " + token));
-
-    }
-
-    private Optional<UserSecurityInfo> getUserSecurityInfo(String token, String customerId) {
+    public UserAuthentication getUserAuthentication(String token, String customerId) {
 
         checkArgument(!Strings.isNullOrEmpty(token), NeoHeaders.AUTHORIZATION.getValue() + " header must not be null");
         checkArgument(!Strings.isNullOrEmpty(customerId), NeoHeaders.X_CUSTOMER_ID.getValue() + " header must not be null");
         LoginInfo loginInfo = saasClient.getLoginInfo(token, customerId);
-        UserSecurityInfo userSecurityInfo = extractUserSecurityFromLogin(loginInfo, customerId);
 
-        return Optional.of(userSecurityInfo);
+        return extractUserAuthenticationFromLogin(loginInfo, customerId);
     }
 
-    private UserSecurityInfo extractUserSecurityFromLogin(LoginInfo loginInfo, String customerId) {
+    private UserAuthentication extractUserAuthenticationFromLogin(LoginInfo loginInfo, String customerId) {
+        String userId = loginInfo.getUser().getId();
+        String username = loginInfo.getUser().getEmail();
 
         List<String> features = Lists.newArrayList();
         AccountStatus userStatus = null;
@@ -61,7 +44,7 @@ public class AuthenticationCreator {
         }
         checkArgument((AccountStatus.ACTIVE.equals(userStatus)), "User status for customer: " + customerId + "is" + userStatus);
 
-        return new UserSecurityInfo(loginInfo.getUser().getEmail(), features);
+        return new UserAuthentication(userId, username, customerId, features);
     }
 
     private List<String> geFeaturesWithPrefix(List<String> originalFeatures) {
