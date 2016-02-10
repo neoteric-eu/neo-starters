@@ -9,8 +9,9 @@ import com.neoteric.starter.auth.basics.UserSecurityInfo;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jaxrs.JAXRSContract;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,57 +25,48 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Service
-@PropertySource("classpath:default-saas.properties")
 public class AuthenticationCreator {
 
-    @Value("${saasManagerHost}")
-    String saasManagerHost;
+    @Autowired
+    SaasClient saasClient;
 
     public Authentication createAuthentication(String token, String customerId) {
         Optional<UserSecurityInfo> userSecurityInfo = getUserSecurityInfo(token, customerId);
-        checkUserPresence(token, userSecurityInfo);
 
-        Authentication auth = userSecurityInfo
+        return userSecurityInfo
                 .map(userInfo -> new PreAuthenticatedAuthenticationToken(
                         userInfo.getUsername(),
                         token,
                         userInfo.getFeatures().stream().map(feature -> new SimpleGrantedAuthority(feature)).collect(Collectors.toList())))
                 .orElseThrow(() -> new BadCredentialsException("invalid token: " + token));
 
-        return auth;
     }
 
-    private void checkUserPresence(String token, Optional<UserSecurityInfo> user) {
-        if (!user.isPresent()) {
-            throw new BadCredentialsException("invalid token: " + token);
-        }
-    }
-
-    private Optional getUserSecurityInfo(String token, String customerId) {
+    private Optional<UserSecurityInfo> getUserSecurityInfo(String token, String customerId) {
 
         checkArgument(!Strings.isNullOrEmpty(token), NeoHeaders.AUTHORIZATION.getValue() + " header must not be null");
         checkArgument(!Strings.isNullOrEmpty(customerId), NeoHeaders.X_CUSTOMER_ID.getValue() + " header must not be null");
-        LoginInfo loginInfo = getLoginInfo(token, customerId);
+        LoginInfo loginInfo = saasClient.getLoginInfo(token, customerId);
         UserSecurityInfo userSecurityInfo = extractUserSecurityFromLogin(loginInfo, customerId);
 
         return Optional.of(userSecurityInfo);
     }
 
-    private LoginInfo getLoginInfo(String token, String customerId) {
+    /*private LoginInfo getLoginInfo(String token, String customerId) {
         SaasClient saasClient = Feign.builder()
                 .contract(new JAXRSContract())
                 .decoder(new JacksonDecoder())
-                .target(SaasClient.class, saasManagerHost);
+                .target(SaasClient.class, "");
 
         return saasClient.getLoginInfo(token, customerId);
-    }
+    }*/
 
     private UserSecurityInfo extractUserSecurityFromLogin(LoginInfo loginInfo, String customerId) {
 
         List<String> features = Lists.newArrayList();
         AccountStatus userStatus = null;
         for (CustomerBasicInfo customerBasicInfo : loginInfo.getUser().getCustomers()) {
-            if (customerBasicInfo.getCustomerId().equals(customerId)) {
+            if (customerId.equals(customerBasicInfo.getCustomerId())) {
                 features = geFeaturesWithPrefix(customerBasicInfo.getFeatureKeys());
                 userStatus = customerBasicInfo.getStatus();
             }

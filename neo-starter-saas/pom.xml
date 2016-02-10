@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.neoteric.starter</groupId>
-        <artifactId>neo-starter-parent</artifactId>
+        <artifactId>neo-starter-parent-neoteric</artifactId>
         <version>0.1.0-SNAPSHOT</version>
-        <relativePath>../neo-starter-parent</relativePath>
+        <relativePath>../neo-starter-parent-neoteric</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -35,14 +35,5 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>neoteric</id>
-            <name>Neoteric</name>
-            <url>http://naga.neoteric.eu:8081/nexus/content/groups/neoteric_group</url>
-        </repository>
-    </repositories>
-
 
 </project>
