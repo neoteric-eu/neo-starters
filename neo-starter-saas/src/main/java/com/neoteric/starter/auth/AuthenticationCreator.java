@@ -6,12 +6,8 @@ import com.neoteric.starter.auth.basics.AccountStatus;
 import com.neoteric.starter.auth.basics.CustomerBasicInfo;
 import com.neoteric.starter.auth.basics.LoginInfo;
 import com.neoteric.starter.auth.basics.UserSecurityInfo;
-import feign.Feign;
-import feign.jackson.JacksonDecoder;
-import feign.jaxrs.JAXRSContract;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,6 +21,7 @@ import java.util.stream.Collectors;
 import static com.google.common.base.Preconditions.checkArgument;
 
 @Service
+@EnableFeignClients
 public class AuthenticationCreator {
 
     @Autowired
@@ -51,15 +48,6 @@ public class AuthenticationCreator {
 
         return Optional.of(userSecurityInfo);
     }
-
-    /*private LoginInfo getLoginInfo(String token, String customerId) {
-        SaasClient saasClient = Feign.builder()
-                .contract(new JAXRSContract())
-                .decoder(new JacksonDecoder())
-                .target(SaasClient.class, "");
-
-        return saasClient.getLoginInfo(token, customerId);
-    }*/
 
     private UserSecurityInfo extractUserSecurityFromLogin(LoginInfo loginInfo, String customerId) {
 

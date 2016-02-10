@@ -6,7 +6,7 @@ public class UserSecurityInfo {
     private String username;
     private List<String> features;
 
-    public UserSecurityInfo(String id, List<String> features) {
+    public UserSecurityInfo(String username, List<String> features) {
         this.username = username;
         this.features = features;
     }
