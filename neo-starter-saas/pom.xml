@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-parent-neoteric</artifactId>
-        <version>0.1.0.160211114050</version>
+        <version>0.1.0-SNAPSHOT</version>
         <relativePath>../neo-starter-parent-neoteric</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
