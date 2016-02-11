@@ -35,7 +35,7 @@ public class UserAuthenticationFetcher {
 
     private UserAuthentication extractUserAuthenticationFromLogin(LoginInfo loginInfo, String customerId) {
         String userId = loginInfo.getUser().getId();
-        String username = loginInfo.getUser().getEmail();
+        String email = loginInfo.getUser().getEmail();
 
         List<String> features = Lists.newArrayList();
         AccountStatus userStatus = null;
@@ -50,7 +50,7 @@ public class UserAuthenticationFetcher {
 
         checkArgument((AccountStatus.ACTIVE.equals(userStatus)), "User status for customer: " + customerId + "is" + userStatus);
 
-        return new UserAuthentication(userId, username, customerId, features);
+        return new UserAuthentication(userId, email, customerId, features);
     }
 
     private List<String> geFeaturesWithPrefix(List<String> originalFeatures) {

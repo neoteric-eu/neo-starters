@@ -30,7 +30,7 @@ public class SaasManagerTokenAuthFilter extends OncePerRequestFilter {
         String customerId = request.getHeader(NeoHeaders.X_CUSTOMER_ID.getValue());
         UserAuthentication userAuthentication = userAuthenticationFetcher.getUserAuthentication(token, customerId);
 
-        Authentication authentication = createAuthentication(userAuthentication.getUsername(), userAuthentication.getFeatures(), token);
+        Authentication authentication = createAuthentication(userAuthentication.getEmail(), userAuthentication.getFeatures(), token);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserAuthenticationHolder.set(userAuthentication);
         try {
@@ -40,10 +40,10 @@ public class SaasManagerTokenAuthFilter extends OncePerRequestFilter {
         }
     }
 
-    public Authentication createAuthentication(String username, List<String> features, String token) {
+    public Authentication createAuthentication(String email, List<String> features, String token) {
 
         return new PreAuthenticatedAuthenticationToken(
-                username,
+                email,
                 token,
                 features.stream()
                         .map(SimpleGrantedAuthority::new)
