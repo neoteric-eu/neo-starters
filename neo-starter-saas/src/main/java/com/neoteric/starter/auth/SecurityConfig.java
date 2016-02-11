@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    SaasManagerTokenAuthFilter saasManagerTokenAuthFilter;
+    private SaasManagerTokenAuthFilter saasManagerTokenAuthFilter;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

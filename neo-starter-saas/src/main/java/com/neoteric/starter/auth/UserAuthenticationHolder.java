@@ -2,10 +2,15 @@ package com.neoteric.starter.auth;
 
 
 import com.neoteric.starter.auth.basics.UserAuthentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class UserAuthenticationHolder {
 
-    private static final ThreadLocal<UserAuthentication> userAuthenticationHolder =
+    private static final Logger LOG = LoggerFactory.getLogger(UserAuthenticationHolder.class);
+
+
+    private static final ThreadLocal<UserAuthentication> userAuthentication =
             new ThreadLocal<UserAuthentication>();
 
     private UserAuthenticationHolder() {
@@ -18,8 +23,16 @@ public final class UserAuthenticationHolder {
      * @return the UserAuthentication currently bound to the thread,
      * or {@code null} if none bound
      */
-    public static UserAuthentication get() {
-        return userAuthenticationHolder.get();
+    public static UserAuthentication getUserAuthentication() {
+        return userAuthentication.get();
+    }
+
+    public static String getUserId() {
+        return userAuthentication.get().getUserId();
+    }
+
+    public static String getCustomerId() {
+        return userAuthentication.get().getCustomerId();
     }
 
 
@@ -33,7 +46,7 @@ public final class UserAuthenticationHolder {
      * @see UserAuthentication
      */
     public static UserAuthentication current() throws IllegalStateException {
-        UserAuthentication userAuthentication = get();
+        UserAuthentication userAuthentication = getUserAuthentication();
         if (userAuthentication == null) {
             throw new IllegalStateException("No thread-bound request found: " +
                     "Are you referring to request attributes outside of an actual web request, " +
@@ -52,11 +65,12 @@ public final class UserAuthenticationHolder {
         if (userAuthentication == null) {
             reset();
         } else {
-            userAuthenticationHolder.set(userAuthentication);
+            UserAuthenticationHolder.userAuthentication.set(userAuthentication);
         }
     }
 
     public static void reset() {
-        userAuthenticationHolder.remove();
+        userAuthentication.remove();
+        LOG.debug("Cleared thread-bound user authentication: {}");
     }
 }

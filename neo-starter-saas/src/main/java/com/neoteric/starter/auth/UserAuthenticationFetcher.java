@@ -11,6 +11,8 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -19,7 +21,8 @@ import static com.google.common.base.Preconditions.checkArgument;
 public class UserAuthenticationFetcher {
 
     @Autowired
-    SaasClient saasClient;
+    private SaasClient saasClient;
+    private static final String ROLE_PREFIX = "ROLE_";
 
     public UserAuthentication getUserAuthentication(String token, String customerId) {
 
@@ -36,25 +39,25 @@ public class UserAuthenticationFetcher {
 
         List<String> features = Lists.newArrayList();
         AccountStatus userStatus = null;
-        for (CustomerBasicInfo customerBasicInfo : loginInfo.getUser().getCustomers()) {
-            if (customerId.equals(customerBasicInfo.getCustomerId())) {
-                features = geFeaturesWithPrefix(customerBasicInfo.getFeatureKeys());
-                userStatus = customerBasicInfo.getStatus();
-            }
+        Optional<CustomerBasicInfo> customerBasicInfo = loginInfo.getUser().getCustomers().stream()
+                .filter(customerInfo -> customerId.equals(customerInfo.getCustomerId()))
+                .findFirst();
+
+        if (customerBasicInfo.isPresent()) {
+            features = geFeaturesWithPrefix(customerBasicInfo.get().getFeatureKeys());
+            userStatus = customerBasicInfo.get().getStatus();
         }
+
         checkArgument((AccountStatus.ACTIVE.equals(userStatus)), "User status for customer: " + customerId + "is" + userStatus);
 
         return new UserAuthentication(userId, username, customerId, features);
     }
 
     private List<String> geFeaturesWithPrefix(List<String> originalFeatures) {
-        String rolePrefix = "ROLE_";
-        List<String> features = Lists.newArrayList();
-        for (String feature : originalFeatures) {
-            if (!feature.startsWith(rolePrefix)) {
-                features.add(rolePrefix + feature);
-            }
-        }
-        return features;
+
+        return originalFeatures.stream()
+                .filter(feature -> !feature.startsWith(ROLE_PREFIX))
+                .map(feature -> ROLE_PREFIX + feature)
+                .collect(Collectors.toList());
     }
 }

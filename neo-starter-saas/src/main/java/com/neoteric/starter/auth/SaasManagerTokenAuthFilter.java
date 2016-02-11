@@ -1,8 +1,6 @@
 package com.neoteric.starter.auth;
 
 import com.neoteric.starter.auth.basics.UserAuthentication;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,8 +21,7 @@ import java.util.stream.Collectors;
 public class SaasManagerTokenAuthFilter extends OncePerRequestFilter {
 
     @Autowired
-    UserAuthenticationFetcher userAuthenticationFetcher;
-    private static final Logger LOG = LoggerFactory.getLogger(SaasManagerTokenAuthFilter.class);
+    private UserAuthenticationFetcher userAuthenticationFetcher;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -40,7 +37,6 @@ public class SaasManagerTokenAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             UserAuthenticationHolder.reset();
-            LOG.debug("Cleared thread-bound user authentication: {}", request);
         }
     }
 
