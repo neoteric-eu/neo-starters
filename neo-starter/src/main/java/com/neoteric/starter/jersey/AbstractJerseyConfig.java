@@ -1,6 +1,7 @@
 package com.neoteric.starter.jersey;
 
 import com.neoteric.starter.Constants;
+import com.neoteric.starter.error.AccessDeniedExceptionMapper;
 import com.neoteric.starter.error.GlobalExceptionMapper;
 import com.neoteric.starter.error.ResourceNotFoundExceptionMapper;
 import com.neoteric.starter.swagger.SwaggerProperties;
@@ -26,6 +27,7 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
         register(ObjectMapperProvider.class);
         register(GlobalExceptionMapper.class);
         register(ResourceNotFoundExceptionMapper.class);
+        register(AccessDeniedExceptionMapper.class);
         if (swaggerProperties.isEnabled()) {
             this.packages(Constants.SWAGGER_PACKAGE);
         }
