@@ -27,7 +27,6 @@ public class AccessDeniedExceptionMapper extends AbstractExceptionMapper<AccessD
 
     @Override
     protected Object message(AccessDeniedException accessDeniedException) {
-
         return accessDeniedException.getMessage();
     }
 }

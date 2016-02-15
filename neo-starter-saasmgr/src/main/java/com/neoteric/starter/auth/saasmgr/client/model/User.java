@@ -1,4 +1,4 @@
-package com.neoteric.starter.auth.basics;
+package com.neoteric.starter.auth.saasmgr.client.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -8,9 +8,8 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import java.util.List;
 import java.util.Objects;
 
-
-@JsonDeserialize(builder = UserSaasInfo.Builder.class)
-public class UserSaasInfo {
+@JsonDeserialize(builder = User.Builder.class)
+public class User {
 
     public static final String ID = "id";
     public static final String EMAIL = "email";
@@ -23,11 +22,11 @@ public class UserSaasInfo {
     private final String email;
 
     @JsonProperty(CUSTOMERS)
-    private final List<CustomerBasicInfo> customers;
+    private final List<Customer> customers;
 
     private final int cachedHashCode;
 
-    public UserSaasInfo(Builder builder) {
+    public User(Builder builder) {
         this.id = builder.id;
         this.email = builder.email;
         this.customers = builder.customers;
@@ -35,7 +34,7 @@ public class UserSaasInfo {
         this.cachedHashCode = calculateHashCode();
     }
 
-    public static Builder newBuilder() {
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -47,7 +46,7 @@ public class UserSaasInfo {
         return email;
     }
 
-    public List<CustomerBasicInfo> getCustomers() {
+    public List<Customer> getCustomers() {
         return customers;
     }
 
@@ -62,7 +61,7 @@ public class UserSaasInfo {
         private String email;
 
         @JsonProperty(CUSTOMERS)
-        private List<CustomerBasicInfo> customers;
+        private List<Customer> customers;
 
         public Builder setId(String id) {
             this.id = id;
@@ -74,21 +73,13 @@ public class UserSaasInfo {
             return this;
         }
 
-
-        public Builder setCustomers(List<CustomerBasicInfo> customers) {
+        public Builder setCustomers(List<Customer> customers) {
             this.customers = customers;
             return this;
         }
 
-        public Builder copy(UserSaasInfo other) {
-            return this
-                    .setId(other.id)
-                    .setEmail(other.email)
-                    .setCustomers(other.customers);
-        }
-
-        public UserSaasInfo build() {
-            return new UserSaasInfo(this);
+        public User build() {
+            return new User(this);
         }
     }
 
@@ -107,10 +98,10 @@ public class UserSaasInfo {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof UserSaasInfo)) {
+        if (!(obj instanceof User)) {
             return false;
         }
-        UserSaasInfo other = (UserSaasInfo) obj;
+        User other = (User) obj;
         return Objects.equals(this.id, other.id)
                 && Objects.equals(this.email, other.email)
                 && Objects.equals(this.customers, other.customers);
