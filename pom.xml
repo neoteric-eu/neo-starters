@@ -65,7 +65,7 @@
 
         <module>neo-starter-parent</module>
         <module>neo-starter-parent-neoteric</module>
-        <module>neo-starter-saas</module>
+        <module>neo-starter-saasmgr</module>
     </modules>
 
     <build>
