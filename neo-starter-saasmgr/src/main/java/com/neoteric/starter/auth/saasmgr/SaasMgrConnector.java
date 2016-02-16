@@ -5,17 +5,13 @@ import com.neoteric.starter.auth.saasmgr.client.model.Customer;
 import com.neoteric.starter.auth.saasmgr.client.model.LoginData;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
-@EnableFeignClients
 public class SaasMgrConnector {
 
     @Autowired

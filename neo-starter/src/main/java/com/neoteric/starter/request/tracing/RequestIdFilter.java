@@ -39,7 +39,6 @@ public class RequestIdFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestId = request.getHeader(Constants.REQUEST_ID);
 
-        LOG.error("AAAA");
         String path = new UrlPathHelper().getPathWithinApplication(request);
         if (path.startsWith(applicationPath)) {
             if (requestId == null || requestId.isEmpty()) {

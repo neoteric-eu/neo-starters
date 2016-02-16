@@ -1,22 +1,24 @@
 package com.neoteric.starter.auth.saasmgr;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.stereotype.Component;
 
-@Component
 public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    SaasMgrConnector saasDetailsFetcher;
+    private static final Logger LOG = LoggerFactory.getLogger(SaasMgrAuthenticationProvider.class);
+    private final SaasMgrConnector saasMgrConnector;
 
+    public SaasMgrAuthenticationProvider(SaasMgrConnector saasMgrConnector) {
+        this.saasMgrConnector = saasMgrConnector;
+    }
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         SaasMgrAuthenticationToken saasMgrToken = (SaasMgrAuthenticationToken)authentication;
         SaasMgrAuthenticationDetails saasMgrAuthenticationDetails =
-                saasDetailsFetcher.getSaasMgrAuthenticationDetails(String.valueOf(saasMgrToken.getCredentials()),
+                saasMgrConnector.getSaasMgrAuthenticationDetails(String.valueOf(saasMgrToken.getCredentials()),
                 String.valueOf(saasMgrToken.getPrincipal()));
 
         return new SaasMgrAuthenticationToken(saasMgrAuthenticationDetails, saasMgrToken.getCredentials(), saasMgrAuthenticationDetails.getAuthorities());
@@ -24,6 +26,7 @@ public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
+        LOG.error("AAAA DUPA: {}", authentication);
         return SaasMgrAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }
