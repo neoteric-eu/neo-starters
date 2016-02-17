@@ -1,5 +1,6 @@
 package com.neoteric.starter.auth.saasmgr.client.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
@@ -17,7 +18,8 @@ public class Role {
 
     private final int cachedHashCode;
 
-    public Role(String roleId, String roleName) {
+    @JsonCreator
+    public Role(@JsonProperty(ROLE_ID) String roleId, @JsonProperty(ROLE_NAME) String roleName) {
         this.roleId = roleId;
         this.roleName = roleName;
 
