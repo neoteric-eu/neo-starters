@@ -1,4 +1,4 @@
-package com.neoteric.starter.auth.saasmgr;
+package com.neoteric.starter.auth.saasmgr.filter;
 
 import com.neoteric.starter.auth.saasmgr.client.SaasMgrClient;
 import org.slf4j.Logger;
@@ -15,8 +15,7 @@ public enum ContainsSaasMgrHeadersMatcher implements RequestMatcher {
 
     @Override
     public boolean matches(HttpServletRequest request) {
-        LOG.error("ABC: {}", request.getPathInfo());
-        return !StringUtils.isEmpty(request.getHeader(SaasMgrClient.AUTHORIZATION_HEADER)) &&
-                !StringUtils.isEmpty(request.getHeader(SaasMgrClient.CUSTOMER_ID_HEADER));
+        return !(StringUtils.isEmpty(request.getHeader(SaasMgrClient.AUTHORIZATION_HEADER)) ||
+                StringUtils.isEmpty(request.getHeader(SaasMgrClient.CUSTOMER_ID_HEADER)));
     }
 }

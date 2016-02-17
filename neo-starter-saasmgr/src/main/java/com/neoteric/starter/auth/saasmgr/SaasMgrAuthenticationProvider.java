@@ -26,7 +26,6 @@ public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        LOG.error("AAAA DUPA: {}", authentication);
         return SaasMgrAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }
