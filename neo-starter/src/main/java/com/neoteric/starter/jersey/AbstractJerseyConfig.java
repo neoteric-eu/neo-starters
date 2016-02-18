@@ -44,11 +44,11 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
     }
 
     private void logRegister(final Class<?> componentClass) {
-        LOG.debug("{} Jersey register: {}", Constants.LOG_PREFIX, componentClass.getName());
+        LOG.debug("{} Jersey registers {}", Constants.LOG_PREFIX, componentClass.getName());
         register(componentClass);
     }
     private void logPackages(String... packages) {
-        LOG.debug("{} Jersey register packages: {}", Constants.LOG_PREFIX, Arrays.toString(packages));
+        LOG.debug("{} Jersey registers packages {}", Constants.LOG_PREFIX, Arrays.toString(packages));
         packages(packages);
     }
 }

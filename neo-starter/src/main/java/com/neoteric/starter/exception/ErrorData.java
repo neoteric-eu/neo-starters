@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;
 
 import java.time.ZonedDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,7 +18,7 @@ public class ErrorData {
     private final String path;
     private final Object message;
     private final String exception;
-    private final String stackTrace;
+    private final Map<String, String> stackTrace;
 
     private final int cachedHashCode;
 
@@ -54,7 +55,7 @@ public class ErrorData {
         return exception;
     }
 
-    public String getStackTrace() {
+    public Map<String,String> getStackTrace() {
         return stackTrace;
     }
 
@@ -82,7 +83,7 @@ public class ErrorData {
         private String error;
         private Object errorCode;
         private String exception;
-        private String stackTrace;
+        private Map<String, String> stackTrace;
         private Object message;
         private String requestId;
 
@@ -116,7 +117,7 @@ public class ErrorData {
             return this;
         }
 
-        public Builder setStackTrace(String stackTrace) {
+        public Builder setStackTrace(Map<String, String> stackTrace) {
             this.stackTrace = stackTrace;
             return this;
         }

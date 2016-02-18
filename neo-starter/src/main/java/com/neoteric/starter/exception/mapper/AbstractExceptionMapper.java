@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.neoteric.starter.Constants;
 import com.neoteric.starter.exception.ErrorData;
 import org.apache.catalina.connector.RequestFacade;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,13 @@ import javax.ws.rs.ext.ExceptionMapper;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Component
 public abstract class AbstractExceptionMapper<E extends Throwable> implements ExceptionMapper<E> {
@@ -106,7 +111,17 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
         StringWriter stackTrace = new StringWriter();
         error.printStackTrace(new PrintWriter(stackTrace));
         stackTrace.flush();
-        errorBuilder.setStackTrace(StringEscapeUtils.unescapeJson(stackTrace.toString()));
+        errorBuilder.setStackTrace(parseStackTraceToMap(stackTrace.toString()));
+    }
+
+    private Map<String, String> parseStackTraceToMap(String stackTrace) {
+        String[] splittedStackTrace = stackTrace.replaceAll("\t", "  ").split("\\R");
+        return IntStream.range(0, splittedStackTrace.length)
+                .boxed()
+                .collect(Collectors.toMap(i -> "[" + i + "]",
+                        index -> splittedStackTrace[index],
+                        (s, s2) -> null,
+                        LinkedHashMap::new));
     }
 
     private boolean shouldIncludeStackTrace(ErrorProperties errorProperties,
