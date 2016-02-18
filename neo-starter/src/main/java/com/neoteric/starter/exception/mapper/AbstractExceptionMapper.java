@@ -1,8 +1,9 @@
-package com.neoteric.starter.error;
+package com.neoteric.starter.exception.mapper;
 
 import ch.qos.logback.classic.Level;
 import com.google.common.collect.ImmutableMap;
 import com.neoteric.starter.Constants;
+import com.neoteric.starter.exception.ErrorData;
 import org.apache.catalina.connector.RequestFacade;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.MDC;

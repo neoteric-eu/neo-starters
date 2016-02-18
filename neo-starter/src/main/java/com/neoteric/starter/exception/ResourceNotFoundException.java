@@ -1,4 +1,4 @@
-package com.neoteric.starter.error;
+package com.neoteric.starter.exception;
 
 public abstract class ResourceNotFoundException extends RuntimeException {
 

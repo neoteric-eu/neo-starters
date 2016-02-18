@@ -1,4 +1,4 @@
-package com.neoteric.starter.error;
+package com.neoteric.starter.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;

@@ -11,7 +11,7 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 
-@FeignClient(serviceId = "saasManager")
+@FeignClient("saasManager")
 public interface SaasMgrClient {
 
     String AUTHORIZATION_HEADER = "Authorization";
@@ -20,6 +20,6 @@ public interface SaasMgrClient {
     @GET
     @Path("api/v1/users/authInfo")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Cacheable(value = SaasMgrSecurityAutoConfiguration.SAAS_MGR_AUTH_CACHE)
+    @Cacheable(SaasMgrSecurityAutoConfiguration.SAAS_MGR_AUTH_CACHE)
     LoginData getLoginInfo(@HeaderParam(AUTHORIZATION_HEADER) String token, @HeaderParam(CUSTOMER_ID_HEADER) String customerId);
 }
