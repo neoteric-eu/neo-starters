@@ -30,11 +30,19 @@ public class RequestParamsCriteriaBuilder {
         return build(Optional.empty(), requestParams, FieldMapper.of(Maps.newHashMap()));
     }
 
-    public Criteria build(Optional<Criteria> initialCriteria, Map<RequestObject, Object> requestParams) {
+    public Criteria build(Map<RequestObject, Object> requestParams, FieldMapper fieldMapper) {
+        return build(Optional.empty(), requestParams, fieldMapper);
+    }
+
+    public Criteria build(Criteria initialCriteria, Map<RequestObject, Object> requestParams) {
         return build(initialCriteria, requestParams, FieldMapper.of(Maps.newHashMap()));
     }
 
-    public Criteria build(Optional<Criteria> initialCriteria, Map<RequestObject, Object> requestParams, FieldMapper fieldMapper) {
+    public Criteria build(Criteria initialCriteria, Map<RequestObject, Object> requestParams, FieldMapper fieldMapper) {
+        return build(Optional.of(initialCriteria), requestParams, fieldMapper);
+    }
+
+    private Criteria build(Optional<Criteria> initialCriteria, Map<RequestObject, Object> requestParams, FieldMapper fieldMapper) {
         List<Criteria> joinedCriteria = Lists.newArrayList();
         initialCriteria.ifPresent(criteria -> joinedCriteria.add(criteria));
 
