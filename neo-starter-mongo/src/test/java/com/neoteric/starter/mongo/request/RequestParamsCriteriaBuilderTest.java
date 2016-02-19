@@ -264,7 +264,7 @@ public class RequestParamsCriteriaBuilderTest {
                 "name", "remappedName",
                 "lastName", "remappedLastName"
         ));
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(Optional.empty(), filters, fieldMapper);
+        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters, fieldMapper);
         assertThat(result).isEqualTo(new Criteria().orOperator(
                 Criteria.where("remappedName").regex("^John", "i"),
                 Criteria.where("secondName").regex("^Bob", "i"),
@@ -284,7 +284,7 @@ public class RequestParamsCriteriaBuilderTest {
 
         FieldMapper fieldMapper = FieldMapper.of(ImmutableMap.of());
         Criteria result = RequestParamsCriteriaBuilder.newBuilder()
-                .build(Optional.of(Criteria.where("initialField").is("initialValue")), filters, fieldMapper);
+                .build(Criteria.where("initialField").is("initialValue"), filters, fieldMapper);
         assertThat(result).isEqualTo(new Criteria().andOperator(
                 Criteria.where("initialField").is("initialValue"),
                 new Criteria().orOperator(
