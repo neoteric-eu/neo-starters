@@ -1,6 +1,10 @@
 package com.neoteric.starter.jersey;
 
 import com.neoteric.starter.Constants;
+import com.neoteric.starter.exception.mapper.AccessDeniedExceptionMapper;
+import com.neoteric.starter.exception.mapper.AuthenticationExceptionMapper;
+import com.neoteric.starter.exception.mapper.GlobalExceptionMapper;
+import com.neoteric.starter.exception.mapper.ResourceNotFoundExceptionMapper;
 import com.neoteric.starter.swagger.SwaggerProperties;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -31,16 +35,23 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
     public void register() {
         logRegister(MultiPartFeature.class);
         logRegister(ObjectMapperProvider.class);
-        logPackages(STARTER_EXCEPTION_MAPPERS_PACKAGE);
+        registerExceptionMappers();
         String[] packagesToScan = starterJerseyProperties.getPackagesToScan();
         if (packagesToScan != null && packagesToScan.length > 0) {
             logPackages(starterJerseyProperties.getPackagesToScan());
         }
 
         if (swaggerProperties.isEnabled()) {
-            this.packages(Constants.SWAGGER_PACKAGE);
+            logPackages(Constants.SWAGGER_PACKAGE);
         }
         configure();
+    }
+
+    private void registerExceptionMappers() {
+        logRegister(AccessDeniedExceptionMapper.class);
+        logRegister(AuthenticationExceptionMapper.class);
+        logRegister(ResourceNotFoundExceptionMapper.class);
+        logRegister(GlobalExceptionMapper.class);
     }
 
     private void logRegister(final Class<?> componentClass) {
