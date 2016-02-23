@@ -1,4 +1,4 @@
-package com.neoteric.starter.test.wiremock;
+package com.neoteric.starter.test.wiremock.ribbon;
 
 import com.google.common.collect.Lists;
 import com.netflix.loadbalancer.Server;
@@ -6,13 +6,13 @@ import com.netflix.loadbalancer.ServerList;
 
 import java.util.List;
 
-public class VeryStaticServerList implements ServerList<Server> {
+public class RibbonStaticServerList implements ServerList<Server> {
 
     public static int port = 8000;
 
     @Override
     public List<Server> getInitialListOfServers() {
-        return Lists.newArrayList(new Server("localhost", port));
+        return getUpdatedListOfServers();
     }
 
     @Override

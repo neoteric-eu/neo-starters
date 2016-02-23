@@ -2,22 +2,20 @@ package com.neoteric.starter.test.wiremock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.google.common.collect.Lists;
+import com.neoteric.starter.test.TestBeanUtils;
+import com.neoteric.starter.test.wiremock.ribbon.RibbonStaticServerList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
-import org.springframework.test.context.support.TestPropertySourceUtils;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Arrays;
-import java.util.List;
 
 public class WireMockListener extends AbstractTestExecutionListener {
 
     private static final Logger LOG = LoggerFactory.getLogger(WireMockListener.class);
+    private static final String RIBBON_SERVER_LIST = "ribbonServerList";
 
     private WireMockServer server;
     private int port;
@@ -29,15 +27,9 @@ public class WireMockListener extends AbstractTestExecutionListener {
             return;
         }
         port = getFreeServerPort();
-        ConfigurableEnvironment environment = (ConfigurableEnvironment) testContext.getApplicationContext().getEnvironment();
-
-        List<String> serviceMocks = Lists.newArrayList();
-        Arrays.stream(annotation.value()).forEach(service ->
-                serviceMocks.add(String.join("", service, ".ribbon.listOfServers=localhost:", String.valueOf(port))));
-
-        VeryStaticServerList.port = port;
-        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(environment, serviceMocks.stream().toArray(String[]::new));
         server = new WireMockServer(port);
+        TestBeanUtils.registerSingleton(testContext, RIBBON_SERVER_LIST, new RibbonStaticServerList());
+        RibbonStaticServerList.port = port;
         LOG.info("WireMock started on port {}\n", port);
     }
 
@@ -55,6 +47,16 @@ public class WireMockListener extends AbstractTestExecutionListener {
         if (server == null) {
             return;
         }
+        server.resetRequests();
+        server.resetMappings();
+    }
+
+    @Override
+    public void afterTestClass(TestContext testContext) throws Exception {
+        if (server == null) {
+            return;
+        }
+        TestBeanUtils.destroySingleton(testContext, RIBBON_SERVER_LIST);
         server.stop();
     }
 
