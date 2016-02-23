@@ -35,6 +35,7 @@ public class WireMockListener extends AbstractTestExecutionListener {
         Arrays.stream(annotation.value()).forEach(service ->
                 serviceMocks.add(String.join("", service, ".ribbon.listOfServers=localhost:", String.valueOf(port))));
 
+        VeryStaticServerList.port = port;
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(environment, serviceMocks.stream().toArray(String[]::new));
         server = new WireMockServer(port);
         LOG.info("WireMock started on port {}\n", port);
