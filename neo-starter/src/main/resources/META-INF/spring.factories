@@ -1,5 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.neoteric.starter.date.TimeZoneAutoConfiguration,\
+com.neoteric.starter.clock.TimeZoneAutoConfiguration,\
 com.neoteric.starter.request.RequestAutoConfiguration,\
 com.neoteric.starter.http.feign.FeignJaxRsAutoConfiguration,\
 com.neoteric.starter.swagger.SwaggerAutoConfiguration,\

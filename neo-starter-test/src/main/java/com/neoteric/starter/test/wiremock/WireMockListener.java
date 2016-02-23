@@ -26,6 +26,7 @@ public class WireMockListener extends AbstractTestExecutionListener {
         if (annotation == null || annotation.value().length == 0) {
             return;
         }
+
         port = getFreeServerPort();
         server = new WireMockServer(port);
         TestBeanUtils.registerSingleton(testContext, RIBBON_SERVER_LIST, new RibbonStaticServerList());

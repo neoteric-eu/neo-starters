@@ -1,4 +1,4 @@
-package com.neoteric.starter.date;
+package com.neoteric.starter.clock;
 
 import com.neoteric.starter.Constants;
 import org.slf4j.Logger;

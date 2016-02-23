@@ -32,6 +32,8 @@ public class MongoConvertersAutoConfiguration {
         List<Converter<?, ?>> converters = new ArrayList<>();
         converters.add(DateToZonedDateTimeConverter.INSTANCE);
         converters.add(ZonedDateTimeToDateConverter.INSTANCE);
+        converters.add(StringToZoneIdConverter.INSTANCE);
+        converters.add(ZoneIdToStringConverter.INSTANCE);
         LOG.debug("{}Registering ZonedDateTime converters.", Constants.LOG_PREFIX);
         return new CustomConversions(converters);
     }
@@ -51,6 +53,24 @@ public class MongoConvertersAutoConfiguration {
         @Override
         public Date convert(ZonedDateTime source) {
             return source == null ? null : Date.from(source.toInstant());
+        }
+    }
+
+    public enum StringToZoneIdConverter implements Converter<String, ZoneId> {
+        INSTANCE;
+
+        @Override
+        public ZoneId convert(String source) {
+            return source == null ? null : ZoneId.of(source);
+        }
+    }
+
+    public enum ZoneIdToStringConverter implements Converter<ZoneId, String> {
+        INSTANCE;
+
+        @Override
+        public String convert(ZoneId source) {
+            return source == null ? null : source.getId();
         }
     }
 }
