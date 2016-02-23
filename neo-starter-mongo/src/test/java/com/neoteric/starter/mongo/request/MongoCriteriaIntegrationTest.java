@@ -3,26 +3,26 @@ package com.neoteric.starter.mongo.request;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.neoteric.starter.mongo.SpringbootTestApplication;
+import com.neoteric.starter.mongo.MongoConvertersAutoConfiguration;
 import com.neoteric.starter.mongo.model.FooModel;
 import com.neoteric.starter.mongo.model.FooModelMother;
 import com.neoteric.starter.mongo.sort.RequestParamsSortBuilder;
 import com.neoteric.starter.mongo.test.EmbeddedMongoTest;
+import com.neoteric.starter.mongo.test.NeotericEmbeddedMongoAutoConfiguration;
 import com.neoteric.starter.request.FiltersParser;
 import com.neoteric.starter.request.RequestObject;
 import com.neoteric.starter.request.sort.RequestSort;
 import com.neoteric.starter.request.sort.SortParser;
-import com.neoteric.starter.test.restassured.ContainerIntegrationTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
@@ -34,12 +34,13 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {SpringbootTestApplication.class})
-@ContainerIntegrationTest
 @EmbeddedMongoTest(dropCollections = "FooModel")
+@ContextConfiguration(classes = {MongoConvertersAutoConfiguration.class,
+        NeotericEmbeddedMongoAutoConfiguration.class,
+        MongoAutoConfiguration.class,
+        MongoDataAutoConfiguration.class})
 public class MongoCriteriaIntegrationTest {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MongoCriteriaIntegrationTest.class);
     @Autowired
     MongoTemplate mongoTemplate;
 

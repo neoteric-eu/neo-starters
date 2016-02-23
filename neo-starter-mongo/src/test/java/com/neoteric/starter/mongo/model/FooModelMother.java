@@ -15,4 +15,5 @@ public class FooModelMother {
                 .setDate(date)
                 .build();
     }
+
 }
