@@ -1,6 +1,7 @@
 package com.neoteric.starter.jackson;
 
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.joda.cfg.JacksonJodaDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -26,14 +28,13 @@ import java.time.format.DateTimeFormatter;
 import static com.neoteric.starter.Constants.ConfigBeans.JACKSON_JSR310_DATE_FORMAT;
 
 @Configuration
-@PropertySource("classpath:jackson-defaults.properties")
-@AutoConfigureBefore(JacksonAutoConfiguration.class)
-public class JacksonDefaultsAutoConfiguration {
+public class StarterJacksonAutoConfiguration {
 
     @Configuration
     @ConditionalOnClass({Jackson2ObjectMapperBuilder.class, DateTime.class,
             ZonedDateTimeSerializer.class, JacksonJodaDateFormat.class})
     @AutoConfigureBefore(JacksonAutoConfiguration.class)
+    @PropertySource("classpath:jackson-defaults.properties")
     static class ZonedDateTimeJacksonConfiguration {
 
         private static final Logger LOG = LoggerFactory.getLogger(ZonedDateTimeJacksonConfiguration.class);
@@ -54,6 +55,16 @@ public class JacksonDefaultsAutoConfiguration {
             LOG.debug("{}ZonedDateTime Jackson format: {}", Constants.LOG_PREFIX, dateTimeFormatter);
             module.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(dateTimeFormatter));
             return module;
+        }
+    }
+
+    @Configuration
+    @AutoConfigureAfter(JacksonAutoConfiguration.class)
+    static class JsonHandlerAutoConfiguration {
+
+        @Bean
+        JsonParser jsonHandler(ObjectMapper objectMapper) {
+            return new JsonParser(objectMapper);
         }
     }
 }

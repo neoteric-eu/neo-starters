@@ -4,4 +4,4 @@ com.neoteric.starter.request.RequestAutoConfiguration,\
 com.neoteric.starter.http.feign.FeignJaxRsAutoConfiguration,\
 com.neoteric.starter.swagger.SwaggerAutoConfiguration,\
 com.neoteric.starter.jersey.JerseyDefaultsAutoConfiguration,\
-com.neoteric.starter.jackson.JacksonDefaultsAutoConfiguration
+com.neoteric.starter.jackson.StarterJacksonAutoConfiguration

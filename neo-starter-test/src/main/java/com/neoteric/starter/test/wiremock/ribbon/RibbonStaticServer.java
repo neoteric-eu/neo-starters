@@ -6,7 +6,7 @@ import com.netflix.loadbalancer.ServerList;
 
 import java.util.List;
 
-public class RibbonStaticServerList implements ServerList<Server> {
+public class RibbonStaticServer implements ServerList<Server> {
 
     public static int port = 8000;
 
