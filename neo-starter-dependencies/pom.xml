@@ -51,7 +51,7 @@
         <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
         <exec-maven-plugin.version>1.4.0</exec-maven-plugin.version>
         <gitlog-maven-plugin.version>1.12.3</gitlog-maven-plugin.version>
-        <docker-maven-plugin.version>0.3.258</docker-maven-plugin.version>
+        <docker-maven-plugin.version>0.4.1</docker-maven-plugin.version>
         <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
         <jacoco-maven-plugin.version>0.7.5.201505241946</jacoco-maven-plugin.version>
         <jgitflow-maven-plugin.version>1.0-m4.3</jgitflow-maven-plugin.version>

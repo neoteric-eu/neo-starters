@@ -32,8 +32,11 @@
     </issueManagement>
 
     <properties>
-        <docker.repository.host>ntrc-delta.neoteric.eu:5000</docker.repository.host>
+        <docker.repository.host>docker.neoteric.eu</docker.repository.host>
+        <docker.repository.url>https://docker.neoteric.eu</docker.repository.url>
+        <docker.repository.serverId>docker-repository</docker.repository.serverId>
         <docker.image.prefix>neoteric/</docker.image.prefix>
+
         <distributionManagement.repository>http://naga.neoteric.eu:8081/nexus/content/repositories/releases/
         </distributionManagement.repository>
         <distributionManagement.repository.snapshots>
@@ -132,6 +135,10 @@
                 <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
+                    <configuration>
+                        <serverId>${docker.repository.serverId}</serverId>
+                        <registryUrl>${docker.repository.url}</registryUrl>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>buildDocker</id>
