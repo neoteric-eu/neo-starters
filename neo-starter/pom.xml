@@ -33,6 +33,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.neoteric.starter</groupId>
             <artifactId>request-parameters</artifactId>
         </dependency>

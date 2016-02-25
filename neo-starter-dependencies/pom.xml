@@ -36,6 +36,7 @@
         <junit-dataprovider.version>1.10.2</junit-dataprovider.version>
         <archaius-core.version>0.7.3</archaius-core.version>
         <jersey2-version>2.22.1</jersey2-version>
+        <paranamer.version>2.8</paranamer.version>
 
         <!-- Test Libraries -->
         <assertj.version>3.3.0</assertj.version>
@@ -159,6 +160,11 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>com.thoughtworks.paranamer</groupId>
+                <artifactId>paranamer</artifactId>
+                <version>${paranamer.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.netflix.feign</groupId>
                 <artifactId>feign-jackson</artifactId>
