@@ -63,15 +63,15 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
     public Response toResponse(E error) {
         logError(error);
         Optional<RequestFacade> requestFacadeOptional = getRequestFacade();
-        ErrorData.Builder errorBuilder = ErrorData
+        ErrorData.ErrorDataBuilder errorBuilder = ErrorData
                 .builder()
-                .setTimestamp(ZonedDateTime.now())
-                .setRequestId(String.valueOf(MDC.get(Constants.REQUEST_ID)))
-                .setStatus(httpStatus().value())
-                .setError(httpStatus().getReasonPhrase())
-                .setMessage(message(error))
-                .setErrorCode(errorCode(error))
-                .setException(error.getClass().getName());
+                .timestamp(ZonedDateTime.now())
+                .requestId(String.valueOf(MDC.get(Constants.REQUEST_ID)))
+                .status(httpStatus().value())
+                .error(httpStatus().getReasonPhrase())
+                .message(message(error))
+                .errorCode(errorCode(error))
+                .exception(error.getClass().getName());
 
         if (requestFacadeOptional.isPresent()) {
             addPath(errorBuilder, requestFacadeOptional.get());
@@ -103,15 +103,15 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
         }
     }
 
-    private void addPath(ErrorData.Builder errorBuilder, RequestFacade requestFacade) {
-        errorBuilder.setPath(requestFacade.getRequestURI());
+    private void addPath(ErrorData.ErrorDataBuilder errorBuilder, RequestFacade requestFacade) {
+        errorBuilder.path(requestFacade.getRequestURI());
     }
 
-    private void addStackTrace(ErrorData.Builder errorBuilder, Throwable error) {
+    private void addStackTrace(ErrorData.ErrorDataBuilder errorBuilder, Throwable error) {
         StringWriter stackTrace = new StringWriter();
         error.printStackTrace(new PrintWriter(stackTrace));
         stackTrace.flush();
-        errorBuilder.setStackTrace(parseStackTraceToMap(stackTrace.toString()));
+        errorBuilder.stackTrace(parseStackTraceToMap(stackTrace.toString()));
     }
 
     private Map<String, String> parseStackTraceToMap(String stackTrace) {

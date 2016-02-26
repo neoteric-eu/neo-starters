@@ -8,21 +8,14 @@ public class JsonApiObjectTest {
 
     @Test
     public void createEmptyObjectTest() throws Exception {
-        JsonApiObject<String> jsonApiObject = new JsonApiObject<>(null, null);
-        assertThat(jsonApiObject.getData()).isNull();
-        assertThat(jsonApiObject.getMeta()).isEmpty();
-    }
-
-    @Test
-    public void createEmptyObjectViaWrapTest() throws Exception {
-        JsonApiObject<String> jsonApiObject = JsonApiObject.<String>wrap(null).get();
+        JsonApiObject<String> jsonApiObject = JsonApiObject.<String>builder().data((String)null).build();
         assertThat(jsonApiObject.getData()).isNull();
         assertThat(jsonApiObject.getMeta()).isEmpty();
     }
 
     @Test
     public void shouldCreateJsonApiObjectWithMetaTest() throws Exception {
-        JsonApiObject<String> jsonApiObject = JsonApiObject.wrap("ABC").addMeta("key", "value").get();
+        JsonApiObject<String> jsonApiObject = JsonApiObject.<String>builder().data("ABC").meta("key", "value").build();
         assertThat(jsonApiObject.getData()).isEqualTo("ABC");
         assertThat(jsonApiObject.getMeta()).hasSize(1).containsEntry("key", "value");
     }
