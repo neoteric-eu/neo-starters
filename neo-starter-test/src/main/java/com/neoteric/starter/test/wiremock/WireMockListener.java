@@ -22,8 +22,7 @@ public class WireMockListener extends AbstractTestExecutionListener {
 
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
-        WireMockTest annotation = testContext.getTestClass().getAnnotation(WireMockTest.class);
-        if (annotation == null || annotation.value().length == 0) {
+        if (testContext.getTestClass().getAnnotation(WireMockTest.class) == null) {
             return;
         }
 
