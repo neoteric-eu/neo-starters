@@ -32,7 +32,7 @@ public class SaasMgrConnector {
                 if (feignException.status() == HttpStatus.UNAUTHORIZED.value()) {
                     throw new BadCredentialsException("SaasMgr authentication failed.", e);
                 } else if (feignException.status() > HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                    throw new AuthenticationServiceException("SaasMgr authentication returned error.", e);
+                    throw new AuthenticationServiceException("SaasMgr authentication returned error", e);
                 }
             } else {
                 LOG.error("Other Hystrix Exception: ", e);
