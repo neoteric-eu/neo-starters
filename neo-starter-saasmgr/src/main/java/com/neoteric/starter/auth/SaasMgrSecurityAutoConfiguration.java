@@ -19,6 +19,7 @@ import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -77,9 +78,11 @@ public class SaasMgrSecurityAutoConfiguration {
     }
 
     @Autowired
+    @Lazy
     SaasMgrAuthenticator authenticator;
 
     @Autowired
+    @Lazy
     public void configureGlobal(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(new SaasMgrAuthenticationProvider(authenticator));
     }
