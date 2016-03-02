@@ -1,4 +1,4 @@
-package com.neoteric.starter.auth.saasmgr;
+package com.neoteric.starter.auth.saasmgr.test;
 
 import org.springframework.security.test.context.support.WithSecurityContext;
 

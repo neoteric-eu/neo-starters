@@ -1,27 +1,24 @@
 package com.neoteric.starter.auth.saasmgr;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SaasMgrAuthenticationProvider.class);
-    private final SaasMgrConnector saasMgrConnector;
+    private final SaasMgrAuthenticator saasMgrAuthenticator;
 
-    public SaasMgrAuthenticationProvider(SaasMgrConnector saasMgrConnector) {
-        this.saasMgrConnector = saasMgrConnector;
+    public SaasMgrAuthenticationProvider(SaasMgrAuthenticator saasMgrAuthenticator) {
+        this.saasMgrAuthenticator = saasMgrAuthenticator;
     }
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         SaasMgrAuthenticationToken saasMgrToken = (SaasMgrAuthenticationToken)authentication;
-        SaasMgrAuthenticationDetails saasMgrAuthenticationDetails =
-                saasMgrConnector.getSaasMgrAuthenticationDetails(String.valueOf(saasMgrToken.getCredentials()),
+        SaasMgrPrincipal saasMgrPrincipal =
+                saasMgrAuthenticator.authenticate(String.valueOf(saasMgrToken.getCredentials()),
                 String.valueOf(saasMgrToken.getPrincipal()));
 
-        return new SaasMgrAuthenticationToken(saasMgrAuthenticationDetails, saasMgrToken.getCredentials(), saasMgrAuthenticationDetails.getAuthorities());
+        return new SaasMgrAuthenticationToken(saasMgrPrincipal, saasMgrToken.getCredentials(), saasMgrPrincipal.getAuthorities());
     }
 
     @Override

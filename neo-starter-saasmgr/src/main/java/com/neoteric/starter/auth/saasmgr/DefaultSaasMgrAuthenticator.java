@@ -15,14 +15,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
-public class SaasMgrConnector {
+public class DefaultSaasMgrAuthenticator implements SaasMgrAuthenticator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SaasMgrConnector.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultSaasMgrAuthenticator.class);
 
     @Autowired
     private SaasMgrClient saasMgrClient;
 
-    public SaasMgrAuthenticationDetails getSaasMgrAuthenticationDetails(String token, String customerId) {
+    @Override
+    public SaasMgrPrincipal authenticate(String token, String customerId) {
         LoginData loginData = null;
         try {
             loginData = saasMgrClient.getLoginInfo(token, customerId);
@@ -46,7 +47,7 @@ public class SaasMgrConnector {
         return extractAuthenticationDetails(loginData, customerId);
     }
 
-    private SaasMgrAuthenticationDetails extractAuthenticationDetails(LoginData loginData, String customerId) {
+    private SaasMgrPrincipal extractAuthenticationDetails(LoginData loginData, String customerId) {
         if (loginData.getUser() == null) {
             throw new UsernameNotFoundException("No user data found in SaasMgr response");
         }
@@ -60,7 +61,7 @@ public class SaasMgrConnector {
 
         Customer foundedCustomer = customer.orElseThrow(() -> new UsernameNotFoundException("No customer data found in SaasMgr response"));
 
-        return SaasMgrAuthenticationDetails.builder()
+        return SaasMgrPrincipal.builder()
                 .userId(userId)
                 .email(email)
                 .customerId(foundedCustomer.getCustomerId())

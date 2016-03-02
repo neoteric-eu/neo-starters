@@ -10,10 +10,10 @@
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>neo-starter-saasmgr</artifactId>
+    <artifactId>neo-starter-saasmgr-test</artifactId>
 
-    <name>Neo Starter SaasManager</name>
-    <description>Neo Starter for SaasManager</description>
+    <name>Neo Starter SaasManager Test</name>
+    <description>Neo Starter for testing application with SaasManager</description>
     <url>http://github.com/neoteric-eu/neo-starters</url>
     <organization>
         <name>Neoteric</name>
@@ -34,34 +34,11 @@
     <dependencies>
         <dependency>
             <groupId>com.neoteric.starter</groupId>
-            <artifactId>neo-starter</artifactId>
+            <artifactId>neo-starter-saasmgr</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.netflix.hystrix</groupId>
-            <artifactId>hystrix-core</artifactId>
-            <version>1.4.23</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
         </dependency>
     </dependencies>
-
 </project>

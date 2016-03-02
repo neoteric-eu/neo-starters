@@ -1,11 +1,10 @@
 package com.neoteric.starter.auth;
 
+import com.neoteric.starter.auth.saasmgr.DefaultSaasMgrAuthenticator;
 import com.neoteric.starter.auth.saasmgr.SaasMgrAuthenticationProvider;
-import com.neoteric.starter.auth.saasmgr.SaasMgrConnector;
+import com.neoteric.starter.auth.saasmgr.SaasMgrAuthenticator;
 import com.neoteric.starter.auth.saasmgr.filter.SaasMgrAuthenticationFilter;
 import net.sf.ehcache.config.CacheConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -73,18 +72,16 @@ public class SaasMgrSecurityAutoConfiguration {
     }
 
     @Bean
-    SaasMgrConnector saasMgrConnector() {
-        return new SaasMgrConnector();
-    }
-
-    @Bean
-    SaasMgrAuthenticationProvider saasMgrAuthenticationProvider() {
-        return new SaasMgrAuthenticationProvider(saasMgrConnector());
+    SaasMgrAuthenticator saasMgrConnector() {
+        return new DefaultSaasMgrAuthenticator();
     }
 
     @Autowired
+    SaasMgrAuthenticator authenticator;
+
+    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(saasMgrAuthenticationProvider());
+        auth.authenticationProvider(new SaasMgrAuthenticationProvider(authenticator));
     }
 
     @Configuration

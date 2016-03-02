@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SaasMgrAuthenticationDetails implements UserDetails {
+public class SaasMgrPrincipal implements UserDetails {
 
     private final String userId;
     private final String email;
@@ -17,7 +17,7 @@ public class SaasMgrAuthenticationDetails implements UserDetails {
     private final List<Feature> features;
     private final AccountStatus status;
 
-    public SaasMgrAuthenticationDetails(String userId, String email, String customerId, String customerName, List<String> features, AccountStatus status) {
+    public SaasMgrPrincipal(String userId, String email, String customerId, String customerName, List<String> features, AccountStatus status) {
 
         this.userId = userId;
         this.email = email;
@@ -143,8 +143,8 @@ public class SaasMgrAuthenticationDetails implements UserDetails {
             return this;
         }
 
-        public SaasMgrAuthenticationDetails build() {
-            return new SaasMgrAuthenticationDetails(userId, email, customerId, customerName, features, status);
+        public SaasMgrPrincipal build() {
+            return new SaasMgrPrincipal(userId, email, customerId, customerName, features, status);
         }
 
 
