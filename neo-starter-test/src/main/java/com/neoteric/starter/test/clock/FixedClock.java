@@ -1,13 +1,10 @@
 package com.neoteric.starter.test.clock;
 
+public final class FixedClock {
 
-import java.lang.annotation.*;
+    private FixedClock() {
+    }
 
-@Documented
-@Inherited
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface FixedClock {
+    public final static String DEFAULT = "2010-01-10T10:00:00Z";
 
-    String value() default "2010-01-10T10:00:00Z";
 }

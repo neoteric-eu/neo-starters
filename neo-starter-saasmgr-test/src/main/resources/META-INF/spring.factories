@@ -1,2 +1,2 @@
-org.springframework.test.context.TestExecutionListener = \
-	com.neoteric.starter.auth.saasmgr.test.SaasMgrAuthenticationListener
+org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
+  com.neoteric.starter.auth.saasmgr.test.SaasMgrAuthConfiguration

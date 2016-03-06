@@ -78,11 +78,9 @@ public class SaasMgrSecurityAutoConfiguration {
     }
 
     @Autowired
-    @Lazy
     SaasMgrAuthenticator authenticator;
 
     @Autowired
-    @Lazy
     public void configureGlobal(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(new SaasMgrAuthenticationProvider(authenticator));
     }
