@@ -11,11 +11,11 @@ import java.time.Instant;
 import java.util.TimeZone;
 
 @Configuration
-@Profile("fixedClock")
+@Profile("testClock")
 public class FixedClockConfiguration {
 
-    @Value("${neostarter.test.clock}")
-    private String fixedClock = FixedClock.DEFAULT;
+    @Value("${neostarter.test.clock:2010-01-10T10:00:00Z}")
+    private String fixedClock;
 
     @Bean
     @Primary
