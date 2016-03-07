@@ -11,22 +11,22 @@ import org.springframework.context.annotation.Profile;
 import java.util.Arrays;
 
 @Configuration
-@Profile("fixedSaasMgr")
+@Profile("testSaasMgr")
 public class SaasMgrAuthConfiguration {
 
-    @Value("${neostarter.test.saasMgr.customerId}")
-    private String customerId = SaasMgrTestDefaults.CUSTOMER_ID;
+    @Value("${neostarter.test.saasMgr.customerId:customerId}")
+    private String customerId;
 
-    @Value("${neostarter.test.saasMgr.customerName}")
-    private String customerName = SaasMgrTestDefaults.CUSTOMER_NAME;
+    @Value("${neostarter.test.saasMgr.customerName:customerName}")
+    private String customerName;
 
-    @Value("${neostarter.test.saasMgr.email}")
-    private String email = SaasMgrTestDefaults.EMAIL;
+    @Value("${neostarter.test.saasMgr.email:email}")
+    private String email;
 
-    @Value("${neostarter.test.saasMgr.userId}")
-    private String userId = SaasMgrTestDefaults.USER_ID;
+    @Value("${neostarter.test.saasMgr.userId:userId}")
+    private String userId;
 
-    @Value("${neostarter.test.saasMgr.features}")
+    @Value("${neostarter.test.saasMgr.features:}")
     private String[] features;
 
 

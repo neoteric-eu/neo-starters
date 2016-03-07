@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
-import lombok.Singular;
 import lombok.Value;
 
 import java.time.ZonedDateTime;
@@ -24,7 +23,7 @@ public class ErrorData {
     String path;
     Object message;
     String exception;
-    @Singular("stackTrace") Map<String, String> stackTrace;
+    Map<String, String> stackTrace;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ErrorDataBuilder {

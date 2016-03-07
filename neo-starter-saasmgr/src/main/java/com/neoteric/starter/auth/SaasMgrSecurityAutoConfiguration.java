@@ -97,7 +97,8 @@ public class SaasMgrSecurityAutoConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             SaasMgrAuthenticationFilter filter = new SaasMgrAuthenticationFilter(jerseyProperties.getApplicationPath());
-            http.addFilterBefore(filter, BasicAuthenticationFilter.class);
+            http.addFilterBefore(filter, BasicAuthenticationFilter.class)
+                    .csrf().disable();
         }
     }
 }

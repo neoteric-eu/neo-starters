@@ -21,17 +21,19 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.Clock;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Component
 public abstract class AbstractExceptionMapper<E extends Throwable> implements ExceptionMapper<E> {
+
+    @Autowired
+    Clock clock;
 
     private static final String LOG_MESSAGE = "Exception mapped: ";
 
@@ -65,7 +67,7 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
         Optional<RequestFacade> requestFacadeOptional = getRequestFacade();
         ErrorData.ErrorDataBuilder errorBuilder = ErrorData
                 .builder()
-                .timestamp(ZonedDateTime.now())
+                .timestamp(ZonedDateTime.now(clock))
                 .requestId(String.valueOf(MDC.get(Constants.REQUEST_ID)))
                 .status(httpStatus().value())
                 .error(httpStatus().getReasonPhrase())

@@ -58,5 +58,4 @@ public class ConstraintViolationExceptionMapper extends AbstractExceptionMapper<
             }
         }
     }
-
 }
