@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -268,6 +269,18 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>Releases</name>
+            <url>${distributionManagement.repository}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Snapshots</name>
+            <url>${distributionManagement.repository.snapshots}</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <profiles>
         <profile>
@@ -296,19 +309,21 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>releaseStarters</id>
+            <distributionManagement>
+                <repository>
+                    <id>neoteric-os-releases</id>
+                    <name>Neoteric OpenSource releases</name>
+                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>neoteric-os-snapshots</id>
+                    <name>Neoteric OpenSource snapshots</name>
+                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
     </profiles>
-
-    <distributionManagement>
-        <repository>
-            <id>releases</id>
-            <name>Releases</name>
-            <url>${distributionManagement.repository}</url>
-        </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>Snapshots</name>
-            <url>${distributionManagement.repository.snapshots}</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neoteric.starter</groupId>
@@ -66,19 +67,6 @@
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>neoteric-os-releases</id>
-            <name>Neoteric OpenSource releases</name>
-            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>neoteric-os-snapshots</id>
-            <name>Neoteric OpenSource snapshots</name>
-            <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <issueManagement>
         <system>Github</system>
@@ -317,4 +305,21 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <profiles>
+        <profile>
+            <id>releaseStarters</id>
+            <distributionManagement>
+                <repository>
+                    <id>neoteric-os-releases</id>
+                    <name>Neoteric OpenSource releases</name>
+                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>neoteric-os-snapshots</id>
+                    <name>Neoteric OpenSource snapshots</name>
+                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+    </profiles>
 </project>

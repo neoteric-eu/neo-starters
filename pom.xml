@@ -117,7 +117,7 @@
 
     <profiles>
         <profile>
-            <id>release</id>
+            <id>releaseStack</id>
             <build>
                 <plugins>
                     <plugin>
