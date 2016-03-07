@@ -4,7 +4,7 @@
 
     <groupId>com.neoteric.starter</groupId>
     <artifactId>neo-starter-dependencies</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0.160307152202</version>
     <packaging>pom</packaging>
 
     <name>Neo Starters Dependencies</name>
@@ -64,7 +64,7 @@
         <url>http://github.com/neoteric-eu/neo-starters</url>
         <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>0.1.0.160307152202</tag>
     </scm>
 
     <distributionManagement>
@@ -105,42 +105,42 @@
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>request-parameters</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-saasmgr</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-saasmgr-test</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-test</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-metrics</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-mongo</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-mongo-test</artifactId>
-                <version>0.1.0-SNAPSHOT</version>
+                <version>0.1.0.160307152202</version>
             </dependency>
 
             <dependency>
