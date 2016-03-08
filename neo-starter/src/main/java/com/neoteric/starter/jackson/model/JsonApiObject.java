@@ -16,4 +16,8 @@ public class JsonApiObject<T> {
 
     T data;
     @Singular("meta") Map<String, Object> meta;
+
+    public static <T> JsonApiObject<T> wrap(T object) {
+        return (JsonApiObject<T>) JsonApiObject.builder().data(object).build();
+    }
 }

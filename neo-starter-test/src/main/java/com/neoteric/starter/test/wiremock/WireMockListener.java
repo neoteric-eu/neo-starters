@@ -6,6 +6,8 @@ import com.neoteric.starter.test.TestBeanUtils;
 import com.neoteric.starter.test.wiremock.ribbon.RibbonStaticServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.EnvironmentTestUtils;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
@@ -26,11 +28,15 @@ public class WireMockListener extends AbstractTestExecutionListener {
             return;
         }
 
+        ConfigurableEnvironment environment = (ConfigurableEnvironment)testContext.getApplicationContext().getEnvironment();
+        EnvironmentTestUtils.addEnvironment(environment, "ribbon.eureka.enabled=false");
+
         port = getFreeServerPort();
         server = new WireMockServer(port);
         TestBeanUtils.registerSingleton(testContext, RIBBON_SERVER_LIST, new RibbonStaticServer());
         RibbonStaticServer.port = port;
         LOG.info("WireMock started on port {}\n", port);
+
     }
 
     @Override

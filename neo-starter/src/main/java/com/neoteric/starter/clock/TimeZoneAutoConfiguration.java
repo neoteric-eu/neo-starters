@@ -16,10 +16,11 @@ import java.util.TimeZone;
 public class TimeZoneAutoConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(TimeZoneAutoConfiguration.class);
+    public static final ZoneId UTC_ZONE = ZoneId.of(Constants.UTC);
 
     static {
         LOG.debug("{}Setting default timezone to UTC", Constants.LOG_PREFIX);
-        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of(Constants.UTC)));
+        TimeZone.setDefault(TimeZone.getTimeZone(UTC_ZONE));
     }
 
     private Clock clock = Clock.systemDefaultZone();

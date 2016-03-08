@@ -25,4 +25,12 @@ public class JsonApiList<T> {
     public int getTotal() {
         return meta.containsKey(META_TOTAL) ? (int) meta.get(META_TOTAL) : 0;
     }
+
+    public static class JsonApiListBuilder<T> {
+
+        public JsonApiListBuilder<T> total(int total) {
+            meta(META_TOTAL, total);
+            return this;
+        }
+    }
 }

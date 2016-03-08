@@ -1,10 +1,14 @@
 package com.neoteric.starter.test.clock;
 
-public final class FixedClock {
+import org.springframework.context.annotation.Import;
 
-    private FixedClock() {
-    }
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    public final static String DEFAULT = "2010-01-10T10:00:00Z";
+@Retention(RetentionPolicy.RUNTIME)
+@Import(FixedClockRegistrar.class)
+public @interface FixedClock {
+
+    String value() default "2010-01-10T10:00:00Z";
 
 }
