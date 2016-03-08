@@ -13,6 +13,7 @@ import com.neoteric.starter.request.FiltersParser;
 import com.neoteric.starter.request.RequestObject;
 import com.neoteric.starter.request.sort.RequestSort;
 import com.neoteric.starter.request.sort.SortParser;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -42,7 +46,12 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 public class MongoCriteriaIntegrationTest {
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
+
+    @Before
+    public void initCriteriaTest() {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")));
+    }
 
     @Test
     public void testReturnObjectBasedOnStartsWithCriteria() throws Exception {
@@ -312,28 +321,49 @@ public class MongoCriteriaIntegrationTest {
         assertThat(results.size()).isEqualTo(0);
     }
 
-    /*
-        @Test
-        public void testReturnObjectsBasedOnDateParameters() throws Exception {
-            ZonedDateTime now = ZonedDateTime.now();
-            mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, now));
-            mongoTemplate.insert(FooModelMother.fullyPopulated("James", 2, now.minusDays(1)));
-            mongoTemplate.insert(FooModelMother.fullyPopulated("Julian", 5, now.minusDays(2)));
-            mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 3, now.plusDays(1)));
-            mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, now.plusDays(2)));
-            mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, now.plusDays(3)));
+    @Test
+    public void testReturnObjectsBasedOnDateLtParameters() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Julian", 5, fixedDateWithOffset(3)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
 
-            Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
-                    Optional.of(Criteria.where("date").gt(now)),
-                    readFiltersFromResources("emptyFilters.json"));
+        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
+                readFiltersFromResources("zonedDateTimeLtFilters.json"));
 
-            List<FooModel> results = performCriteriaCall(criteria);
-            assertThat(results.size()).isEqualTo(3);
-            assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Adam", 3, now.plusDays(1)));
-            assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Bob", 5, now.plusDays(2)));
-            assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Bogdan", 1, now.plusDays(3)));
-        }
-    */
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
+        assertThat(results.get(1)).isEqualTo(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+    }
+
+    @Test
+    public void testReturnObjectsBasedOnDateGtParameters() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Julian", 5, fixedDateWithOffset(3)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
+
+        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
+                readFiltersFromResources("zonedDateTimeGtFilters.json"));
+
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+        assertThat(results.get(1)).isEqualTo(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
+        assertThat(results.get(2)).isEqualTo(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
+    }
+
+    private ZonedDateTime fixedDateWithOffset(int days) {
+        return ZonedDateTime.of(2016, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")).plusDays(days - 1);
+    }
+
     private List<FooModel> performCriteriaCall(Criteria criteria) {
         Query query = new Query()
                 .addCriteria(criteria);

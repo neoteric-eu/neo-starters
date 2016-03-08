@@ -67,7 +67,7 @@ public class RequestParamsCriteriaBuilder {
         } else {
             criteria = new Criteria().andOperator(joinedCriteria.stream().toArray(Criteria[]::new));
         }
-        LOG.debug("Produced criteria: ", criteria.getCriteriaObject().toString());
+        LOG.debug("Produced criteria: {}", criteria.getCriteriaObject()); // TODO nicely fails to print Criteria containing ZonedDateTime
         return criteria;
     }
 }

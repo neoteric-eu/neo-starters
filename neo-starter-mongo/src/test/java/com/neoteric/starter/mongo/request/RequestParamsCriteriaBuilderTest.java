@@ -9,8 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -308,5 +309,16 @@ public class RequestParamsCriteriaBuilderTest {
                 Criteria.where("name").regex("^John", "i"),
                 Criteria.where("secondName").regex("^Bob", "i"),
                 Criteria.where("lastName").in("Doe", "Smith")));
+    }
+
+    @Test
+    public void testProduceCriteriaWithDateElements() throws Exception {
+        Map<RequestObject, Object> filters = ImmutableMap.of(
+                RequestField.of("date"), ImmutableMap.of(RequestOperator.of(OperatorType.LESS_THAN), "2016-01-01T22:54:36.115Z")
+        );
+
+        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria expectedCriteria = Criteria.where("date").lt(ZonedDateTime.of(2016, 1, 1, 22, 54, 36, 115000000, ZoneId.of("Z")));
+        assertThat(result).isEqualTo(expectedCriteria);
     }
 }
