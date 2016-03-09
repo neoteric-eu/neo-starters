@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.neoteric.starter.mongo.MongoConvertersAutoConfiguration;
+import com.neoteric.starter.mongo.MongoCriteriaBuilderAutoConfiguration;
 import com.neoteric.starter.mongo.model.FooModel;
 import com.neoteric.starter.mongo.model.FooModelMother;
 import com.neoteric.starter.mongo.sort.RequestParamsSortBuilder;
@@ -42,11 +43,16 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ContextConfiguration(classes = {MongoConvertersAutoConfiguration.class,
         NeotericEmbeddedMongoAutoConfiguration.class,
         MongoAutoConfiguration.class,
-        MongoDataAutoConfiguration.class})
+        MongoDataAutoConfiguration.class,
+        MongoCriteriaBuilderAutoConfiguration.class,
+        DateTimeFormatterAutoConfiguration.class})
 public class MongoCriteriaIntegrationTest {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private RequestParamsCriteriaBuilder requestParamsCriteriaBuilder;
 
     @Before
     public void initCriteriaTest() {
@@ -58,7 +64,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModel.newBuilder().setName("Johnny").build());
         mongoTemplate.insert(FooModel.newBuilder().setName("Paul").build());
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("startsWithFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("startsWithFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo(FooModel.newBuilder().setName("Johnny").build());
@@ -70,7 +76,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("inFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("inFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("John", 1));
@@ -83,7 +89,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("ninFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("ninFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("James", 7));
@@ -95,7 +101,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("gtFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("gtFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("James", 7));
@@ -107,7 +113,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("gteFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("gteFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Jill", 5));
@@ -120,7 +126,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("ltFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("ltFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("John", 1));
@@ -133,7 +139,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("lteFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("lteFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(3);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("John", 1));
@@ -147,7 +153,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("eqFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("eqFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Jill", 5));
@@ -159,7 +165,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("neqFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("neqFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("John", 1));
@@ -171,7 +177,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModel.newBuilder().setName("Johnny").build());
         mongoTemplate.insert(FooModel.newBuilder().setName("Paul").build());
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("basicOperatorsFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("basicOperatorsFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo(FooModel.newBuilder().setName("Johnny").build());
@@ -183,7 +189,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Paul", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("logicalOperator.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("logicalOperator.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Johnny", 1));
@@ -196,7 +202,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
         mongoTemplate.insert(FooModelMother.fullyPopulated("James", 7));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("multipleRootElements.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("multipleRootElements.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Jill", 5));
@@ -211,7 +217,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Barry", 2));
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 9));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("multipleOrElements.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("multipleOrElements.json"));
         List<FooModel> results = performCriteriaCall(criteria);
 
         assertThat(results.size()).isEqualTo(4);
@@ -229,7 +235,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Barry", 2));
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 9));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("basicArrayOperators.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("basicArrayOperators.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(1);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("Johnny", 1));
@@ -279,7 +285,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModel.newBuilder().setName("Julian").build());
         mongoTemplate.insert(FooModel.newBuilder().setName("Bob").build());
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
+        Criteria criteria = requestParamsCriteriaBuilder.build(
                 Criteria.where("name").in(Lists.newArrayList("James", "Julian")), readFiltersFromResources("startsWithJFilters.json"));
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
@@ -294,7 +300,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModel.newBuilder().setName("Julian").build());
         mongoTemplate.insert(FooModel.newBuilder().setName("Bob").build());
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
+        Criteria criteria = requestParamsCriteriaBuilder.build(
                 Criteria.where("name").in(Lists.newArrayList("James", "Julian")),
                 readFiltersFromResources("emptyFilters.json"),
                 FieldMapper.of(ImmutableMap.of("apiName", "name")));
@@ -312,7 +318,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModel.newBuilder().setName("Julian").build());
         mongoTemplate.insert(FooModel.newBuilder().setName("Bob").build());
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
+        Criteria criteria = requestParamsCriteriaBuilder.build(
                 Criteria.where("apiName").in(Lists.newArrayList("James", "Julian")),
                 readFiltersFromResources("emptyFilters.json"),
                 FieldMapper.of(ImmutableMap.of("apiName", "name")));
@@ -331,7 +337,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
+        Criteria criteria = requestParamsCriteriaBuilder.build(
                 readFiltersFromResources("zonedDateTimeLtFilters.json"));
 
         List<FooModel> results = performCriteriaCall(criteria);
@@ -350,7 +356,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(
+        Criteria criteria = requestParamsCriteriaBuilder.build(
                 readFiltersFromResources("zonedDateTimeGtFilters.json"));
 
         List<FooModel> results = performCriteriaCall(criteria);
@@ -370,7 +376,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.withTags("Bob", "Neoteric", "Java", "Intellij"));
         mongoTemplate.insert(FooModelMother.withTags("Bogdan", "Java"));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("allFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("allFilters.json"));
 
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(3);
@@ -389,7 +395,7 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.withTags("Bob", "Neoteric", "Java", "Intellij"));
         mongoTemplate.insert(FooModelMother.withTags("Bogdan", "Java"));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("allAndInFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("allAndInFilters.json"));
 
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
@@ -407,12 +413,29 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
 
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("regexFilters.json"));
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("regexFilters.json"));
 
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(2);
         assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
         assertThat(results.get(1)).isEqualTo(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+    }
+
+    @Test
+    public void testReturnObjectBasedOnRegexArrayCriteria() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Julian", 5, fixedDateWithOffset(3)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
+
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("regexArrayFilters.json"));
+
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
     }
 
     private ZonedDateTime fixedDateWithOffset(int days) {

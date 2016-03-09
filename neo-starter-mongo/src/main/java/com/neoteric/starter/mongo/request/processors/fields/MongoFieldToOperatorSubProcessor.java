@@ -10,15 +10,21 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAccessor;
 import java.util.List;
 
 import static com.neoteric.starter.mongo.request.Mappings.OPERATORS;
 
-public enum MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<RequestOperator> {
+public class MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<RequestOperator> {
 
-    INSTANCE;
+    private final DateTimeFormatter dateTimeFormatter;
+
     private final List<OperatorValueParser> operatorValueParsers = ImmutableList.of(
-            ZonedDateTimeValueParser.INSTANCE, GeneralOperatorValueParser.INSTANCE);
+            new ZonedDateTimeValueParser(), new GeneralOperatorValueParser());
+
+    public MongoFieldToOperatorSubProcessor(DateTimeFormatter dateTimeFormatter) {
+        this.dateTimeFormatter = dateTimeFormatter;
+    }
 
     @Override
     public Boolean apply(RequestObjectType key) {
@@ -44,15 +50,12 @@ public enum MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<R
         Object parse(Object operatorValue);
     }
 
-    enum ZonedDateTimeValueParser implements OperatorValueParser {
-        INSTANCE;
-
-        private DateTimeFormatter isoDateTime = DateTimeFormatter.ISO_ZONED_DATE_TIME;
+    class ZonedDateTimeValueParser implements OperatorValueParser {
 
         @Override
         public boolean apply(Object operatorValue) {
             try {
-                isoDateTime.parse(operatorValue.toString());
+                dateTimeFormatter.parse(operatorValue.toString());
                 return true;
 
             } catch (DateTimeParseException ex) {
@@ -62,12 +65,12 @@ public enum MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<R
 
         @Override
         public Object parse(Object operatorValue) {
-            return ZonedDateTime.from(isoDateTime.parse(operatorValue.toString()));
+            TemporalAccessor temporalAccessor = dateTimeFormatter.parse(operatorValue.toString());
+            return ZonedDateTime.from(temporalAccessor);
         }
     }
 
-    enum GeneralOperatorValueParser implements OperatorValueParser {
-        INSTANCE;
+    class GeneralOperatorValueParser implements OperatorValueParser {
 
         @Override
         public boolean apply(Object operatorValue) {
