@@ -101,6 +101,16 @@ public class FiltersParserTest {
                 .containsEntry(RequestField.of("last"), ImmutableMap.of(RequestOperator.of(OperatorType.EQUAL), "Doe"));
     }
 
+    @Test
+    public void testRegexOperator() throws Exception {
+        Map<String, Object> rawFilters = readFiltersFromResources("RegexOperator.json");
+
+        Map<RequestObject, Object> filters = FiltersParser.parseFilters(rawFilters);
+        assertThat((Map) filters.get(RequestField.of("name")))
+                .hasSize(1)
+                .containsEntry(RequestOperator.of(OperatorType.REGEX), "John");
+    }
+
     private Map<String, Object> readFiltersFromResources(String resourceName) throws IOException {
         byte[] jsonBytes = Files.readAllBytes(Paths.get("src/test/resources/requests/" + resourceName));
         ObjectMapper mapper = new ObjectMapper();

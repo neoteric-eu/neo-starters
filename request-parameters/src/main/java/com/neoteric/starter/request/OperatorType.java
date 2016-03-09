@@ -13,7 +13,8 @@ public enum OperatorType {
     IN("$in", ValueType.ARRAY),
     NOT_IN("$nin", ValueType.ARRAY),
     ALL("$all", ValueType.ARRAY),
-    STARTS_WITH("$startsWith", ValueType.SCALAR);
+    STARTS_WITH("$startsWith", ValueType.SCALAR),
+    REGEX("$regex", ValueType.SCALAR);
 
     private String value;
     private ValueType valueType;

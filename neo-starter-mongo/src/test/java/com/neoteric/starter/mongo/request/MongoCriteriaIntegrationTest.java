@@ -397,6 +397,24 @@ public class MongoCriteriaIntegrationTest {
         assertThat(results.get(1)).isEqualTo(FooModelMother.withTags("Julian", "MongoDB", "Java", "Neoteric"));
     }
 
+    @Test
+    public void testReturnObjectBasedOnRegexCriteria() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Julian", 5, fixedDateWithOffset(3)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
+
+        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("regexFilters.json"));
+
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        assertThat(results.get(1)).isEqualTo(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+    }
+
     private ZonedDateTime fixedDateWithOffset(int days) {
         return ZonedDateTime.of(2016, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")).plusDays(days - 1);
     }
