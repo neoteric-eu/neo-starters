@@ -360,6 +360,43 @@ public class MongoCriteriaIntegrationTest {
         assertThat(results.get(2)).isEqualTo(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
     }
 
+    @Test
+    public void testReturnObjectBasedOnAllCriteria() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.withTags("Johnny", "Neoteric", "Devops", "Java"));
+        mongoTemplate.insert(FooModelMother.withTags("James", "Work", "Java"));
+        mongoTemplate.insert(FooModelMother.withTags("Julian", "MongoDB", "Java", "Neoteric"));
+        mongoTemplate.insert(FooModelMother.withTags("Adam", "Neoteric", "JS", "Devops"));
+        mongoTemplate.insert(FooModelMother.withTags("Bob", "Neoteric", "Java", "Intellij"));
+        mongoTemplate.insert(FooModelMother.withTags("Bogdan", "Java"));
+
+        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("allFilters.json"));
+
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(3);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.withTags("Johnny", "Neoteric", "Devops", "Java"));
+        assertThat(results.get(1)).isEqualTo(FooModelMother.withTags("Julian", "MongoDB", "Java", "Neoteric"));
+        assertThat(results.get(2)).isEqualTo(FooModelMother.withTags("Bob", "Neoteric", "Java", "Intellij"));
+    }
+
+    @Test
+    public void testReturnObjectBasedOnAllAndInCriteria() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.withTags("Johnny", "Neoteric", "Devops", "Java"));
+        mongoTemplate.insert(FooModelMother.withTags("James", "Work", "Java"));
+        mongoTemplate.insert(FooModelMother.withTags("Julian", "MongoDB", "Java", "Neoteric"));
+        mongoTemplate.insert(FooModelMother.withTags("Adam", "Neoteric", "JS", "Devops"));
+        mongoTemplate.insert(FooModelMother.withTags("Bob", "Neoteric", "Java", "Intellij"));
+        mongoTemplate.insert(FooModelMother.withTags("Bogdan", "Java"));
+
+        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(readFiltersFromResources("allAndInFilters.json"));
+
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.withTags("Johnny", "Neoteric", "Devops", "Java"));
+        assertThat(results.get(1)).isEqualTo(FooModelMother.withTags("Julian", "MongoDB", "Java", "Neoteric"));
+    }
+
     private ZonedDateTime fixedDateWithOffset(int days) {
         return ZonedDateTime.of(2016, 1, 1, 12, 0, 0, 0, ZoneId.of("UTC")).plusDays(days - 1);
     }
