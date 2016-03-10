@@ -5,10 +5,10 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface EmbeddedMongoTest {
+public @interface DropCollections {
 
     /**
-     * Drop collections between tests
+     * Drop collections after each test
      */
-    String [] dropCollections() default {};
+    String[] value();
 }

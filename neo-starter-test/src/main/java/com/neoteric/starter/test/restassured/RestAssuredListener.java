@@ -14,7 +14,6 @@ public class RestAssuredListener extends AbstractTestExecutionListener {
         if (testContext.getTestClass().getAnnotation(ContainerIntegrationTest.class) == null) {
             return;
         }
-
         ApplicationContext applicationContext = testContext.getApplicationContext();
         String property = applicationContext.getEnvironment().getProperty("local.server.port");
         RestAssured.port = Integer.parseInt(property);
@@ -23,5 +22,10 @@ public class RestAssuredListener extends AbstractTestExecutionListener {
 
         RestAssured.config = RestAssured.config().objectMapperConfig(
                 new ObjectMapperConfig().jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
+    }
+
+    @Override
+    public int getOrder() {
+        return 800;
     }
 }

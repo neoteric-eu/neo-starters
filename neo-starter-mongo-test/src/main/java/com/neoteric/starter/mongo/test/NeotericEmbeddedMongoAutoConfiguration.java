@@ -1,6 +1,9 @@
 package com.neoteric.starter.mongo.test;
 
 import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.neoteric.starter.Constants;
 import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
@@ -25,20 +28,18 @@ import org.springframework.boot.autoconfigure.mongo.MongoProperties;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.EnvironmentTestUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.MapPropertySource;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertySource;
+import org.springframework.core.env.*;
 import org.springframework.util.Assert;
 
+import javax.annotation.PreDestroy;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.net.UnknownHostException;
+import java.util.*;
 
 @Configuration
 @EnableConfigurationProperties({MongoProperties.class, EmbeddedMongoProperties.class})
@@ -57,6 +58,18 @@ public class NeotericEmbeddedMongoAutoConfiguration {
 
     @Autowired(required = false)
     private IRuntimeConfig runtimeConfig;
+
+    private MongoClient mongo;
+
+    @Autowired(required = false)
+    private MongoClientOptions options;
+
+    @PreDestroy
+    public void close() {
+        if (this.mongo != null) {
+            this.mongo.close();
+        }
+    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -99,11 +112,16 @@ public class NeotericEmbeddedMongoAutoConfiguration {
                 .build();
     }
 
+    @Bean
+    public MongoClient mongo(IMongodConfig iMongodConfig) throws UnknownHostException {
+        this.mongo = new MongoClient(Arrays.asList(new ServerAddress("localhost", iMongodConfig.net().getPort())));
+        return mongo;
+    }
+
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
     public MongodExecutable embeddedMongoServer(IMongodConfig mongodConfig)
             throws IOException {
-        publishPortInfo(mongodConfig.net().getPort());
         MongodStarter mongodStarter = getMongodStarter(this.runtimeConfig);
         return mongodStarter.prepare(mongodConfig);
     }
@@ -113,31 +131,6 @@ public class NeotericEmbeddedMongoAutoConfiguration {
             return MongodStarter.getDefaultInstance();
         }
         return MongodStarter.getInstance(runtimeConfig);
-    }
-
-    private void publishPortInfo(int port) {
-        setPortProperty(this.context, port);
-    }
-
-    private void setPortProperty(ApplicationContext currentContext, int port) {
-        if (currentContext instanceof ConfigurableApplicationContext) {
-            MutablePropertySources sources = ((ConfigurableApplicationContext) currentContext)
-                    .getEnvironment().getPropertySources();
-            getMongoPorts(sources).put("local.mongo.port", port);
-        }
-        if (currentContext.getParent() != null) {
-            setPortProperty(currentContext.getParent(), port);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, Object> getMongoPorts(MutablePropertySources sources) {
-        PropertySource<?> propertySource = sources.get("mongo.ports");
-        if (propertySource == null) {
-            propertySource = new MapPropertySource("mongo.ports", new HashMap<>());
-            sources.addFirst(propertySource);
-        }
-        return (Map<String, Object>) propertySource.getSource();
     }
 
     /**

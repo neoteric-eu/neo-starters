@@ -1,12 +1,13 @@
 package com.neoteric.starter.auth.saasmgr.test;
 
-import com.jayway.restassured.builder.RequestSpecBuilder;
-import com.jayway.restassured.specification.RequestSpecification;
+import com.jayway.restassured.spi.AuthFilter;
 
 public class RestAssuredAuthSpec {
 
-    public final static RequestSpecification ANY_TOKEN_AUTH = new RequestSpecBuilder()
-            .addHeader("X-Customer-Id", "customerId")
-            .addHeader("Authorization", "token abc")
-            .build();
+    public final static AuthFilter ANY_TOKEN_AUTH = (requestSpec, responseSpec, ctx) -> {
+        requestSpec
+                .header("X-Customer-Id", "customerId")
+                .header("Authorization", "token abc");
+        return ctx.next(requestSpec, responseSpec);
+    };
 }

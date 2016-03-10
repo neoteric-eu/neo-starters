@@ -7,7 +7,7 @@ import com.neoteric.starter.mongo.MongoConvertersAutoConfiguration;
 import com.neoteric.starter.mongo.model.FooModel;
 import com.neoteric.starter.mongo.model.FooModelMother;
 import com.neoteric.starter.mongo.sort.RequestParamsSortBuilder;
-import com.neoteric.starter.mongo.test.EmbeddedMongoTest;
+import com.neoteric.starter.mongo.test.DropCollections;
 import com.neoteric.starter.mongo.test.NeotericEmbeddedMongoAutoConfiguration;
 import com.neoteric.starter.request.FiltersParser;
 import com.neoteric.starter.request.RequestObject;
@@ -34,7 +34,7 @@ import java.util.Map;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@EmbeddedMongoTest(dropCollections = "FooModel")
+@DropCollections("FooModel")
 @ContextConfiguration(classes = {MongoConvertersAutoConfiguration.class,
         NeotericEmbeddedMongoAutoConfiguration.class,
         MongoAutoConfiguration.class,

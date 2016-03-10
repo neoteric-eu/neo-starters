@@ -36,6 +36,19 @@ public class SaasMgrSecurityAutoConfiguration {
     public static final String SAAS_MGR_AUTH_CACHE = "saasMgrAuthCache";
     public static final String SAAS_MGR_CACHE_MANAGER = "saasMgrCacheManager";
 
+    @Bean
+    SaasMgrAuthenticator saasMgrConnector() {
+        return new DefaultSaasMgrAuthenticator();
+    }
+
+    @Autowired
+    SaasMgrAuthenticator authenticator;
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(new SaasMgrAuthenticationProvider(authenticator));
+    }
+
     @Configuration
     @ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", matchIfMissing = true)
     public static class SaasMgrCachingConfig extends CachingConfigurerSupport {
@@ -70,19 +83,6 @@ public class SaasMgrSecurityAutoConfiguration {
         public CacheManager cacheManager() {
             return new NoOpCacheManager();
         }
-    }
-
-    @Bean
-    SaasMgrAuthenticator saasMgrConnector() {
-        return new DefaultSaasMgrAuthenticator();
-    }
-
-    @Autowired
-    SaasMgrAuthenticator authenticator;
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new SaasMgrAuthenticationProvider(authenticator));
     }
 
     @Configuration

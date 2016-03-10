@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.EnvironmentTestUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
@@ -64,6 +65,10 @@ public class WireMockListener extends AbstractTestExecutionListener {
         }
         TestBeanUtils.destroySingleton(testContext, RIBBON_SERVER_LIST);
         server.stop();
+
+        ConfigurableEnvironment environment = (ConfigurableEnvironment)testContext.getApplicationContext().getEnvironment();
+        MapPropertySource test = (MapPropertySource) environment.getPropertySources().get("test");
+        test.getSource().remove("ribbon.eureka.enabled");
     }
 
     private int getFreeServerPort() throws IOException {
