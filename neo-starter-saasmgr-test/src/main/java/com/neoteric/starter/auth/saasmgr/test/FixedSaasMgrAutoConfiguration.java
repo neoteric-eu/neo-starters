@@ -41,5 +41,4 @@ public class FixedSaasMgrAutoConfiguration {
                 .build();
         return new TestSaasMgrAuthenticator(saasDetails);
     }
-
 }

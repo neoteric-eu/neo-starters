@@ -4,8 +4,11 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.neoteric.starter.test.TestBeanUtils;
 import com.neoteric.starter.test.wiremock.ribbon.RibbonStaticServer;
+import com.netflix.client.config.IClientConfig;
+import com.netflix.loadbalancer.ConfigurationBasedServerList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.test.EnvironmentTestUtils;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -29,7 +32,7 @@ public class WireMockListener extends AbstractTestExecutionListener {
             return;
         }
 
-        ConfigurableEnvironment environment = (ConfigurableEnvironment)testContext.getApplicationContext().getEnvironment();
+        ConfigurableEnvironment environment = (ConfigurableEnvironment) testContext.getApplicationContext().getEnvironment();
         EnvironmentTestUtils.addEnvironment(environment, "ribbon.eureka.enabled=false");
 
         port = getFreeServerPort();
@@ -42,6 +45,9 @@ public class WireMockListener extends AbstractTestExecutionListener {
 
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
+        if (testContext.getTestClass().getAnnotation(WireMockTest.class) == null) {
+            return;
+        }
         if (server == null) {
             return;
         }
@@ -51,6 +57,9 @@ public class WireMockListener extends AbstractTestExecutionListener {
 
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
+        if (testContext.getTestClass().getAnnotation(WireMockTest.class) == null) {
+            return;
+        }
         if (server == null) {
             return;
         }
@@ -60,13 +69,26 @@ public class WireMockListener extends AbstractTestExecutionListener {
 
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
+        if (testContext.getTestClass().getAnnotation(WireMockTest.class) == null) {
+            return;
+        }
         if (server == null) {
             return;
         }
+
+        IClientConfig clientConfig = null;
+        try {
+            clientConfig = testContext.getApplicationContext().getBean(IClientConfig.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            return;
+        }
         TestBeanUtils.destroySingleton(testContext, RIBBON_SERVER_LIST);
+        ConfigurationBasedServerList serverList = new ConfigurationBasedServerList();
+        serverList.initWithNiwsConfig(clientConfig);
+        TestBeanUtils.registerSingleton(testContext, RIBBON_SERVER_LIST, serverList);
         server.stop();
 
-        ConfigurableEnvironment environment = (ConfigurableEnvironment)testContext.getApplicationContext().getEnvironment();
+        ConfigurableEnvironment environment = (ConfigurableEnvironment) testContext.getApplicationContext().getEnvironment();
         MapPropertySource test = (MapPropertySource) environment.getPropertySources().get("test");
         test.getSource().remove("ribbon.eureka.enabled");
     }
