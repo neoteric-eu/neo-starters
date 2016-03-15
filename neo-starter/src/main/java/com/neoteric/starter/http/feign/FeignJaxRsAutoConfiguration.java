@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import static com.neoteric.starter.Constants.LOG_PREFIX;
+import static com.neoteric.starter.StarterConstants.LOG_PREFIX;
 
 @Configuration
 @ConditionalOnClass(Feign.class)

@@ -1,6 +1,6 @@
 package com.neoteric.starter.swagger;
 
-import com.neoteric.starter.Constants;
+import com.neoteric.starter.StarterConstants;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.models.Swagger;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class SwaggerAutoConfiguration {
             beanConfig.setBasePath(jerseyProperties.getApplicationPath());
         }
         beanConfig.setScan(true);
-        LOG.debug("{}Swagger enabled on {}", Constants.LOG_PREFIX, swaggerProperties.getResourcePackage());
+        LOG.debug("{}Swagger enabled on {}", StarterConstants.LOG_PREFIX, swaggerProperties.getResourcePackage());
         return beanConfig;
     }
 }

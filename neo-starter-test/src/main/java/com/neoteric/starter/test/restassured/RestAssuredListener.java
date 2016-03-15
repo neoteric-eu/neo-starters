@@ -7,6 +7,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
+import static com.neoteric.starter.test.StarterConstants.JACKSON_OBJECT_MAPPER_BEAN;
+import static com.neoteric.starter.test.StarterConstants.LOCAL_SERVER_PORT;
+
 public class RestAssuredListener extends AbstractTestExecutionListener {
 
     @Override
@@ -15,10 +18,10 @@ public class RestAssuredListener extends AbstractTestExecutionListener {
             return;
         }
         ApplicationContext applicationContext = testContext.getApplicationContext();
-        String property = applicationContext.getEnvironment().getProperty("local.server.port");
+        String property = applicationContext.getEnvironment().getProperty(LOCAL_SERVER_PORT);
         RestAssured.port = Integer.parseInt(property);
 
-        ObjectMapper objectMapper = applicationContext.getBean("jacksonObjectMapper", ObjectMapper.class);
+        ObjectMapper objectMapper = applicationContext.getBean(JACKSON_OBJECT_MAPPER_BEAN, ObjectMapper.class);
 
         RestAssured.config = RestAssured.config().objectMapperConfig(
                 new ObjectMapperConfig().jackson2ObjectMapperFactory((cls, charset) -> objectMapper));

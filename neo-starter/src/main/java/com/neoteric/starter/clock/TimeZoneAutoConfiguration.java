@@ -1,6 +1,6 @@
 package com.neoteric.starter.clock;
 
-import com.neoteric.starter.Constants;
+import com.neoteric.starter.StarterConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -16,10 +16,10 @@ import java.util.TimeZone;
 public class TimeZoneAutoConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(TimeZoneAutoConfiguration.class);
-    public static final ZoneId UTC_ZONE = ZoneId.of(Constants.UTC);
+    public static final ZoneId UTC_ZONE = ZoneId.of(StarterConstants.UTC);
 
     static {
-        LOG.debug("{}Setting default timezone to UTC", Constants.LOG_PREFIX);
+        LOG.debug("{}Setting default timezone to UTC", StarterConstants.LOG_PREFIX);
         TimeZone.setDefault(TimeZone.getTimeZone(UTC_ZONE));
     }
 

@@ -1,6 +1,6 @@
 package com.neoteric.starter.jersey;
 
-import com.neoteric.starter.Constants;
+import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.exception.mapper.*;
 import com.neoteric.starter.jersey.validation.ValidationConfigurationProvider;
 import com.neoteric.starter.swagger.SwaggerProperties;
@@ -40,7 +40,7 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
         }
 
         if (swaggerProperties.isEnabled()) {
-            logPackages(Constants.SWAGGER_PACKAGE);
+            logPackages(StarterConstants.SWAGGER_PACKAGE);
         }
         configure();
     }
@@ -54,11 +54,11 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
     }
 
     private void logRegister(final Class<?> componentClass) {
-        LOG.debug("{} Jersey registers {}", Constants.LOG_PREFIX, componentClass.getName());
+        LOG.debug("{} Jersey registers {}", StarterConstants.LOG_PREFIX, componentClass.getName());
         register(componentClass);
     }
     private void logPackages(String... packages) {
-        LOG.debug("{} Jersey registers packages {}", Constants.LOG_PREFIX, Arrays.toString(packages));
+        LOG.debug("{} Jersey registers packages {}", StarterConstants.LOG_PREFIX, Arrays.toString(packages));
         packages(packages);
     }
 }
