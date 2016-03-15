@@ -23,7 +23,7 @@ public class DefaultSaasMgrAuthenticator implements SaasMgrAuthenticator {
     private SaasMgrClient saasMgrClient;
 
     @Override
-    public SaasMgrPrincipal authenticate(String token, String customerId) {
+    public DefaultSaasMgrPrincipal authenticate(String token, String customerId) {
         LoginData loginData = null;
         try {
             loginData = saasMgrClient.getLoginInfo(token, customerId);
@@ -47,7 +47,7 @@ public class DefaultSaasMgrAuthenticator implements SaasMgrAuthenticator {
         return extractAuthenticationDetails(loginData, customerId);
     }
 
-    private SaasMgrPrincipal extractAuthenticationDetails(LoginData loginData, String customerId) {
+    private DefaultSaasMgrPrincipal extractAuthenticationDetails(LoginData loginData, String customerId) {
         if (loginData.getUser() == null) {
             throw new UsernameNotFoundException("No user data found in SaasMgr response");
         }
@@ -60,7 +60,7 @@ public class DefaultSaasMgrAuthenticator implements SaasMgrAuthenticator {
                 .findFirst();
 
         Customer foundedCustomer = customer.orElseThrow(() -> new UsernameNotFoundException("No customer data found in SaasMgr response"));
-        return SaasMgrPrincipal.builder()
+        return DefaultSaasMgrPrincipal.builder()
                 .userId(userId)
                 .email(email)
                 .customerId(foundedCustomer.getCustomerId())

@@ -1,18 +1,18 @@
 package com.neoteric.starter.test.saasmgr;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
-import com.neoteric.starter.saasmgr.auth.SaasMgrPrincipal;
+import com.neoteric.starter.saasmgr.auth.DefaultSaasMgrPrincipal;
 
 public class TestSaasMgrAuthenticator implements SaasMgrAuthenticator {
 
-    private final SaasMgrPrincipal principal;
+    private final DefaultSaasMgrPrincipal principal;
 
-    public TestSaasMgrAuthenticator(SaasMgrPrincipal principal) {
+    public TestSaasMgrAuthenticator(DefaultSaasMgrPrincipal principal) {
         this.principal = principal;
     }
 
     @Override
-    public SaasMgrPrincipal authenticate(String token, String customerId) {
+    public DefaultSaasMgrPrincipal authenticate(String token, String customerId) {
         return principal;
     }
 }
