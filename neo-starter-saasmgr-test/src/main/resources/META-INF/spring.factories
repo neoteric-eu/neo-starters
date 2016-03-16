@@ -1,2 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
     com.neoteric.starter.test.saasmgr.FixedSaasMgrAutoConfiguration
+org.springframework.test.context.TestExecutionListener = \
+    com.neoteric.starter.test.saasmgr.SaasMgrPrincipalListener

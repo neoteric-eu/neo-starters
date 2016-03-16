@@ -1,8 +1,8 @@
 package com.neoteric.starter.test;
 
-public final class StarterConstants {
+public final class StarterTestConstants {
 
-    private StarterConstants() {
+    private StarterTestConstants() {
         // Prevents instantiation of the class
     }
 
