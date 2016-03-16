@@ -11,7 +11,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import static com.neoteric.starter.test.StarterConstants.LOG_PREFIX;
+import static com.neoteric.starter.test.StarterTestConstants.LOG_PREFIX;
 import static com.neoteric.starter.test.StarterTestProfiles.WIREMOCK;
 
 @Slf4j

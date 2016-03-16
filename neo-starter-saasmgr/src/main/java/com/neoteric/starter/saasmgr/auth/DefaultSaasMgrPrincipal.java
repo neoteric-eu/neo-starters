@@ -53,6 +53,11 @@ public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
         return email;
     }
 
+    @Override
+    public AccountStatus getStatus() {
+        return status;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
