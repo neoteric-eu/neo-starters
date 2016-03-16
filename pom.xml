@@ -59,6 +59,8 @@
         <module>neo-starter-test</module>
         <module>neo-starter-mongo</module>
         <module>neo-starter-mongo-test</module>
+        <module>tags-backend</module>
+        <module>neo-starter-rabbitmq</module>
         <module>neo-starter-metrics</module>
 
         <module>neo-starter-samples</module>
