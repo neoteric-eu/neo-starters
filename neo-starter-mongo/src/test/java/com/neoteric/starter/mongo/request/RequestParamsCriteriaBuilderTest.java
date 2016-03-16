@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.neoteric.starter.mongo.MongoCriteriaBuilderAutoConfiguration;
 import com.neoteric.starter.request.*;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -29,6 +28,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RequestParamsCriteriaBuilderTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RequestParamsCriteriaBuilderTest.class);
+
+    static {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+    }
 
     @Autowired
     private RequestParamsCriteriaBuilder requestParamsCriteriaBuilder;
