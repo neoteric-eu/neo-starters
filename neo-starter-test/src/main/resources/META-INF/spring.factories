@@ -4,4 +4,5 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
     com.neoteric.starter.test.tomcat.ForceTomcatAutoConfiguration
 org.springframework.test.context.TestExecutionListener = \
 	com.neoteric.starter.test.restassured.RestAssuredListener,\
+	com.neoteric.starter.test.clock.FixedClockListener,\
 	com.neoteric.starter.test.wiremock.WiremockListener

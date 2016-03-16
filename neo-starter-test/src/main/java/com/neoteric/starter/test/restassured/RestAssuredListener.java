@@ -7,8 +7,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
-import static com.neoteric.starter.test.StarterConstants.JACKSON_OBJECT_MAPPER_BEAN;
-import static com.neoteric.starter.test.StarterConstants.LOCAL_SERVER_PORT;
+import static com.neoteric.starter.test.StarterTestConstants.JACKSON_OBJECT_MAPPER_BEAN;
+import static com.neoteric.starter.test.StarterTestConstants.LOCAL_SERVER_PORT;
 
 public class RestAssuredListener extends AbstractTestExecutionListener {
 
