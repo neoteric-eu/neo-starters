@@ -1,6 +1,5 @@
 package com.neoteric.starter.mongo;
 
-import com.neoteric.starter.Constants;
 import com.neoteric.starter.mongo.request.RequestParamsCriteriaBuilder;
 import com.neoteric.starter.mongo.request.processors.MongoRequestFieldProcessor;
 import com.neoteric.starter.mongo.request.processors.MongoRequestLogicalOperatorProcessor;
@@ -25,7 +24,7 @@ public class MongoCriteriaBuilderAutoConfiguration {
 
     @Bean
     public RequestParamsCriteriaBuilder requestParamsCriteriaBuilder() {
-        LOG.debug("{}Registering RequestParamsCriteriaBuilder.", Constants.LOG_PREFIX);
+        LOG.debug("{}Registering RequestParamsCriteriaBuilder.", StarterMongoConstants.LOG_PREFIX);
         return new RequestParamsCriteriaBuilder();
     }
 

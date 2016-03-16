@@ -1,6 +1,6 @@
 package com.neoteric.starter.request.tracing;
 
-import com.neoteric.starter.Constants;
+import com.neoteric.starter.StarterConstants;
 import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +37,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String requestId = request.getHeader(Constants.REQUEST_ID);
+        String requestId = request.getHeader(StarterConstants.REQUEST_ID);
 
         String path = new UrlPathHelper().getPathWithinApplication(request);
         if (path.startsWith(applicationPath)) {
@@ -47,13 +47,13 @@ public class RequestIdFilter extends OncePerRequestFilter {
             } else {
                 LOG.trace("Request ID header found: [{}].", requestId);
             }
-            MDC.put(Constants.REQUEST_ID, requestId);
-            response.setHeader(Constants.REQUEST_ID, requestId);
+            MDC.put(StarterConstants.REQUEST_ID, requestId);
+            response.setHeader(StarterConstants.REQUEST_ID, requestId);
         }
         try {
             filterChain.doFilter(request, response);
         } finally {
-            MDC.remove(Constants.REQUEST_ID);
+            MDC.remove(StarterConstants.REQUEST_ID);
         }
     }
 }

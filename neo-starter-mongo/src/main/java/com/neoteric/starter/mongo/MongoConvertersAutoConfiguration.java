@@ -1,7 +1,6 @@
 package com.neoteric.starter.mongo;
 
 import com.mongodb.Mongo;
-import com.neoteric.starter.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -34,7 +33,7 @@ public class MongoConvertersAutoConfiguration {
         converters.add(ZonedDateTimeToDateConverter.INSTANCE);
         converters.add(StringToZoneIdConverter.INSTANCE);
         converters.add(ZoneIdToStringConverter.INSTANCE);
-        LOG.debug("{}Registering ZonedDateTime converters.", Constants.LOG_PREFIX);
+        LOG.debug("{}Registering ZonedDateTime converters.", StarterMongoConstants.LOG_PREFIX);
         return new CustomConversions(converters);
     }
 

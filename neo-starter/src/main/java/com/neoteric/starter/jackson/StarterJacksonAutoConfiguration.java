@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.joda.cfg.JacksonJodaDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
-import com.neoteric.starter.Constants;
+import com.neoteric.starter.StarterConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -25,9 +24,10 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static com.neoteric.starter.Constants.ConfigBeans.JACKSON_JSR310_DATE_FORMAT;
+import static com.neoteric.starter.StarterConstants.ConfigBeans.JACKSON_JSR310_DATE_FORMAT;
 
 @Configuration
+@Slf4j
 public class StarterJacksonAutoConfiguration {
 
     @Configuration
@@ -36,8 +36,6 @@ public class StarterJacksonAutoConfiguration {
     @AutoConfigureBefore(JacksonAutoConfiguration.class)
     @PropertySource("classpath:jackson-defaults.properties")
     static class ZonedDateTimeJacksonConfiguration {
-
-        private static final Logger LOG = LoggerFactory.getLogger(ZonedDateTimeJacksonConfiguration.class);
 
         @Autowired
         private JacksonProperties jacksonProperties;
@@ -52,7 +50,7 @@ public class StarterJacksonAutoConfiguration {
         public Module zonedDateTimeSerializationModule(
                 @Qualifier(JACKSON_JSR310_DATE_FORMAT) DateTimeFormatter dateTimeFormatter) {
             SimpleModule module = new SimpleModule();
-            LOG.debug("{}ZonedDateTime Jackson format: {}", Constants.LOG_PREFIX, dateTimeFormatter);
+            LOG.debug("{}ZonedDateTime Jackson format: {}", StarterConstants.LOG_PREFIX, dateTimeFormatter);
             module.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(dateTimeFormatter));
             return module;
         }

@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.neoteric.starter.auth.SaasMgrSecurityAutoConfiguration
+com.neoteric.starter.saasmgr.SaasMgrSecurityAutoConfiguration

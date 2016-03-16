@@ -5,7 +5,6 @@ import org.springframework.boot.test.WebIntegrationTest;
 import java.lang.annotation.*;
 
 @Documented
-
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

@@ -25,9 +25,10 @@
     <logger name="com.netflix.servo" level="INFO"/>
     <logger name="org.apache.http" level="INFO"/>
 
+    <logger name="net.sf.ehcache.statistics" level="INFO"/>
+    <logger name="org.reflections" level="INFO"/>
     <!-- Tests -->
     <logger name="com.jayway.restassured.internal" level="INFO"/>
-    <logger name="org.springframework.test.context.cache" level="DEBUG"/>
 
     <root level="DEBUG">
         <appender-ref ref="CONSOLE"/>

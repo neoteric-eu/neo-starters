@@ -2,7 +2,7 @@ package com.neoteric.starter.exception.mapper;
 
 import ch.qos.logback.classic.Level;
 import com.google.common.collect.ImmutableMap;
-import com.neoteric.starter.Constants;
+import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.exception.ErrorData;
 import org.apache.catalina.connector.RequestFacade;
 import org.apache.log4j.MDC;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,7 +28,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Component
 public abstract class AbstractExceptionMapper<E extends Throwable> implements ExceptionMapper<E> {
 
     @Autowired
@@ -68,7 +66,7 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
         ErrorData.ErrorDataBuilder errorBuilder = ErrorData
                 .builder()
                 .timestamp(ZonedDateTime.now(clock))
-                .requestId(String.valueOf(MDC.get(Constants.REQUEST_ID)))
+                .requestId(String.valueOf(MDC.get(StarterConstants.REQUEST_ID)))
                 .status(httpStatus().value())
                 .error(httpStatus().getReasonPhrase())
                 .message(message(error))

@@ -1,7 +1,7 @@
 package com.neoteric.starter.metrics;
 
 import com.codahale.metrics.MetricRegistry;
-import com.neoteric.starter.Constants;
+import com.neoteric.starter.metrics.StarterMetricsConstants;
 import com.neoteric.starter.metrics.report.elastic.ElasticsearchConnectionException;
 import com.neoteric.starter.metrics.report.elastic.ElasticsearchReporter;
 import org.slf4j.Logger;
@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 
@@ -60,14 +59,14 @@ public class DropwizardMetricsReportAutoConfiguration {
         @PostConstruct
         public void runElasticReporter() throws Exception {
             if (elasticReporter == null) {
-                LOG.warn("{}Could not start Elasticsearch Metrics reporter - not found.", Constants.LOG_PREFIX);
+                LOG.warn("{}Could not start Elasticsearch Metrics reporter - not found.", StarterMetricsConstants.LOG_PREFIX);
                 return;
             }
 
             MetricsReportProperties.ElasticSearch elasticProperties = metricsReportProperties.getElastic();
             long period = elasticProperties.getTimePeriod();
             TimeUnit timeUnit = elasticProperties.getTimeUnit();
-            LOG.debug("{}ElasticSearch Metrics reporter started. Reporting every {} {}", Constants.LOG_PREFIX, period, timeUnit);
+            LOG.debug("{}ElasticSearch Metrics reporter started. Reporting every {} {}", StarterMetricsConstants.LOG_PREFIX, period, timeUnit);
             elasticReporter.start(period, timeUnit);
         }
     }

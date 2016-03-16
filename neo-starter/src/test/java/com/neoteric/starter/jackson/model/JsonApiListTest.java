@@ -8,14 +8,14 @@ public class JsonApiListTest {
 
     @Test
     public void createEmptyListTest() throws Exception {
-        JsonApiList<String> jsonApiList = JsonApiList.<String>builder().build();
+        JsonApiList<String> jsonApiList = JsonApiList.<String>wrap(null).build();
         assertThat(jsonApiList.getData()).isEmpty();
         assertThat(jsonApiList.getMeta()).isEmpty();
     }
 
     @Test
     public void shouldCreateJsonApiListWithMetaTest() throws Exception {
-        JsonApiList<String> jsonApiList = JsonApiList.<String>builder().data("ABC").meta("key", "value").build();
+        JsonApiList<String> jsonApiList = JsonApiList.<String>wrap("ABC").meta("key", "value").build();
         assertThat(jsonApiList.getData()).hasSize(1).contains("ABC");
         assertThat(jsonApiList.getMeta()).hasSize(1).containsEntry("key", "value");
     }
