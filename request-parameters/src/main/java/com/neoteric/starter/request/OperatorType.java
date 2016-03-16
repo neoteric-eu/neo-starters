@@ -12,7 +12,9 @@ public enum OperatorType {
     GREATER_THAN_EQUAL("$gte", ValueType.SCALAR),
     IN("$in", ValueType.ARRAY),
     NOT_IN("$nin", ValueType.ARRAY),
-    STARTS_WITH("$startsWith", ValueType.SCALAR);
+    ALL("$all", ValueType.ARRAY),
+    STARTS_WITH("$startsWith", ValueType.SCALAR),
+    REGEX("$regex", ValueType.SCALAR);
 
     private String value;
     private ValueType valueType;

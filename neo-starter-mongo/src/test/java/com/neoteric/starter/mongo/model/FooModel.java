@@ -9,6 +9,7 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Document(collection = "FooModel")
@@ -17,6 +18,7 @@ public class FooModel {
     public static final String NAME = "name";
     public static final String COUNT = "count";
     public static final String DATE = "date";
+    public static final String TAGS = "tags";
 
     @JsonProperty(NAME)
     private final String name;
@@ -27,14 +29,19 @@ public class FooModel {
     @JsonProperty(DATE)
     private final ZonedDateTime date;
 
+    @JsonProperty(TAGS)
+    private final List<String> tags;
+
     private int cachedHashCode;
 
     @PersistenceConstructor
     @JsonCreator(mode = JsonCreator.Mode.PROPERTIES)
-    public FooModel(@JsonProperty(NAME) String name, @JsonProperty(COUNT) Integer count, @JsonProperty(DATE) ZonedDateTime date) {
+    public FooModel(@JsonProperty(NAME) String name, @JsonProperty(COUNT) Integer count,
+                    @JsonProperty(DATE) ZonedDateTime date, @JsonProperty(TAGS) List<String> tags) {
         this.name = name;
         this.count = count;
         this.date = date;
+        this.tags = tags;
         this.cachedHashCode = calculateHashCode();
     }
 
@@ -42,6 +49,7 @@ public class FooModel {
         this.name = builder.name;
         this.count = builder.count;
         this.date = builder.date;
+        this.tags = builder.tags;
 
         this.cachedHashCode = calculateHashCode();
     }
@@ -62,13 +70,17 @@ public class FooModel {
         return date;
     }
 
+    public List<String> getTags() {
+        return tags;
+    }
+
     @Override
     public final int hashCode() {
         return this.cachedHashCode;
     }
 
     private int calculateHashCode() {
-        return Objects.hash(name, count, date);
+        return Objects.hash(name, count, date, tags);
     }
 
     @Override
@@ -83,7 +95,8 @@ public class FooModel {
         FooModel other = (FooModel) obj;
         return Objects.equals(this.name, other.name)
                 && Objects.equals(this.count, other.count)
-                && Objects.equals(this.date, other.date);
+                && Objects.equals(this.date, other.date)
+                && Objects.equals(this.tags, other.tags);
     }
 
     @JsonPOJOBuilder(withPrefix = "set")
@@ -98,6 +111,9 @@ public class FooModel {
 
         @JsonProperty(DATE)
         private ZonedDateTime date;
+
+        @JsonProperty(TAGS)
+        private List<String> tags;
 
         public Builder setName(String name) {
             this.name = name;
@@ -114,11 +130,17 @@ public class FooModel {
             return this;
         }
 
+        public Builder setTags(List<String> tags) {
+            this.tags = tags;
+            return this;
+        }
+
         public Builder copy(FooModel other) {
             return this
                     .setName(other.name)
                     .setCount(other.count)
-                    .setDate(other.date);
+                    .setDate(other.date)
+                    .setTags(other.tags);
         }
 
         public FooModel build() {
@@ -132,6 +154,7 @@ public class FooModel {
                 .add("name", name)
                 .add("count", count)
                 .add("date", date)
+                .add("tags", tags)
                 .add("cachedHashCode", cachedHashCode)
                 .toString();
     }

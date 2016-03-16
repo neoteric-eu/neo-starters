@@ -1,6 +1,5 @@
 package com.neoteric.starter.mongo.request;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.neoteric.starter.mongo.request.processors.MongoRequestFieldProcessor;
@@ -9,22 +8,25 @@ import com.neoteric.starter.mongo.request.processors.MongoRequestObjectProcessor
 import com.neoteric.starter.request.RequestObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class RequestParamsCriteriaBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(RequestParamsCriteriaBuilder.class);
-    private static final List<MongoRequestObjectProcessor> REQUEST_OBJECT_PROCESSORS = ImmutableList.of(
-            MongoRequestFieldProcessor.INSTANCE, MongoRequestLogicalOperatorProcessor.INSTANCE
-    );
 
-    public static RequestParamsCriteriaBuilder newBuilder() {
-        return new RequestParamsCriteriaBuilder();
-    }
+    @Autowired
+    private MongoRequestFieldProcessor mongoRequestFieldProcessor;
+
+    @Autowired
+    private MongoRequestLogicalOperatorProcessor mongoRequestLogicalOperatorProcessor;
+
+    private List<MongoRequestObjectProcessor> requestObjectProcessors;
 
     public Criteria build(Map<RequestObject, Object> requestParams) {
         return build(Optional.empty(), requestParams, FieldMapper.of(Maps.newHashMap()));
@@ -50,7 +52,7 @@ public class RequestParamsCriteriaBuilder {
             if (!(value instanceof Map)) {
                 throw new IllegalArgumentException("Root RequestObject expect Map as argument, but get: " + value);
             }
-            List<Criteria> fieldCriteria = REQUEST_OBJECT_PROCESSORS.stream()
+            List<Criteria> fieldCriteria = Stream.<MongoRequestObjectProcessor>of(mongoRequestLogicalOperatorProcessor, mongoRequestFieldProcessor)
                     .filter(mongoRequestObjectProcessor -> mongoRequestObjectProcessor.apply(key.getType()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Illegal Root type: " + key.getType()))
@@ -67,7 +69,7 @@ public class RequestParamsCriteriaBuilder {
         } else {
             criteria = new Criteria().andOperator(joinedCriteria.stream().toArray(Criteria[]::new));
         }
-        LOG.debug("Produced criteria: ", criteria.getCriteriaObject().toString());
+        LOG.debug("Produced criteria: {}", criteria.getCriteriaObject()); // TODO nicely fails to print Criteria containing ZonedDateTime
         return criteria;
     }
 }

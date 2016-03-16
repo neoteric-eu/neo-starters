@@ -3,25 +3,43 @@ package com.neoteric.starter.mongo.request;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.neoteric.starter.mongo.MongoCriteriaBuilderAutoConfiguration;
 import com.neoteric.starter.request.*;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Optional;
+import java.util.TimeZone;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {MongoCriteriaBuilderAutoConfiguration.class,
+        DateTimeFormatterAutoConfiguration.class})
 public class RequestParamsCriteriaBuilderTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(RequestParamsCriteriaBuilderTest.class);
 
+    @Autowired
+    private RequestParamsCriteriaBuilder requestParamsCriteriaBuilder;
+
+    @Autowired
+    private DateTimeFormatter dateTimeFormatter;
+
     @Test
     public void testEmptyFiltersShouldProduceEmptyQuery() throws Exception {
         Map<RequestObject, Object> filters = ImmutableMap.of();
-        Criteria criteria = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria criteria = requestParamsCriteriaBuilder.build(filters);
         assertThat(criteria).isEqualTo(new Criteria());
     }
 
@@ -33,7 +51,7 @@ public class RequestParamsCriteriaBuilderTest {
                 ImmutableMap.of(RequestField.of("name"),
                         ImmutableMap.of(RequestOperator.of(OperatorType.STARTS_WITH), "John")
                 ));
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(Criteria.where("name").regex("^John", "i")));
     }
 
@@ -42,7 +60,7 @@ public class RequestParamsCriteriaBuilderTest {
         Map<RequestObject, Object> filters = ImmutableMap.of(
                 RequestLogicalOperator.of(LogicalOperatorType.OR),
                 ImmutableMap.of(RequestLogicalOperator.of(LogicalOperatorType.OR), Maps.newHashMap()));
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -50,7 +68,7 @@ public class RequestParamsCriteriaBuilderTest {
         Map<RequestObject, Object> filters = ImmutableMap.of(
                 RequestLogicalOperator.of(LogicalOperatorType.OR),
                 ImmutableMap.of(RequestOperator.of(OperatorType.STARTS_WITH), Maps.newHashMap()));
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -58,7 +76,7 @@ public class RequestParamsCriteriaBuilderTest {
         Map<RequestObject, Object> filters = ImmutableMap.of(
                 RequestLogicalOperator.of(LogicalOperatorType.OR),
                 ImmutableMap.of(RequestField.of("name"), "incorrectTypeValue"));
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test
@@ -67,7 +85,7 @@ public class RequestParamsCriteriaBuilderTest {
                 ImmutableMap.of(
                         RequestField.of("count"), ImmutableMap.of(RequestOperator.of(OperatorType.LESS_THAN), 5)
                 ));
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(Criteria.where("count").lt(5)));
     }
 
@@ -75,7 +93,7 @@ public class RequestParamsCriteriaBuilderTest {
     @Test(expected = IllegalArgumentException.class)
     public void testFilterStartingWithOperatorInRootShouldFail() throws Exception {
         Map<RequestObject, Object> filters = ImmutableMap.of(RequestOperator.of(OperatorType.STARTS_WITH), Maps.newHashMap());
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     // starting from Field
@@ -84,7 +102,7 @@ public class RequestParamsCriteriaBuilderTest {
         Map<RequestObject, Object> filters = ImmutableMap.of(RequestField.of("name"),
                 ImmutableMap.of(RequestOperator.of(OperatorType.STARTS_WITH), "John")
         );
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(Criteria.where("name").regex("^John", "i"));
     }
 
@@ -93,7 +111,7 @@ public class RequestParamsCriteriaBuilderTest {
         Map<RequestObject, Object> filters = ImmutableMap.of(
                 RequestField.of("name"),
                 ImmutableMap.of(RequestField.of("surname"), Maps.newHashMap()));
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test
@@ -107,7 +125,7 @@ public class RequestParamsCriteriaBuilderTest {
                 )
         );
 
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(
                 Criteria.where("name").regex("^John", "i"),
                 Criteria.where("name").in("John", "Bob")));
@@ -122,7 +140,7 @@ public class RequestParamsCriteriaBuilderTest {
                 )
         );
 
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().andOperator(
                 Criteria.where("name").regex("^John", "i"),
                 Criteria.where("name").in("John", "Bob")));
@@ -140,7 +158,7 @@ public class RequestParamsCriteriaBuilderTest {
                 ));
 
 
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(
                 Criteria.where("name").regex("^John", "i"),
                 Criteria.where("name").in("Doe", "Smith")));
@@ -159,7 +177,7 @@ public class RequestParamsCriteriaBuilderTest {
                 ));
 
 
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -170,7 +188,7 @@ public class RequestParamsCriteriaBuilderTest {
                 ));
 
 
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -185,7 +203,7 @@ public class RequestParamsCriteriaBuilderTest {
                         )
                 ));
 
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -193,7 +211,7 @@ public class RequestParamsCriteriaBuilderTest {
         Map<RequestObject, Object> filters = ImmutableMap.of(
                 RequestField.of("foo"),
                 ImmutableMap.of(RequestField.of("bar"), Maps.newHashMap()));
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test
@@ -206,7 +224,7 @@ public class RequestParamsCriteriaBuilderTest {
                 )
         );
 
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(
                 Criteria.where("name").regex("^John", "i"),
                 Criteria.where("lastName").in("Doe", "Smith")));
@@ -229,7 +247,7 @@ public class RequestParamsCriteriaBuilderTest {
                         .build()
         );
 
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().andOperator(
                 Criteria.where("name").regex("^John", "i"),
                 Criteria.where("name").in("John", "Bob"),
@@ -246,7 +264,7 @@ public class RequestParamsCriteriaBuilderTest {
     public void testRootElementWithIncorrectValue() throws Exception {
         Map<RequestObject, Object> filters = ImmutableMap.of(
                 RequestLogicalOperator.of(LogicalOperatorType.OR), "incorrectTypeValue");
-        RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        requestParamsCriteriaBuilder.build(filters);
     }
 
     @Test
@@ -264,7 +282,7 @@ public class RequestParamsCriteriaBuilderTest {
                 "name", "remappedName",
                 "lastName", "remappedLastName"
         ));
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters, fieldMapper);
+        Criteria result = requestParamsCriteriaBuilder.build(filters, fieldMapper);
         assertThat(result).isEqualTo(new Criteria().orOperator(
                 Criteria.where("remappedName").regex("^John", "i"),
                 Criteria.where("secondName").regex("^Bob", "i"),
@@ -283,7 +301,7 @@ public class RequestParamsCriteriaBuilderTest {
         );
 
         FieldMapper fieldMapper = FieldMapper.of(ImmutableMap.of());
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder()
+        Criteria result = requestParamsCriteriaBuilder
                 .build(Criteria.where("initialField").is("initialValue"), filters, fieldMapper);
         assertThat(result).isEqualTo(new Criteria().andOperator(
                 Criteria.where("initialField").is("initialValue"),
@@ -303,10 +321,21 @@ public class RequestParamsCriteriaBuilderTest {
                 RequestField.of("lastName"), ImmutableMap.of(RequestOperator.of(OperatorType.IN), Lists.newArrayList("Doe", "Smith"))
         );
 
-        Criteria result = RequestParamsCriteriaBuilder.newBuilder().build(filters);
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().andOperator(
                 Criteria.where("name").regex("^John", "i"),
                 Criteria.where("secondName").regex("^Bob", "i"),
                 Criteria.where("lastName").in("Doe", "Smith")));
+    }
+
+    @Test
+    public void testProduceCriteriaWithDateElements() throws Exception {
+        Map<RequestObject, Object> filters = ImmutableMap.of(
+                RequestField.of("date"), ImmutableMap.of(RequestOperator.of(OperatorType.LESS_THAN), "2016-01-01T22:54:36.115Z")
+        );
+
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
+        Criteria expectedCriteria = Criteria.where("date").lt(ZonedDateTime.of(2016, 1, 1, 22, 54, 36, 115000000, ZoneId.systemDefault()));
+        assertThat(result).isEqualTo(expectedCriteria);
     }
 }

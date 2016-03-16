@@ -3,6 +3,7 @@ package com.neoteric.starter.mongo.request.processors.fields;
 import com.google.common.collect.Lists;
 import com.neoteric.starter.mongo.request.FieldMapper;
 import com.neoteric.starter.request.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
@@ -10,9 +11,10 @@ import java.util.Map;
 
 import static com.neoteric.starter.mongo.request.Mappings.LOGICAL_OPERATORS;
 
-public enum MongoFieldToLogicalOperatorSubProcessor implements MongoFieldSubProcessor<RequestLogicalOperator> {
+public class MongoFieldToLogicalOperatorSubProcessor implements MongoFieldSubProcessor<RequestLogicalOperator> {
 
-    INSTANCE;
+    @Autowired
+    private MongoFieldToOperatorSubProcessor mongoFieldToOperatorSubProcessor;
 
     @Override
     public Boolean apply(RequestObjectType key) {
@@ -27,11 +29,10 @@ public enum MongoFieldToLogicalOperatorSubProcessor implements MongoFieldSubProc
         Map<RequestObject, Object> logicalOperatorValues = (Map<RequestObject, Object>) logicalOperatorObjectValues;
         List<Criteria> criteriaElements = Lists.newArrayList();
         logicalOperatorValues.forEach((requestObject, operatorValue) -> {
-            if (!MongoFieldToOperatorSubProcessor.INSTANCE.apply(requestObject.getType())) {
+            if (!mongoFieldToOperatorSubProcessor.apply(requestObject.getType())) {
                 throw new IllegalArgumentException(requestObject.getType() + " cannot be applied to LogicalOperator in non root.");
             }
-            Criteria whereCriteria = MongoFieldToOperatorSubProcessor.INSTANCE
-                    .build(field, (RequestOperator) requestObject, operatorValue, fieldMapper);
+            Criteria whereCriteria = mongoFieldToOperatorSubProcessor.build(field, (RequestOperator) requestObject, operatorValue, fieldMapper);
             criteriaElements.add(whereCriteria);
         });
         return LOGICAL_OPERATORS.get(logicalOperator.getOperator()).apply(new Criteria(), criteriaElements.stream().toArray(Criteria[]::new));
