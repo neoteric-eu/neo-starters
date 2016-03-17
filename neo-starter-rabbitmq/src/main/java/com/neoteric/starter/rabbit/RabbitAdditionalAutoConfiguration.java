@@ -12,10 +12,13 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.retry.RepublishMessageRecoverer;
 import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -39,9 +42,9 @@ import static com.neoteric.starter.Constants.REQUEST_ID;
 @Configuration
 @ConditionalOnClass({RabbitTemplate.class, Channel.class})
 @AutoConfigureAfter(RabbitAutoConfiguration.class)
-public class RabbitAdditionalAutoConfiguration1 {
+public class RabbitAdditionalAutoConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RabbitAdditionalAutoConfiguration1.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RabbitAdditionalAutoConfiguration.class);
     public static final String ERROR_EXCHANGE = "DLE";
 
     @Autowired
@@ -50,6 +53,9 @@ public class RabbitAdditionalAutoConfiguration1 {
     @Autowired
     @Qualifier("rabbitListenerContainerFactory")
     SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory;
+
+    @Autowired
+    MessageConverter messageConverter;
 
     @Bean
     public Jackson2JsonMessageConverter jacksonMessageConverter(ObjectMapper objectMapper) {
@@ -66,10 +72,10 @@ public class RabbitAdditionalAutoConfiguration1 {
     }
 
     @PostConstruct
-    public void setAdviceChain(){//MessageConverter messageConverter) {
+    public void setAdviceChain() {
         // the order of Advice chain is important to retain requestId in LogOnRetryListener
         rabbitListenerContainerFactory.setAdviceChain(tracingOnListener(), retryOperations());
-        //rabbitListenerContainerFactory.setMessageConverter(messageConverter);
+        rabbitListenerContainerFactory.setMessageConverter(messageConverter);
     }
 
     private Advice retryOperations() {
@@ -133,7 +139,7 @@ public class RabbitAdditionalAutoConfiguration1 {
     }
 
     @Bean
-    public RabbitTemplate tracedRabbitTemplate() {
-        return new RabbitTemplate();
+    public TracedRabbitTemplate tracedRabbitTemplate(ConnectionFactory connectionFactor, ContentTypeDelegatingMessageConverter messageConverter) {
+        return new TracedRabbitTemplate(connectionFactor, messageConverter);
     }
 }
