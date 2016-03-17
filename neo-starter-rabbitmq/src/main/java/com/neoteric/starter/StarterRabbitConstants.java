@@ -1,9 +1,9 @@
 package com.neoteric.starter;
 
-public final class Constants {
+public final class StarterRabbitConstants {
 
 
-    private Constants() {
+    private StarterRabbitConstants() {
         // Prevents instantiation
     }
     public static final String REQUEST_ID = "REQUEST_ID";
