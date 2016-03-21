@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-samples</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0.160321120656</version>
     </parent>
 
     <artifactId>neo-starter-sample-simple</artifactId>
