@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public interface Mappings {
 
@@ -35,5 +36,17 @@ public interface Mappings {
             .put(OperatorType.IN, (criteria, in) -> criteria.in(((List) in).stream().toArray(Object[]::new)))
             .put(OperatorType.NOT_IN, (criteria, nin) -> criteria.nin(((List) nin).stream().toArray(Object[]::new)))
             .put(OperatorType.STARTS_WITH, (criteria, startsWith) -> criteria.regex(Pattern.compile("^" + startsWith, Pattern.CASE_INSENSITIVE)))
+            .put(OperatorType.ALL, (criteria, all) -> criteria.all(((List) all).stream().toArray(Object[]::new)))
+            .put(OperatorType.REGEX, (criteria, regex) -> buildRegex(criteria, regex))
             .build();
+
+    static Criteria buildRegex(Criteria criteria, Object regexValue) {
+        if (regexValue instanceof List) {
+            return criteria.all(((List<String>) regexValue).stream()
+                    .map(regex -> Pattern.compile(regex))
+                    .collect(Collectors.toList()));
+        } else {
+            return criteria.regex((String) regexValue);
+        }
+    }
 }

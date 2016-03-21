@@ -7,6 +7,7 @@ import com.neoteric.starter.request.RequestField;
 import com.neoteric.starter.request.RequestLogicalOperator;
 import com.neoteric.starter.request.RequestObject;
 import com.neoteric.starter.request.RequestObjectType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
@@ -14,9 +15,10 @@ import java.util.Map;
 
 import static com.neoteric.starter.mongo.request.Mappings.LOGICAL_OPERATORS;
 
-public enum MongoRequestLogicalOperatorProcessor implements MongoRequestObjectProcessor<RequestLogicalOperator> {
+public class MongoRequestLogicalOperatorProcessor implements MongoRequestObjectProcessor<RequestLogicalOperator> {
 
-    INSTANCE;
+    @Autowired
+    private MongoRequestFieldProcessor mongoRequestFieldProcessor;
 
     @Override
     public Boolean apply(RequestObjectType key) {
@@ -27,13 +29,13 @@ public enum MongoRequestLogicalOperatorProcessor implements MongoRequestObjectPr
     public List<Criteria> build(RequestLogicalOperator logicalOperator, Map<RequestObject, Object> rootLogicalValues, FieldMapper fieldMapper) {
         List<Criteria> criteriaElements = Lists.newArrayList();
         rootLogicalValues.forEach((requestObject, logicalValue) -> {
-            if (!MongoRequestFieldProcessor.INSTANCE.apply(requestObject.getType())) {
+            if (!mongoRequestFieldProcessor.apply(requestObject.getType())) {
                 throw new IllegalArgumentException(requestObject.getType() + " cannot be applied to LogicalOperator in root.");
             }
             if (!(logicalValue instanceof Map)) {
                 throw new IllegalArgumentException("LogicalOperator expect Map as argument, but get: " + logicalValue);
             }
-            List<Criteria> fieldCriterias = MongoRequestFieldProcessor.INSTANCE.build((RequestField) requestObject, (Map) logicalValue, fieldMapper);
+            List<Criteria> fieldCriterias = mongoRequestFieldProcessor.build((RequestField) requestObject, (Map) logicalValue, fieldMapper);
             criteriaElements.addAll(fieldCriterias);
         });
         Mappings.LogicalOperatorFunction logicalOperatorFunction = LOGICAL_OPERATORS.get(logicalOperator.getOperator());

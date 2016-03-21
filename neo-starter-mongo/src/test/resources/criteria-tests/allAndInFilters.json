@@ -1,0 +1,6 @@
+{
+  "tags": {
+    "$all": ["Neoteric", "Java"],
+    "$in": ["Devops", "MongoDB"]
+  }
+}

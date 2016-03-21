@@ -1,5 +1,7 @@
 package com.neoteric.starter.mongo.model;
 
+import com.google.common.collect.Lists;
+
 import java.time.ZonedDateTime;
 
 public class FooModelMother {
@@ -13,6 +15,13 @@ public class FooModelMother {
                 .setName(name)
                 .setCount(count)
                 .setDate(date)
+                .build();
+    }
+
+    public static FooModel withTags(String name, String... tags) {
+        return FooModel.newBuilder()
+                .setName(name)
+                .setTags(Lists.newArrayList(tags))
                 .build();
     }
 

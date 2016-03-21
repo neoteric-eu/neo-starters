@@ -1,6 +1,5 @@
 package com.neoteric.starter.mongo.request.processors;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.neoteric.starter.mongo.request.FieldMapper;
 import com.neoteric.starter.mongo.request.processors.fields.MongoFieldSubProcessor;
@@ -9,18 +8,20 @@ import com.neoteric.starter.mongo.request.processors.fields.MongoFieldToOperator
 import com.neoteric.starter.request.RequestField;
 import com.neoteric.starter.request.RequestObject;
 import com.neoteric.starter.request.RequestObjectType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-public enum MongoRequestFieldProcessor implements MongoRequestObjectProcessor<RequestField> {
+public class MongoRequestFieldProcessor implements MongoRequestObjectProcessor<RequestField> {
 
-    INSTANCE;
+    @Autowired
+    private MongoFieldToOperatorSubProcessor mongoFieldToOperatorSubProcessor;
 
-    private static final List<MongoFieldSubProcessor> FIELD_SUB_PROCESSORS = ImmutableList.of(
-            MongoFieldToLogicalOperatorSubProcessor.INSTANCE, MongoFieldToOperatorSubProcessor.INSTANCE
-    );
+    @Autowired
+    private MongoFieldToLogicalOperatorSubProcessor mongoFieldToLogicalOperatorSubProcessor;
 
     @Override
     public Boolean apply(RequestObjectType key) {
@@ -31,9 +32,8 @@ public enum MongoRequestFieldProcessor implements MongoRequestObjectProcessor<Re
     public List<Criteria> build(RequestField field, Map<RequestObject, Object> fieldValues, FieldMapper fieldMapper) {
         List<Criteria> allFieldCriteria = Lists.newArrayList();
 
-        //TODO: Can be only one logical operator within field (since map will not allow duplicates)
         fieldValues.forEach((requestObject, operatorValue) -> {
-            Criteria criteria = FIELD_SUB_PROCESSORS.stream()
+            Criteria criteria = Stream.<MongoFieldSubProcessor>of(mongoFieldToOperatorSubProcessor, mongoFieldToLogicalOperatorSubProcessor)
                     .filter(mongoFieldSubProcessor -> mongoFieldSubProcessor.apply(requestObject.getType()))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException(requestObject.getType() + " cannot be applied to Field."))
