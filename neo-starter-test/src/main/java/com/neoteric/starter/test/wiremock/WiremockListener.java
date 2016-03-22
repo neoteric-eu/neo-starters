@@ -3,7 +3,7 @@ package com.neoteric.starter.test.wiremock;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.neoteric.starter.test.StarterTestUtils;
-import com.neoteric.starter.test.wiremock.ribbon.RibbonStaticServer;
+import com.neoteric.starter.test.wiremock.ribbon.RibbonTestServerHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
@@ -29,7 +29,7 @@ public class WiremockListener extends AbstractTestExecutionListener {
 
         port = getFreeServerPort();
         server = new WireMockServer(port);
-        RibbonStaticServer.port = port;
+        RibbonTestServerHolder.setPort(port);
         LOG.info("{}WireMock started on port {}\n", LOG_PREFIX, port);
 
     }
