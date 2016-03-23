@@ -57,9 +57,15 @@ public class RabbitAdditionalAutoConfiguration {
     MessageConverter messageConverter;
 
     @Bean
-    public Jackson2JsonMessageConverter jacksonMessageConverter(ObjectMapper objectMapper) {
+    public SimpleNameTypeMapper simpleNameTypeMapper() {
+        return new SimpleNameTypeMapper();
+    }
+
+    @Bean
+    public Jackson2JsonMessageConverter jacksonMessageConverter(ObjectMapper objectMapper, SimpleNameTypeMapper simpleNameTypeMapper) {
         Jackson2JsonMessageConverter jacksonMessageConverter = new Jackson2JsonMessageConverter();
         jacksonMessageConverter.setJsonObjectMapper(objectMapper);
+        jacksonMessageConverter.setJavaTypeMapper(simpleNameTypeMapper);
         return jacksonMessageConverter;
     }
 
@@ -69,7 +75,6 @@ public class RabbitAdditionalAutoConfiguration {
         messageConverter.addDelgate(MessageProperties.CONTENT_TYPE_JSON, jacksonMessageConverter);
         return messageConverter;
     }
-
     @PostConstruct
     public void setAdviceChain() {
         // the order of Advice chain is important to retain requestId in LogOnRetryListener
