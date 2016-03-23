@@ -1,3 +1,0 @@
-spring:
-  rabbitmq:
-    packageToScan: com.neoteric

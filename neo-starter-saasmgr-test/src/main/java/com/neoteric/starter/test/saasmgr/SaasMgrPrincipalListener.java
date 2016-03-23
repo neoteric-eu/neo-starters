@@ -29,9 +29,9 @@ public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
         if (StarterTestUtils.doesNotHaveActiveProfile(testContext, FIXED_SAAS_MGR)) {
             return;
         }
-        FixedSaasMgrPrincipal annotation = testContext.getTestClass().getAnnotation(FixedSaasMgrPrincipal.class);
+        FixedSaasMgr annotation = testContext.getTestClass().getAnnotation(FixedSaasMgr.class);
         if (annotation == null) {
-            throw new IllegalStateException("Test class with 'fixedSaasMgr' profile should be annotated with @FixedSaasMgrPrincipal");
+            throw new IllegalStateException("Test class with 'fixedSaasMgr' profile should be annotated with @FixedSaasMgr");
         }
 
         DETAILS_HOLDER.set(Details.builder()
@@ -51,7 +51,7 @@ public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
         if (StarterTestUtils.doesNotHaveActiveProfile(testContext, FIXED_SAAS_MGR)) {
             return;
         }
-        FixedSaasMgrPrincipal annotation = testContext.getTestMethod().getAnnotation(FixedSaasMgrPrincipal.class);
+        FixedSaasMgr annotation = testContext.getTestMethod().getAnnotation(FixedSaasMgr.class);
         if (annotation == null) {
             return;
         }
@@ -63,7 +63,7 @@ public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
         if (StarterTestUtils.doesNotHaveActiveProfile(testContext, FIXED_SAAS_MGR)) {
             return;
         }
-        FixedSaasMgrPrincipal annotation = testContext.getTestMethod().getAnnotation(FixedSaasMgrPrincipal.class);
+        FixedSaasMgr annotation = testContext.getTestMethod().getAnnotation(FixedSaasMgr.class);
         if (annotation == null) {
             return;
         }
@@ -78,7 +78,7 @@ public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
         DETAILS_HOLDER.remove();
     }
 
-    private void setPrincipal(FixedSaasMgrPrincipal annotation) {
+    private void setPrincipal(FixedSaasMgr annotation) {
         StaticSaasMgrPrincipal.customerId = annotation.customerId();
         StaticSaasMgrPrincipal.customerName = annotation.customerName();
         StaticSaasMgrPrincipal.userId = annotation.userId();

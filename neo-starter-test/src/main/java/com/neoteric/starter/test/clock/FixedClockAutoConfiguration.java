@@ -23,7 +23,7 @@ public class FixedClockAutoConfiguration {
     @Bean
     @Primary
     Clock clock() {
-        return new StaticClock(Instant.parse("2010-01-10T10:00:00Z"), TimeZone.getDefault().toZoneId());
+        return new StaticClock(Instant.parse(FixedClock.DEFAULT), TimeZone.getDefault().toZoneId());
     }
 
 }
