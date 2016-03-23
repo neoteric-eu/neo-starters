@@ -10,18 +10,20 @@ import org.springframework.amqp.support.converter.ClassMapper;
 import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.Jackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.MessageConversionException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ClassUtils;
 
 import java.io.IOException;
 import java.util.Set;
 
-public class SimpleNameTypeMapper extends DefaultJackson2JavaTypeMapper implements Jackson2JavaTypeMapper, ClassMapper {
+final class SimpleNameTypeMapper extends DefaultJackson2JavaTypeMapper implements Jackson2JavaTypeMapper, ClassMapper {
 
     private final TopLevelClassesFinder topLevelClassesFinder = new TopLevelClassesFinder();
 
-    @Value("${spring.rabbitmq.packageToScan}")
-    private String packageToScan;
+    private final StarterRabbitProperties rabbitProperties;
+
+    SimpleNameTypeMapper(StarterRabbitProperties rabbitProperties) {
+        this.rabbitProperties = rabbitProperties;
+    }
 
     @Override
     public JavaType toJavaType(MessageProperties properties) {
@@ -68,15 +70,15 @@ public class SimpleNameTypeMapper extends DefaultJackson2JavaTypeMapper implemen
         properties.getHeaders().put(headerName, clazz.getSimpleName());
     }
 
-    class TopLevelClassesFinder {
+    private class TopLevelClassesFinder {
 
         private Set<ClassPath.ClassInfo> classesInPackage = null;
 
-        public Set<ClassPath.ClassInfo> findAvailableClasses() {
+        Set<ClassPath.ClassInfo> findAvailableClasses() {
             if (classesInPackage == null) {
                 ClassLoader cl = getClass().getClassLoader();
                 try {
-                    classesInPackage = ClassPath.from(cl).getTopLevelClassesRecursive(packageToScan);
+                    classesInPackage = ClassPath.from(cl).getTopLevelClassesRecursive(rabbitProperties.getPackagesToScan());
                 } catch (IOException e) {
                     throw new MessageConversionException("failed to scan classes: {}", e);
                 }

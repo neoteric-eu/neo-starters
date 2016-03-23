@@ -1,7 +1,6 @@
-package com.neoteric.starter;
+package com.neoteric.starter.rabbit;
 
 public final class StarterRabbitConstants {
-
 
     private StarterRabbitConstants() {
         // Prevents instantiation
