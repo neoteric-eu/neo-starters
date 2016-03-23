@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.neoteric.starter.StarterRabbitConstants.REQUEST_ID;
+import static com.neoteric.starter.rabbit.StarterRabbitConstants.REQUEST_ID;
 
 public class TracedRabbitTemplate extends RabbitTemplate {
 
