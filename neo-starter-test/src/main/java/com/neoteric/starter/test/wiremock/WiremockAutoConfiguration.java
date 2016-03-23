@@ -1,7 +1,7 @@
 package com.neoteric.starter.test.wiremock;
 
 import com.google.common.collect.Lists;
-import com.neoteric.starter.test.wiremock.ribbon.RibbonTestServerHolder;
+import com.neoteric.starter.test.wiremock.ribbon.RibbonTestServer;
 import com.netflix.loadbalancer.BaseLoadBalancer;
 import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.LoadBalancerBuilder;
@@ -29,7 +29,7 @@ public class WiremockAutoConfiguration {
     @Primary
     public ILoadBalancer ribbonLoadBalancer() {
         BaseLoadBalancer balancer = LoadBalancerBuilder.newBuilder()
-                .buildFixedServerListLoadBalancer(Lists.newArrayList(RibbonTestServerHolder.SERVER));
+                .buildFixedServerListLoadBalancer(Lists.newArrayList(RibbonTestServer.get()));
         return balancer;
     }
 
