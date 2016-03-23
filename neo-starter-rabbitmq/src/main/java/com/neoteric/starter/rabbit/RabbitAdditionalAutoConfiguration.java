@@ -2,11 +2,10 @@ package com.neoteric.starter.rabbit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.Channel;
+import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.log4j.MDC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
@@ -23,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.RetryPolicy;
@@ -36,15 +36,19 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.neoteric.starter.StarterRabbitConstants.REQUEST_ID;
+import static com.neoteric.starter.rabbit.StarterRabbitConstants.REQUEST_ID;
 
+@Slf4j
 @Configuration
 @ConditionalOnClass({RabbitTemplate.class, Channel.class})
 @AutoConfigureAfter(RabbitAutoConfiguration.class)
+@EnableConfigurationProperties(StarterRabbitProperties.class)
 public class RabbitAdditionalAutoConfiguration {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RabbitAdditionalAutoConfiguration.class);
     public static final String ERROR_EXCHANGE = "DLE";
+
+    @Autowired
+    StarterRabbitProperties rabbitProperties;
 
     @Autowired
     RabbitTemplate rabbitTemplate;
@@ -58,7 +62,7 @@ public class RabbitAdditionalAutoConfiguration {
 
     @Bean
     public SimpleNameTypeMapper simpleNameTypeMapper() {
-        return new SimpleNameTypeMapper();
+        return new SimpleNameTypeMapper(rabbitProperties);
     }
 
     @Bean
