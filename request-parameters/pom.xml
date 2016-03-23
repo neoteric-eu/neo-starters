@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-dependencies</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.1.0.160323205444</version>
         <relativePath>../neo-starter-dependencies</relativePath>
     </parent>
 
