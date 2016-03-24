@@ -2,6 +2,7 @@ package com.neoteric.starter.jersey;
 
 import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.exception.mapper.*;
+import com.neoteric.starter.jersey.time.ZonedDateTimeConverterProvider;
 import com.neoteric.starter.jersey.validation.ValidationConfigurationProvider;
 import com.neoteric.starter.swagger.SwaggerProperties;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
@@ -32,6 +33,7 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
     public void register() {
         logRegister(MultiPartFeature.class);
         logRegister(ObjectMapperProvider.class);
+        logRegister(ZonedDateTimeConverterProvider.class);
         registerExceptionMappers();
         logRegister(ValidationConfigurationProvider.class);
         String[] packagesToScan = starterJerseyProperties.getPackagesToScan();
@@ -51,6 +53,7 @@ public abstract class AbstractJerseyConfig extends ResourceConfig {
         logRegister(ResourceNotFoundExceptionMapper.class);
         logRegister(ConstraintViolationExceptionMapper.class);
         logRegister(GlobalExceptionMapper.class);
+        logRegister(QueryParamExceptionMapper.class);
     }
 
     private void logRegister(final Class<?> componentClass) {
