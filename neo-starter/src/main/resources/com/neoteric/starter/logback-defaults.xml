@@ -53,7 +53,7 @@
     <logger name="com.netflix.hystrix.strategy.properties" level="INFO"/>
     <logger name="com.netflix.loadbalancer" level="INFO"/>
 
-    <logger name="net.sf.ehcache.statistics" level="INFO"/>
+    <logger name="net.sf.ehcache" level="INFO"/>
     <logger name="org.reflections" level="INFO"/>
 
     <root level="DEBUG">

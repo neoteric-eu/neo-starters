@@ -5,7 +5,36 @@
     <property name="CONSOLE_LOG_PATTERN"
               value="%clr(%d{yy-MM-dd HH:mm:ss.SSS}){faint} %clr([%X{REQUEST_ID}]){red} %clr(%5p) %clr(${PID:- }){magenta} %clr(-){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%rEx}"/>
 
-        <!-- Tests -->
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <logger name="com.neoteric" level="TRACE"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.mongodb" level="INFO"/>
+    <logger name="org.mongodb.driver.cluster" level="INFO"/>
+    <logger name="org.quartz" level="INFO"/>
+    <logger name="org.apache.activemq" level="DEBUG"/>
+    <logger name="org.apache.activemq.transport" level="INFO"/>
+    <logger name="io.swagger" level="INFO"/>
+
+    <!-- Spring Boot -->
+    <logger name="jndi" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.hibernate.validator" level="INFO"/>
+    <logger name="org.jboss" level="INFO"/>
+    <logger name="org.apache.sshd" level="INFO"/>
+    <logger name="org.apache.http" level="INFO"/>
+
+    <logger name="com.netflix.servo" level="INFO"/>
+    <logger name="com.netflix.discovery" level="INFO"/>
+
+    <logger name="com.netflix.hystrix.strategy" level="INFO"/>
+    <logger name="com.netflix.hystrix.strategy.properties" level="INFO"/>
+    <logger name="com.netflix.loadbalancer" level="INFO"/>
+
+    <logger name="net.sf.ehcache" level="INFO"/>
+    <logger name="org.reflections" level="INFO"/>
+
+    <!-- Tests -->
     <logger name="com.neoteric.starter.test.mongo.EmbeddedMongo" level="WARN"/>
     <logger name="com.jayway.restassured.internal" level="INFO"/>
     <logger name="de.flapdoodle.embed" level="INFO"/>
