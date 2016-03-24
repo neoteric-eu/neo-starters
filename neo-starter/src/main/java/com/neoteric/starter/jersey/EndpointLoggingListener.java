@@ -1,5 +1,7 @@
 package com.neoteric.starter.jersey;
 
+import com.neoteric.starter.StarterConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.server.model.Resource;
 import org.glassfish.jersey.server.model.ResourceMethod;
 import org.glassfish.jersey.server.model.ResourceModel;
@@ -7,8 +9,6 @@ import org.glassfish.jersey.server.monitoring.ApplicationEvent;
 import org.glassfish.jersey.server.monitoring.ApplicationEventListener;
 import org.glassfish.jersey.server.monitoring.RequestEvent;
 import org.glassfish.jersey.server.monitoring.RequestEventListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -79,9 +79,8 @@ public class EndpointLoggingListener implements ApplicationEventListener {
         return path.startsWith("/") ? basePath + path : basePath + "/" + path;
     }
 
+    @Slf4j
     private static class ResourceLogDetails {
-
-        private static final Logger logger = LoggerFactory.getLogger(ResourceLogDetails.class);
 
         private static final Comparator<EndpointLogLine> COMPARATOR
                 = Comparator.comparing((EndpointLogLine e) -> e.path)
@@ -90,11 +89,11 @@ public class EndpointLoggingListener implements ApplicationEventListener {
         private final Set<EndpointLogLine> logLines = new TreeSet<>(COMPARATOR);
 
         private void log() {
-            StringBuilder sb = new StringBuilder("\nAll endpoints for Jersey application\n");
+            StringBuilder sb = new StringBuilder();
             logLines.stream().forEach((line) -> {
                 sb.append(line).append("\n");
             });
-            logger.info(sb.toString());
+            LOG.info("{}All endpoints for Jersey application:\n{}", StarterConstants.LOG_PREFIX, sb.toString());
         }
 
         private void addEndpointLogLines(Set<EndpointLogLine> logLines) {
