@@ -31,12 +31,12 @@ final class RabbitEntityTypeMapper extends DefaultJackson2JavaTypeMapper impleme
 
     @Override
     public JavaType toJavaType(MessageProperties properties) {
-        JavaType classType = getClassType(properties);
+        JavaType classType = getClassType(properties, getEntityIdFieldName(), getClassIdFieldName());
         if (!classType.isContainerType() || classType.isArrayType()) {
             return classType;
         }
 
-        JavaType contentClassType = getEntityIdType(retrieveHeader(properties, getContentEntityIdFieldName()));
+        JavaType contentClassType = getClassType(properties, getContentEntityIdFieldName(), getContentClassIdFieldName());
         if (classType.getKeyType() == null) {
             return CollectionType.construct(classType.getRawClass(), contentClassType);
         }
@@ -54,7 +54,9 @@ final class RabbitEntityTypeMapper extends DefaultJackson2JavaTypeMapper impleme
 
         if (javaType.isContainerType() && !javaType.isArrayType()) {
             addHeader(properties, getContentClassIdFieldName(), javaType.getContentType().getRawClass());
-            addHeader(properties, getContentEntityIdFieldName(), javaType.getContentType().getRawClass().getAnnotation(RabbitEntity.class).value());
+            if (annotatedClassesProvider.getAnnotatedClassesJavaTypes().containsValue(javaType.getContentType())) {
+                addHeader(properties, getContentEntityIdFieldName(), javaType.getContentType().getRawClass().getAnnotation(RabbitEntity.class).value());
+            }
         }
 
         if (javaType.getKeyType() != null) {
@@ -62,13 +64,18 @@ final class RabbitEntityTypeMapper extends DefaultJackson2JavaTypeMapper impleme
         }
     }
 
-    private JavaType getClassType(MessageProperties properties) {
-        if (properties.getHeaders().containsKey(getEntityIdFieldName())) {
-            return getEntityIdType(retrieveHeader(properties, getEntityIdFieldName()));
+    private JavaType getClassType(MessageProperties properties, String entityIdHeader, String classIdHeader) {
+        if (properties.getHeaders().containsKey(entityIdHeader)) {
+            return getEntityIdType(retrieveHeader(properties, entityIdHeader));
 
         } else {
-            return getClassIdType(retrieveHeader(properties, getClassIdFieldName()));
+            return getClassIdType(retrieveHeader(properties, classIdHeader));
         }
+    }
+
+    private JavaType getEntityIdType(String entityId) {
+        return Optional.ofNullable(annotatedClassesProvider.getAnnotatedClassesJavaTypes().get(entityId))
+                .orElseThrow(() -> new IllegalArgumentException("Type: " + entityId + " is not a valid RabbitMQ entity"));
     }
 
     private JavaType getClassIdType(String classId) {
@@ -92,11 +99,6 @@ final class RabbitEntityTypeMapper extends DefaultJackson2JavaTypeMapper impleme
 
     private String getContentEntityIdFieldName() {
         return "__ContentEntityId__";
-    }
-
-    private JavaType getEntityIdType(String entityId) {
-        return Optional.ofNullable(annotatedClassesProvider.getAnnotatedClassesJavaTypes().get(entityId))
-                .orElseThrow(() -> new IllegalArgumentException("Type: " + entityId + " is not a valid RabbitMQ entity"));
     }
 
     protected void addHeader(MessageProperties properties, String headerName, String headerValue) {
