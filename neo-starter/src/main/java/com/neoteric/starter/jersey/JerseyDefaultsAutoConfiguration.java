@@ -8,6 +8,7 @@ import com.neoteric.starter.jersey.validation.ValidationConfigurationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -111,6 +112,7 @@ public class JerseyDefaultsAutoConfiguration {
                 config.register(GlobalExceptionMapper.class);
                 config.register(QueryParamExceptionMapper.class);
                 config.register(ValidationConfigurationProvider.class);
+                config.property(ServerProperties.WADL_FEATURE_DISABLE, true);
             };
         }
     }

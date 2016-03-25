@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonDeserialize(builder = JsonApiList.JsonApiListBuilder.class)
 public class JsonApiList<T> {
 
@@ -87,11 +86,15 @@ public class JsonApiList<T> {
         return new JsonApiListBuilder<T>(data);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class JsonApiListBuilder<T> {
 
         private List<T> data;
         private Map<String, Object> meta;
+
+        public JsonApiListBuilder() {
+        }
 
         public JsonApiListBuilder(List<T> data) {
             this.data = data;
