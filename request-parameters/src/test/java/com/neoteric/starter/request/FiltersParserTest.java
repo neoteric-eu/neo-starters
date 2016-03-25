@@ -117,5 +117,4 @@ public class FiltersParserTest {
         return mapper.readValue(jsonBytes, Map.class);
     }
 
-
 }
