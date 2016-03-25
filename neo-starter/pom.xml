@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-dependencies</artifactId>
-        <version>0.1.0.160325122050</version>
+        <version>0.1.0-SNAPSHOT</version>
         <relativePath>../neo-starter-dependencies</relativePath>
     </parent>
 
@@ -24,7 +24,7 @@
         <url>http://github.com/neoteric-eu/neo-starters</url>
         <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-      <tag>0.1.0.160325122050</tag>
+      <tag>HEAD</tag>
   </scm>
     <issueManagement>
         <system>Github</system>
