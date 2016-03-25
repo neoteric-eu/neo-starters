@@ -7,7 +7,9 @@ import org.hibernate.validator.parameternameprovider.ParanamerParameterNameProvi
 import javax.ws.rs.container.ResourceContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Provider;
 
+@Provider
 public class ValidationConfigurationProvider implements ContextResolver<ValidationConfig> {
 
     @Context

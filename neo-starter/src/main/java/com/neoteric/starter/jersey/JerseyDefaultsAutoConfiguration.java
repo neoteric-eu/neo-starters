@@ -1,11 +1,21 @@
 package com.neoteric.starter.jersey;
 
+import com.neoteric.starter.StarterConstants;
+import com.neoteric.starter.exception.mapper.*;
+import com.neoteric.starter.jersey.endpoint.EndpointLoggingListener;
+import com.neoteric.starter.jersey.time.ZonedDateTimeConverterProvider;
+import com.neoteric.starter.jersey.validation.ValidationConfigurationProvider;
+import lombok.extern.slf4j.Slf4j;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jersey.JerseyAutoConfiguration;
 import org.springframework.boot.autoconfigure.jersey.JerseyProperties;
+import org.springframework.boot.autoconfigure.jersey.ResourceConfigCustomizer;
 import org.springframework.boot.context.embedded.RegistrationBean;
 import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -13,6 +23,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -21,6 +33,7 @@ import javax.ws.rs.ApplicationPath;
 import java.util.Map;
 
 
+@Slf4j
 @Configuration
 @PropertySource("classpath:jersey-defaults.properties")
 @AutoConfigureBefore(JerseyAutoConfiguration.class)
@@ -84,4 +97,57 @@ public class JerseyDefaultsAutoConfiguration {
             registration.addInitParameter(entry.getKey(), entry.getValue());
         }
     }
+
+    @Configuration
+    static class ResourceConfigDefaults {
+        @Bean
+        public ResourceConfigCustomizer configDefaults() {
+            return config -> {
+                config.register(MultiPartFeature.class);
+                config.register(ZonedDateTimeConverterProvider.class);
+                config.register(ResourceNotFoundExceptionMapper.class);
+                config.register(ConstraintViolationExceptionMapper.class);
+                config.register(NotFoundExceptionMapper.class);
+                config.register(GlobalExceptionMapper.class);
+                config.register(QueryParamExceptionMapper.class);
+                config.register(ValidationConfigurationProvider.class);
+            };
+        }
+    }
+
+    @ConditionalOnProperty(prefix = "neostarter.swagger", name = "enabled", matchIfMissing = true)
+    @Configuration
+    static class ResourceConfigSwagger {
+
+        @Bean
+        public ResourceConfigCustomizer configSwagger() {
+            return config -> config.packages(StarterConstants.SWAGGER_PACKAGE);
+        }
+    }
+
+    @ConditionalOnProperty(prefix = "neostarter.jersey", name = "logEndpointsOnStartup", matchIfMissing = true)
+    @Configuration
+    static class ResourceConfigEndpointLogging {
+
+        @Autowired
+        private JerseyProperties jersey;
+
+        @Bean
+        public ResourceConfigCustomizer configEndpointLogging() {
+            return config -> config.register(new EndpointLoggingListener(jersey.getApplicationPath()));
+        }
+    }
+
+    @ConditionalOnClass({AccessDeniedException.class, AuthenticationException.class})
+    @Configuration
+    static class ResourceConfigAuthExceptionMapper {
+        @Bean
+        public ResourceConfigCustomizer configAuthExeptionMappers() {
+            return config -> {
+                config.register(AccessDeniedExceptionMapper.class);
+                config.register(AuthenticationExceptionMapper.class);
+            };
+        }
+    }
+
 }

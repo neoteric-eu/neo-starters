@@ -1,4 +1,4 @@
-package com.neoteric.starter.jersey;
+package com.neoteric.starter.jersey.endpoint;
 
 import com.neoteric.starter.StarterConstants;
 import lombok.extern.slf4j.Slf4j;

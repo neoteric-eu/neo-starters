@@ -8,8 +8,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties("neostarter.jersey")
 public class NeoStarterJerseyProperties {
-
-    private String[] packagesToScan;
-
     private boolean logEndpointsOnStartup = true;
 }
