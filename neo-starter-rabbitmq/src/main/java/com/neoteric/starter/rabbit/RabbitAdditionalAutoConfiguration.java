@@ -61,15 +61,15 @@ public class RabbitAdditionalAutoConfiguration {
     MessageConverter messageConverter;
 
     @Bean
-    public SimpleNameTypeMapper simpleNameTypeMapper() {
-        return new SimpleNameTypeMapper(rabbitProperties);
+    public RabbitEntityTypeMapper rabbitEntityTypeMapper() {
+        return new RabbitEntityTypeMapper(rabbitProperties);
     }
 
     @Bean
-    public Jackson2JsonMessageConverter jacksonMessageConverter(ObjectMapper objectMapper, SimpleNameTypeMapper simpleNameTypeMapper) {
+    public Jackson2JsonMessageConverter jacksonMessageConverter(ObjectMapper objectMapper, RabbitEntityTypeMapper rabbitEntityTypeMapper) {
         Jackson2JsonMessageConverter jacksonMessageConverter = new Jackson2JsonMessageConverter();
         jacksonMessageConverter.setJsonObjectMapper(objectMapper);
-        jacksonMessageConverter.setJavaTypeMapper(simpleNameTypeMapper);
+        jacksonMessageConverter.setJavaTypeMapper(rabbitEntityTypeMapper);
         return jacksonMessageConverter;
     }
 
