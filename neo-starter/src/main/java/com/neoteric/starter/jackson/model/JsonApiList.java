@@ -2,10 +2,7 @@ package com.neoteric.starter.jackson.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -16,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = JsonApiList.JsonApiListBuilder.class)
 public class JsonApiList<T> {
 
     public static final String DATA_JSON = "data";
@@ -87,11 +82,12 @@ public class JsonApiList<T> {
         return new JsonApiListBuilder<T>(data);
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
     public static class JsonApiListBuilder<T> {
-
         private List<T> data;
         private Map<String, Object> meta;
+
+        public JsonApiListBuilder() {
+        }
 
         public JsonApiListBuilder(List<T> data) {
             this.data = data;

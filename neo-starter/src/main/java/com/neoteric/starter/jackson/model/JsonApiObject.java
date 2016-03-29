@@ -78,6 +78,9 @@ public class JsonApiObject<T> {
         private T objectToWrap;
         private Map<String, Object> meta;
 
+        public JsonApiObjectBuilder() {
+        }
+
         public JsonApiObjectBuilder(T objectToWrap) {
             this.objectToWrap = objectToWrap;
         }
