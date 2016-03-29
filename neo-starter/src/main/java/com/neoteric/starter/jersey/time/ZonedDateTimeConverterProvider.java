@@ -9,6 +9,7 @@ import javax.ws.rs.ext.ParamConverterProvider;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 @Singleton
@@ -41,7 +42,11 @@ public class ZonedDateTimeConverterProvider implements ParamConverterProvider {
 
         @Override
         public String toString(ZonedDateTime value) {
-            return null;
+            if (value == null) {
+                return null;
+            }
+            //TODO: Use injected formatter
+            return value.format(DateTimeFormatter.ISO_INSTANT);
         }
     }
 }
