@@ -10,12 +10,6 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 public @interface FixedSaasMgr {
 
-    String DEFAULT_CUSTOMER_ID = "customerId";
-    String DEFAULT_CUSTOMER_NAME = "customerName";
-    String DEFAULT_EMAIL = "email";
-    String DEFAULT_USER_ID = "userId";
-    AccountStatus DEFAULT_STATUS = AccountStatus.ACTIVE;
-
     String customerId() default "customerId";
     String customerName() default "customerName";
     String email() default "email";

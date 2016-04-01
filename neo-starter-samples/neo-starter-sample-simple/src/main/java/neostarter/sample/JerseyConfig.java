@@ -1,13 +1,12 @@
 package neostarter.sample;
 
-import com.neoteric.starter.jersey.AbstractJerseyConfig;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.stereotype.Component;
 
 @Component
-public class JerseyConfig extends AbstractJerseyConfig {
+public class JerseyConfig extends ResourceConfig {
 
-    @Override
-    protected void configure() {
+    public JerseyConfig() {
         register(Endpoint.class);
     }
 }
