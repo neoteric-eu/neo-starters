@@ -14,4 +14,9 @@ public class StarterRabbitProperties {
      */
     private String packagesToScan = "com.neoteric";
 
+    /**
+     * Predefined exchange for dle/retry queues
+     */
+    private String dleExchange = null;
+
 }
