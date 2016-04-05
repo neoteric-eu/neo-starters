@@ -108,6 +108,7 @@ public class JerseyDefaultsAutoConfiguration {
                 config.register(ZonedDateTimeConverterProvider.class);
                 config.register(ResourceNotFoundExceptionMapper.class);
                 config.register(ConstraintViolationExceptionMapper.class);
+                config.register(IllegalArgumentExceptionMapper.class);
                 config.register(NotFoundExceptionMapper.class);
                 config.register(GlobalExceptionMapper.class);
                 config.register(QueryParamExceptionMapper.class);
