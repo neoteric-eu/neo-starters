@@ -7,13 +7,13 @@ import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.log4j.MDC;
 import org.springframework.amqp.AmqpRejectAndDontRequeueException;
+import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.rabbit.config.RetryInterceptorBuilder;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.retry.RepublishMessageRecoverer;
 import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -45,8 +45,6 @@ import static com.neoteric.starter.rabbit.StarterRabbitConstants.REQUEST_ID;
 @EnableConfigurationProperties(StarterRabbitProperties.class)
 public class RabbitAdditionalAutoConfiguration {
 
-    public static final String ERROR_EXCHANGE = "DLE";
-
     @Autowired
     StarterRabbitProperties rabbitProperties;
 
@@ -59,6 +57,9 @@ public class RabbitAdditionalAutoConfiguration {
 
     @Autowired
     MessageConverter messageConverter;
+
+    @Autowired
+    AmqpAdmin amqpAdmin;
 
     @Bean
     public RabbitEntityTypeMapper rabbitEntityTypeMapper() {
@@ -79,6 +80,7 @@ public class RabbitAdditionalAutoConfiguration {
         messageConverter.addDelgate(MessageProperties.CONTENT_TYPE_JSON, jacksonMessageConverter);
         return messageConverter;
     }
+
     @PostConstruct
     public void setAdviceChain() {
         // the order of Advice chain is important to retain requestId in LogOnRetryListener
@@ -89,7 +91,7 @@ public class RabbitAdditionalAutoConfiguration {
     private Advice retryOperations() {
         return RetryInterceptorBuilder.stateless()
                 .retryOperations(defaultRetryTemplate())
-                .recoverer(new RepublishMessageRecoverer(rabbitTemplate, ERROR_EXCHANGE))
+                .recoverer(new RetryMessageRecoverer(rabbitTemplate, amqpAdmin, rabbitProperties.getDleExchange()))
                 .build();
     }
 
@@ -103,7 +105,7 @@ public class RabbitAdditionalAutoConfiguration {
 
     private RetryPolicy defaultRetryPolicy() {
         SimpleRetryPolicy simpleRetryPolicy = new SimpleRetryPolicy();
-        simpleRetryPolicy.setMaxAttempts(2);
+        simpleRetryPolicy.setMaxAttempts(1);
 
         Map<Class<? extends Throwable>, RetryPolicy> dontRetryExceptions = new HashMap<>();
         dontRetryExceptions.put(AmqpRejectAndDontRequeueException.class, new NeverRetryPolicy());
