@@ -3,8 +3,6 @@ package com.neoteric.starter.jackson.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -13,7 +11,6 @@ import java.util.Map;
 import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonDeserialize(builder = JsonApiObject.JsonApiObjectBuilder.class)
 public class JsonApiObject<T> {
 
     public static final String DATA_JSON = "data";
@@ -73,7 +70,6 @@ public class JsonApiObject<T> {
         return new JsonApiObjectBuilder<T>(object);
     }
 
-    @JsonPOJOBuilder(withPrefix = "")
     public static class JsonApiObjectBuilder<T> {
         private T objectToWrap;
         private Map<String, Object> meta;

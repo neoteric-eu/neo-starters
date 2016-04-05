@@ -111,6 +111,7 @@ public class JerseyDefaultsAutoConfiguration {
                 config.register(NotFoundExceptionMapper.class);
                 config.register(GlobalExceptionMapper.class);
                 config.register(QueryParamExceptionMapper.class);
+                config.register(ResourceConflictExceptionMapper.class);
                 config.register(ValidationConfigurationProvider.class);
                 config.property(ServerProperties.WADL_FEATURE_DISABLE, true);
             };

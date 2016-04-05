@@ -17,7 +17,7 @@
 
     <properties>
         <spring-boot.version>1.4.0.M1</spring-boot.version>
-        <spring-cloud.version>Brixton.M5</spring-cloud.version>
+        <spring-cloud.version>Brixton.RC1</spring-cloud.version>
 
         <main.basedir>..</main.basedir>
         <java.version>1.8</java.version>
@@ -28,7 +28,7 @@
 
         <!-- Libraries -->
         <guava.version>19.0</guava.version>
-        <feign.version>8.14.4</feign.version>
+        <feign.version>8.15.1</feign.version>
         <swagger-jersey2-jaxrs.version>1.5.6</swagger-jersey2-jaxrs.version>
         <junit.version>4.11</junit.version>
         <assertj-core.version>3.2.0</assertj-core.version>
@@ -37,6 +37,8 @@
         <archaius-core.version>0.7.3</archaius-core.version>
         <jersey2-version>2.22.1</jersey2-version>
         <paranamer.version>2.8</paranamer.version>
+        <commons-io.version>2.4</commons-io.version>
+        <ical4j.version>1.0.2</ical4j.version>
 
         <!-- Test Libraries -->
         <assertj.version>3.3.0</assertj.version>
@@ -197,6 +199,16 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mnode.ical4j</groupId>
+                <artifactId>ical4j</artifactId>
+                <version>${ical4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
