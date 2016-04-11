@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+@Slf4j
 public class EndpointLoggingListener implements ApplicationEventListener {
 
     public final String applicationPath;
@@ -79,7 +80,6 @@ public class EndpointLoggingListener implements ApplicationEventListener {
         return path.startsWith("/") ? basePath + path : basePath + "/" + path;
     }
 
-    @Slf4j
     private static class ResourceLogDetails {
 
         private static final Comparator<EndpointLogLine> COMPARATOR

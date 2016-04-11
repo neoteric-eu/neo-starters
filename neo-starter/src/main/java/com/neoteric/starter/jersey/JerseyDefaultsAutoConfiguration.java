@@ -38,7 +38,7 @@ import java.util.Map;
 @Configuration
 @PropertySource("classpath:jersey-defaults.properties")
 @AutoConfigureBefore(JerseyAutoConfiguration.class)
-@EnableConfigurationProperties(NeoStarterJerseyProperties.class)
+@EnableConfigurationProperties({JerseyProperties.class, NeoStarterJerseyProperties.class})
 public class JerseyDefaultsAutoConfiguration {
 
     @Autowired
