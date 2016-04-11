@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 final class RabbitEntityTypeMapper extends DefaultJackson2JavaTypeMapper implements Jackson2JavaTypeMapper, ClassMapper {
 
     private static final Logger LOG = LoggerFactory.getLogger(RabbitEntityTypeMapper.class);
+    private static final JavaType objectJavaType = TypeFactory.defaultInstance().constructType(Object.class);
 
     private final StarterRabbitProperties rabbitProperties;
     private final AnnotatedClassesProvider annotatedClassesProvider = new AnnotatedClassesProvider();
@@ -75,7 +76,10 @@ final class RabbitEntityTypeMapper extends DefaultJackson2JavaTypeMapper impleme
 
     private JavaType getEntityIdType(String entityId) {
         return Optional.ofNullable(annotatedClassesProvider.getAnnotatedClassesJavaTypes().get(entityId))
-                .orElseThrow(() -> new IllegalArgumentException("Type: " + entityId + " is not a valid RabbitMQ entity"));
+                .orElseGet(() -> {
+                    LOG.info("Type: " + entityId + " is not a valid RabbitMQ entity");
+                    return objectJavaType;
+                });
     }
 
     private JavaType getClassIdType(String classId) {
