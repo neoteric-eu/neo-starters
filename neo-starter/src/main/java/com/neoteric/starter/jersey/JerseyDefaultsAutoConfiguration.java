@@ -109,6 +109,7 @@ public class JerseyDefaultsAutoConfiguration {
                 config.register(ResourceNotFoundExceptionMapper.class);
                 config.register(ConstraintViolationExceptionMapper.class);
                 config.register(NotFoundExceptionMapper.class);
+                config.register(IllegalArgumentExceptionMapper.class);
                 config.register(GlobalExceptionMapper.class);
                 config.register(QueryParamExceptionMapper.class);
                 config.register(ResourceConflictExceptionMapper.class);
