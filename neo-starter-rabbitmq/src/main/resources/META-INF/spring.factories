@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.neoteric.starter.rabbit.RabbitAdditionalAutoConfiguration
+com.neoteric.starter.rabbit.StarterRabbitAutoConfiguration
