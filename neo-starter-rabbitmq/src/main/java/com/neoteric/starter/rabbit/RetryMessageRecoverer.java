@@ -34,12 +34,14 @@ public class RetryMessageRecoverer implements MessageRecoverer {
     private volatile String dleExchangePrefix = "dle-";
     private final AmqpAdmin amqpAdmin;
     private final String predefinedDleExchange;
+    private final int retryMessageTTL;
 
-    public RetryMessageRecoverer(AmqpTemplate errorTemplate, AmqpAdmin amqpAdmin, String predefinedDleExchange) {
+    public RetryMessageRecoverer(AmqpTemplate errorTemplate, AmqpAdmin amqpAdmin, String predefinedDleExchange, int retryMessageTTL) {
         this.amqpAdmin = amqpAdmin;
         Assert.notNull(errorTemplate, "'errorTemplate' cannot be null");
         this.errorTemplate = errorTemplate;
         this.predefinedDleExchange = predefinedDleExchange;
+        this.retryMessageTTL = retryMessageTTL;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class RetryMessageRecoverer implements MessageRecoverer {
             createAdditionalBindedQueue(retryQueue(originalQueueName), targetRoutingKey, targetExchange, ImmutableMap.of(
                     X_DEAD_LETTER_EXCHANGE, originalExchange,
                     X_DEAD_LETTER_ROUTING_KEY, originalRoutingKey,
-                    X_MESSAGE_TTL, 900000));
+                    X_MESSAGE_TTL, retryMessageTTL));
 
         } else {
             targetRoutingKey = dleRoutingKey(originalRoutingKey);
@@ -78,7 +80,7 @@ public class RetryMessageRecoverer implements MessageRecoverer {
     private Long getXDeathCount(Message message) {
         List<Object> xDeathHeader = (List<Object>) message.getMessageProperties().getHeaders().get(X_DEATH);
         if (xDeathHeader == null || xDeathHeader.isEmpty()) {
-            return 0l;
+            return 0L;
         }
         Map<String, Object> xDeathHeaderProperties = (Map<String, Object>) xDeathHeader.get(0);
         return (Long) xDeathHeaderProperties.getOrDefault(DEATH_COUNT, 0);
@@ -86,13 +88,18 @@ public class RetryMessageRecoverer implements MessageRecoverer {
 
     private String declareDleExchange(String originalExchangeName) {
         String dleExchangeName = dleExchange(originalExchangeName);
-        DirectExchange exchange = new DirectExchange(dleExchangeName, true, false);
+        boolean durable = true;
+        boolean autoDelete = false;
+        DirectExchange exchange = new DirectExchange(dleExchangeName, durable, autoDelete);
         amqpAdmin.declareExchange(exchange);
         return dleExchangeName;
     }
 
     private void createAdditionalBindedQueue(String queueName, String routingKey, String exchange, Map<String, Object> properties) {
-        Queue queue = new Queue(queueName, true, false, false, properties);
+        boolean durable = true;
+        boolean exclusive = false;
+        boolean autoDelete = false;
+        Queue queue = new Queue(queueName, durable, exclusive, autoDelete, properties);
         amqpAdmin.declareQueue(queue);
         Binding binding = new Binding(queueName, Binding.DestinationType.QUEUE, exchange, routingKey, null);
         amqpAdmin.declareBinding(binding);

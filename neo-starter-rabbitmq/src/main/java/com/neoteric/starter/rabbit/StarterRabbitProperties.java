@@ -19,4 +19,9 @@ public class StarterRabbitProperties {
      */
     private String dleExchange = null;
 
+    /**
+     * Default retry message ttl
+     */
+    private Integer retryMessageTTL = 900000;
+
 }

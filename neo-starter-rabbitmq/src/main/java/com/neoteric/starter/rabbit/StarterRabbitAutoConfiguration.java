@@ -43,7 +43,7 @@ import static com.neoteric.starter.rabbit.StarterRabbitConstants.REQUEST_ID;
 @ConditionalOnClass({RabbitTemplate.class, Channel.class})
 @AutoConfigureAfter(RabbitAutoConfiguration.class)
 @EnableConfigurationProperties(StarterRabbitProperties.class)
-public class RabbitAdditionalAutoConfiguration {
+public class StarterRabbitAutoConfiguration {
 
     @Autowired
     StarterRabbitProperties rabbitProperties;
@@ -91,7 +91,8 @@ public class RabbitAdditionalAutoConfiguration {
     private Advice retryOperations() {
         return RetryInterceptorBuilder.stateless()
                 .retryOperations(defaultRetryTemplate())
-                .recoverer(new RetryMessageRecoverer(rabbitTemplate, amqpAdmin, rabbitProperties.getDleExchange()))
+                .recoverer(new RetryMessageRecoverer(rabbitTemplate, amqpAdmin, rabbitProperties.getDleExchange(),
+                        rabbitProperties.getRetryMessageTTL()))
                 .build();
     }
 
