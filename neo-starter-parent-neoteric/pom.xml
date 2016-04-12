@@ -35,7 +35,7 @@
         <docker.repository.host>docker.neoteric.eu</docker.repository.host>
         <docker.repository.url>https://docker.neoteric.eu</docker.repository.url>
         <docker.repository.serverId>docker-repository</docker.repository.serverId>
-        <docker.image.prefix>neoteric/</docker.image.prefix>
+        <docker.image.initialPrefix>neoteric/</docker.image.initialPrefix>
 
         <distributionManagement.repository>http://naga.neoteric.eu:8081/nexus/content/repositories/releases/
         </distributionManagement.repository>
@@ -149,7 +149,7 @@
                             <configuration>
                                 <pushImage>true</pushImage>
                                 <imageName>
-                                    ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${project.version}
+                                    ${docker.repository.host}/${docker.image.initialPrefix}${project.artifactId}:${project.version}
                                 </imageName>
                                 <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
                                 <resources>
@@ -180,9 +180,9 @@
                             <configuration>
                                 <pushImage>true</pushImage>
                                 <image>
-                                    ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${project.version}
+                                    ${docker.repository.host}/${docker.image.initialPrefix}${project.artifactId}:${project.version}
                                 </image>
-                                <newName>${docker.repository.host}/${docker.image.prefix}${project.artifactId}:latest
+                                <newName>${docker.repository.host}/${docker.image.initialPrefix}${project.artifactId}:latest
                                 </newName>
                                 <forceTags>true</forceTags>
                             </configuration>
