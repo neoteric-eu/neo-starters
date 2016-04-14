@@ -1,5 +1,6 @@
 package com.neoteric.starter.mvc;
 
+import com.google.common.base.CaseFormat;
 import lombok.Setter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;
@@ -11,22 +12,21 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 @Setter
-public class ClassNameWithRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
+public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 
-    private String initialPrefix;
-    private String classSuffix;
-    private CaseFormatMode caseFormatMode;
+    private CaseFormat caseFormat;
+    private Map<String, String> classSuffixToPrefix;
 
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
         RequestMappingInfo info = createRequestMappingInfo(method);
         if (info != null) {
-
             if (shouldAddClassNameContext(handlerType)) {
                 RequestMappingInfo prefixMappingInfo = prefixMappingInfo(handlerType);
-                                                          info = prefixMappingInfo.combine(info);
+                info = prefixMappingInfo.combine(info);
             }
 
             RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
@@ -37,44 +37,59 @@ public class ClassNameWithRequestMappingHandlerMapping extends RequestMappingHan
         return info;
     }
 
-    public void setInitialPrefix(String initialPrefix) {
-        if (StringUtils.hasLength(initialPrefix)) {
-            if (!initialPrefix.startsWith("/")) {
-                this.initialPrefix = "/" + initialPrefix;
-            }
-            if (initialPrefix.endsWith("/")) {
-                this.initialPrefix = this.initialPrefix.substring(0, initialPrefix.length() - 1);
-            }
+    public String resolvePrefix(String initialPrefix) {
+        if (!StringUtils.hasLength(initialPrefix)) {
+            return initialPrefix;
         }
+        String prefixToReturn = initialPrefix;
+
+        if (!initialPrefix.startsWith("/")) {
+            prefixToReturn = "/" + initialPrefix;
+        }
+        if (initialPrefix.endsWith("/")) {
+            prefixToReturn = prefixToReturn.substring(0, prefixToReturn.length() - 1);
+        }
+        return prefixToReturn;
     }
 
     private boolean shouldAddClassNameContext(Class<?> handlerType) {
-        if (StringUtils.isEmpty(classSuffix)) {
+        if (classSuffixToPrefix == null || classSuffixToPrefix.isEmpty()) {
             return false;
         }
+
         String className = ClassUtils.getShortName(handlerType);
-        return className.endsWith(classSuffix);
+        return classSuffixToPrefix.keySet().stream().anyMatch(className::endsWith);
     }
 
     private RequestMappingInfo prefixMappingInfo(Class<?> handlerType) {
-
+        String className = ClassUtils.getShortName(handlerType);
         StringBuilder completePrefix = new StringBuilder();
+        Map.Entry<String, String> entry = classSuffixToPrefix.entrySet()
+                .stream()
+                .filter(e -> className.endsWith(e.getKey()))
+                .findFirst()
+                .get(); // I'm sure I will get entry as validation was done beforehand
 
-        if (StringUtils.hasLength(initialPrefix)) {
-            completePrefix.append(initialPrefix);
+        String prefix = resolvePrefix(entry.getValue());
+
+        if (StringUtils.hasLength(prefix)) {
+            completePrefix.append(prefix);
             completePrefix.append("/");
         }
 
-        String className = ClassUtils.getShortName(handlerType);
-        String classPath = className.substring(0, className.lastIndexOf(classSuffix));
+        String classPath = className.substring(0, className.lastIndexOf(entry.getKey()));
 
         if (classPath.length() > 0) {
-            completePrefix.append(classPath.toLowerCase());
+            completePrefix.append(resolveClassName(classPath));
         }
 
         return RequestMappingInfo
                 .paths(completePrefix.toString())
                 .build();
+    }
+
+    private String resolveClassName(String classPath) {
+        return CaseFormat.UPPER_CAMEL.to(caseFormat, classPath);
     }
 
     private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
@@ -83,5 +98,4 @@ public class ClassNameWithRequestMappingHandlerMapping extends RequestMappingHan
                 getCustomTypeCondition((Class<?>) element) : getCustomMethodCondition((Method) element));
         return (requestMapping != null ? createRequestMappingInfo(requestMapping, condition) : null);
     }
-
 }
