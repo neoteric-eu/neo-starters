@@ -17,9 +17,41 @@ To achieve that provide map property called `neostarter.mvc.classSuffixToPrefix`
 (case sensitive) and prefix which should be added to the mapped URL, ex:
 
 [source,yml]
+.application.yml
 ----
 neostarter:
   mvc:
     class-suffix-to-prefix:
       Api: /api
 ----
+
+That would map Controller:
+[source,java]
+.ImportantResourceApi
+----
+@RestController
+@RequestMapping("/anotherPrefix")
+public class EndpointApi {
+
+    @GetMapping("/finish")
+    public void get() {
+    }
+
+}
+----
+
+to a URL: */api/important-resource/anotherprefix/finish*, where `important-resource` name can be generated in
+several ways. It's backed by Guava's
+`http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/CaseFormat.html[CaseFormat]`,
+ the default is `CaseFormat.LOWER_HYPHEN`. To change that provide `neostarter.mvc.caseFormat` property, ex:
+[source,yml]
+.application.yml
+----
+neostarter:
+  mvc:
+    class-suffix-to-prefix:
+      Api: /api
+    case-format: lower_underscore
+----
+
+will produce: *api/important-resource/anotherprefix/finish*
