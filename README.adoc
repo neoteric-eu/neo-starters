@@ -1,0 +1,25 @@
+# neo-starters
+Spring Boot Neo Starters
+
+
+## neo-starter-springmvc
+
+Main starter for REST application development. It comprises of several
+enhancements over plain Spring Boot defaults in areas such as: Jackson,
+MVC, Handling Java 8 Date Time (JSR-310), etc.
+
+###Class name aware request mapping
+
+To avoid assigning same `@RequestMapping` on particular classes you can provide class name patterns
+the mapping should follow. It is helpful when you want expose your business API with a given prefix.
+
+To achieve that provide map property called `neostarter.mvc.classSuffixToPrefix`, where key is a class suffix
+(case sensitive) and prefix which should be added to the mapped URL, ex:
+
+[source,yml]
+----
+neostarter:
+  mvc:
+    class-suffix-to-prefix:
+      Api: /api
+----

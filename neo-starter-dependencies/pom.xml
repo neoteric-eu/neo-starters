@@ -16,7 +16,7 @@
     </organization>
 
     <properties>
-        <spring-boot.version>1.4.0.M1</spring-boot.version>
+        <spring-boot.version>1.4.0.M2</spring-boot.version>
         <spring-cloud.version>Brixton.RC1</spring-cloud.version>
 
         <main.basedir>..</main.basedir>
@@ -62,6 +62,7 @@
         <build-helper-maven-plugin.version>1.10</build-helper-maven-plugin.version>
         <assertj-assertions-generator-maven-plugin.version>1.6.0</assertj-assertions-generator-maven-plugin.version>
         <maven-scm-plugin.version>1.9.4</maven-scm-plugin.version>
+        <junitParams.version>1.0.4</junitParams.version>
     </properties>
     <scm>
         <url>http://github.com/neoteric-eu/neo-starters</url>
@@ -215,6 +216,11 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${springfox-swagger2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>pl.pragmatists</groupId>
+                <artifactId>JUnitParams</artifactId>
+                <version>${junitParams.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -17,27 +17,27 @@ import java.util.Map;
 @Setter
 public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 
-    private CaseFormat caseFormat;
+    private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
     private Map<String, String> classSuffixToPrefix;
 
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
         RequestMappingInfo info = createRequestMappingInfo(method);
         if (info != null) {
-            if (shouldAddClassNameContext(handlerType)) {
-                RequestMappingInfo prefixMappingInfo = prefixMappingInfo(handlerType);
-                info = prefixMappingInfo.combine(info);
-            }
-
             RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
             if (typeInfo != null) {
                 info = typeInfo.combine(info);
+            }
+
+            if (shouldAddClassNameContext(handlerType)) {
+                RequestMappingInfo prefixMappingInfo = prefixMappingInfo(handlerType);
+                info = prefixMappingInfo.combine(info);
             }
         }
         return info;
     }
 
-    public String resolvePrefix(String initialPrefix) {
+    private String resolvePrefix(String initialPrefix) {
         if (!StringUtils.hasLength(initialPrefix)) {
             return initialPrefix;
         }
@@ -56,6 +56,7 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
         if (classSuffixToPrefix == null || classSuffixToPrefix.isEmpty()) {
             return false;
         }
+
 
         String className = ClassUtils.getShortName(handlerType);
         return classSuffixToPrefix.keySet().stream().anyMatch(className::endsWith);
@@ -89,7 +90,8 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
     }
 
     private String resolveClassName(String classPath) {
-        return CaseFormat.UPPER_CAMEL.to(caseFormat, classPath);
+        String path = classPath.substring(classPath.lastIndexOf('.') + 1); // tackles inner static classes
+        return CaseFormat.UPPER_CAMEL.to(caseFormat, path);
     }
 
     private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
