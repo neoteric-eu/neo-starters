@@ -53,4 +53,4 @@ neostarter:
     case-format: lower_underscore
 ----
 
-will produce: *api/important-resource/anotherprefix/finish*
+will produce: *api/importantResource/anotherprefix/finish*
