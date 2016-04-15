@@ -27,11 +27,6 @@ public class SwaggerProperties {
     private String version = "1";
 
     /**
-     * The transfer protocol for the operation. Values MUST be from the list: "http", "https", "ws", "wss".
-     */
-    private String[] schemes = {"http"};
-
-    /**
      * The title of the application.
      */
     private String title;

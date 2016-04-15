@@ -8,6 +8,22 @@ Main starter for REST application development. It comprises of several
 enhancements over plain Spring Boot defaults in areas such as: Jackson,
 MVC, Handling Java 8 Date Time (JSR-310), etc.
 
+### Swagger2 support
+
+This starter comes with a built in Swagger2 support (provided by http://springfox.github.io/springfox/[SpringFox])
+It comes with a default, configurable `Docket` bean. Swagger information is available at: '/swagger' endpoint.
+
+There are 2 options to narrow down the scope of the Docket:
+
+- You can provide base package for scanning with `neostarter.swagger.basePackage`. It defaults to _com.neoteric_. If you
+change it to empty String, all packages will be scanned.
+- You can provide base prefix for your business API via `neostarter.mvc.apiPath` (ex. '/api'). Ii defaults to no prefix.
+
+You can provide Swagger Api info by populating `neostarter.swagger.*` properties.
+
+To disable Swagger use `neostarter.swagger.enabled=false`
+
+
 ### Class name aware request mapping
 
 To avoid assigning same `@RequestMapping` on particular classes you can provide class name patterns
@@ -53,4 +69,4 @@ neostarter:
     case-format: lower_underscore
 ----
 
-will produce: *api/important-resource/anotherprefix/finish*
+will produce: *api/importantResource/anotherprefix/finish*

@@ -1,5 +1,7 @@
 package com.neoteric.starter.swagger;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.neoteric.starter.mvc.StarterMvcProperties;
 import io.swagger.models.Swagger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import springfox.bean.validators.configuration.BeanValidatorPluginsConfiguration;
+import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -54,9 +57,29 @@ public class SwaggerAutoConfiguration {
 
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage(swaggerProperties.getResourcePackage()))
-                .paths(PathSelectors.ant(starterMvcProperties.getApiPath() + "/**"))
+                .apis(getPackage())
+                .paths(getPath())
                 .build()
                 .apiInfo(apiInfo);
+    }
+
+    private Predicate<String> getPath() {
+        Predicate<String> paths;
+        if (Strings.isNullOrEmpty(starterMvcProperties.getApiPath())) {
+            paths = PathSelectors.any();
+        } else {
+            paths = PathSelectors.ant(starterMvcProperties.getApiPath() + "/**");
+        }
+        return paths;
+    }
+
+    private Predicate<RequestHandler> getPackage() {
+        Predicate<RequestHandler> packages;
+        if (Strings.isNullOrEmpty(swaggerProperties.getResourcePackage())) {
+            packages = RequestHandlerSelectors.any();
+        } else {
+            packages = RequestHandlerSelectors.basePackage(swaggerProperties.getResourcePackage());
+        }
+        return packages;
     }
 }
