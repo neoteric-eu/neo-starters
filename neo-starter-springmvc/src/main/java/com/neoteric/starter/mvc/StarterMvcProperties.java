@@ -14,4 +14,5 @@ public class StarterMvcProperties {
 
     private Map<String, String> classSuffixToPrefix;
     private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
+    private String apiPath = "/api";
 }

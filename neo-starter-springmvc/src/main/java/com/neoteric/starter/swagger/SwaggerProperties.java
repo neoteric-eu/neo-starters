@@ -1,9 +1,15 @@
 package com.neoteric.starter.swagger;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties("neostarter.swagger")
+@Getter
+@Setter
 public class SwaggerProperties {
+
+    private final Contact contact = new Contact();
 
     /**
      * Enable com.neoteric.starter.swagger switch
@@ -21,20 +27,14 @@ public class SwaggerProperties {
     private String version = "1";
 
     /**
-     * The contact information for the exposed API.
-     */
-    private String contact = "backend@neoteric.eu";
-
-    /**
-     * The transfer protocol for the operation. Values MUST be from the list: "http", "https", "ws", "wss".
-     */
-    private String[] schemes = {"http"};
-
-    /**
      * The title of the application.
      */
     private String title;
 
+    /**
+     * A URL to the terms of service used for the API.
+     */
+    private String termsOfServiceUrl;
     /**
      * A short description of the application.
      */
@@ -55,84 +55,25 @@ public class SwaggerProperties {
      */
     private String resourcePackage = "com.neoteric";
 
-    public String[] getSchemes() {
-        return schemes;
-    }
 
-    public void setSchemes(String[] schemes) {
-        this.schemes = schemes;
-    }
+    @Getter
+    @Setter
+    public static class Contact {
 
-    public String getLicense() {
-        return license;
-    }
+        /**
+         * The contact email for the exposed API.
+         */
+        private String email;
 
-    public void setLicense(String license) {
-        this.license = license;
-    }
+        /**
+         * The contact name for the exposed API.
+         */
+        private String name;
 
-    public String getLicenseUrl() {
-        return licenseUrl;
-    }
+        /**
+         * The contact url for the exposed API.
+         */
+        private String url;
 
-    public void setLicenseUrl(String licenseUrl) {
-        this.licenseUrl = licenseUrl;
     }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getResourcePackage() {
-        return resourcePackage;
-    }
-
-    public void setResourcePackage(String resourcePackage) {
-        this.resourcePackage = resourcePackage;
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-    public boolean isPrettyPrint() {
-        return prettyPrint;
-    }
-
-    public void setPrettyPrint(boolean prettyPrint) {
-        this.prettyPrint = prettyPrint;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
 }
