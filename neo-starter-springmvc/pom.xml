@@ -14,7 +14,7 @@
     <packaging>jar</packaging>
     <artifactId>neo-starter-springmvc</artifactId>
 
-    <name>Neo Starter</name>
+    <name>Neo Starter Spring MVC</name>
     <description>Neo Starter for Spring MVC based REST applications</description>
     <url>http://github.com/neoteric-eu/neo-starters</url>
     <organization>
@@ -83,21 +83,10 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>pl.pragmatists</groupId>
             <artifactId>JUnitParams</artifactId>

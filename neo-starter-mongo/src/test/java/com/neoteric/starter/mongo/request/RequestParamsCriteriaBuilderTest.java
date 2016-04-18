@@ -7,12 +7,10 @@ import com.neoteric.starter.mongo.MongoCriteriaBuilderAutoConfiguration;
 import com.neoteric.starter.request.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -20,14 +18,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.TimeZone;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {MongoCriteriaBuilderAutoConfiguration.class,
         DateTimeFormatterAutoConfiguration.class})
 public class RequestParamsCriteriaBuilderTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(RequestParamsCriteriaBuilderTest.class);
 
     static {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"));

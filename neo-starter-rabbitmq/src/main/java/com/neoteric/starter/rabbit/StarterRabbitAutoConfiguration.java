@@ -77,7 +77,7 @@ public class StarterRabbitAutoConfiguration {
     @Bean
     public ContentTypeDelegatingMessageConverter messageConverter(Jackson2JsonMessageConverter jacksonMessageConverter) {
         ContentTypeDelegatingMessageConverter messageConverter = new ContentTypeDelegatingMessageConverter();
-        messageConverter.addDelgate(MessageProperties.CONTENT_TYPE_JSON, jacksonMessageConverter);
+        messageConverter.addDelegate(MessageProperties.CONTENT_TYPE_JSON, jacksonMessageConverter);
         return messageConverter;
     }
 

@@ -33,13 +33,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.thoughtworks.paranamer</groupId>
-            <artifactId>paranamer</artifactId>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>request-parameters</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.neoteric.starter</groupId>
-            <artifactId>request-parameters</artifactId>
+            <groupId>com.thoughtworks.paranamer</groupId>
+            <artifactId>paranamer</artifactId>
         </dependency>
 
         <dependency>
@@ -95,13 +95,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-test</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
