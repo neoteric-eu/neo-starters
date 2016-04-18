@@ -47,7 +47,9 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
     protected abstract Logger logger();
     protected abstract Level logLevel();
     protected abstract Object message(E throwable);
-    protected abstract Object errorCode(E throwable);
+    protected Object errorCode(E throwable) {
+        return null;
+    }
 
     @FunctionalInterface
     private interface LoggerFunction {
