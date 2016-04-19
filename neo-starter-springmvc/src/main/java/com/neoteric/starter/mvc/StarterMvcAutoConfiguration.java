@@ -14,10 +14,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.context.web.OrderedHiddenHttpMethodFilter;
 import org.springframework.boot.context.web.OrderedHttpPutFormContentFilter;
 import org.springframework.boot.context.web.OrderedRequestContextFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.GenericConverter;
@@ -58,6 +55,7 @@ import java.util.*;
 @ConditionalOnMissingBean(WebMvcConfigurationSupport.class)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE + 9)
 @AutoConfigureAfter(DispatcherServletAutoConfiguration.class)
+@PropertySource("classpath:mvc-defaults.properties")
 public class StarterMvcAutoConfiguration {
 
     @Bean
