@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 public @interface RestExceptionHandlerProvider {
 
     Level logLevel() default Level.ERROR;
-    HttpStatus httpStatus();
+    HttpStatus httpStatus() default HttpStatus.INTERNAL_SERVER_ERROR;
+    boolean suppressStacktrace() default false;
+    boolean suppressException() default false;
 
 }

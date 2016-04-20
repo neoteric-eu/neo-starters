@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 public class GlobalExceptionMapper implements RestExceptionHandler<Throwable> {
 
     @Override
-    public ResponseEntity<ErrorData> handleException(Throwable throwable, HttpServletRequest request) {
+    public ErrorData handleException(Throwable throwable, HttpServletRequest request) {
         return null;
 
     }

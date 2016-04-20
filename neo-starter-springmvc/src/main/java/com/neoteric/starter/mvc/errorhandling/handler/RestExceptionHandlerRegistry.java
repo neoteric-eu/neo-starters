@@ -3,14 +3,13 @@ package com.neoteric.starter.mvc.errorhandling.handler;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import java.util.Optional;
 import java.util.Set;
 
 @ToString
 @Getter
-public class RestExceptionHandlerRegistry implements ApplicationContextAware {
+public class RestExceptionHandlerRegistry {
 
     private final Set<ExceptionHandlerBinding> exceptionHandlerBindings;
     private ApplicationContext applicationContext;
@@ -19,20 +18,20 @@ public class RestExceptionHandlerRegistry implements ApplicationContextAware {
         this.exceptionHandlerBindings = exceptionHandlerBindings;
     }
 
-    public Optional<RestExceptionHandler> findMapperFor(Class<? extends Throwable> exceptionClass) {
+    public Optional<ExceptionHandlerBinding> findBindingFor(Class<? extends Throwable> exceptionClass) {
         int currentDistance = Integer.MAX_VALUE;
-        String closestExceptionHandlerBeanName = null;
+        ExceptionHandlerBinding closestBinding = null;
         for (ExceptionHandlerBinding binding : exceptionHandlerBindings) {
             int tempDistance = getDistanceBetweenExceptions(exceptionClass, binding.getExceptionClass());
             if (tempDistance < currentDistance) {
                 currentDistance = tempDistance;
-                closestExceptionHandlerBeanName = binding.getExceptionHandlerBeanName();
+                closestBinding = binding;
                 if (currentDistance == 0) {
                     break;
                 }
             }
         }
-        return Optional.ofNullable(applicationContext.getBean(closestExceptionHandlerBeanName, RestExceptionHandler.class));
+        return Optional.ofNullable(closestBinding);
     }
 
     private int getDistanceBetweenExceptions(Class<?> clazz, Class<?> mapperTypeClazz) {
@@ -47,10 +46,5 @@ public class RestExceptionHandlerRegistry implements ApplicationContextAware {
             distance++;
         }
         return distance;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
     }
 }

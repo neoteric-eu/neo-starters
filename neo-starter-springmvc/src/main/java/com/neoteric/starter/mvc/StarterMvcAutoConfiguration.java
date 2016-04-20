@@ -1,5 +1,7 @@
 package com.neoteric.starter.mvc;
 
+import com.neoteric.starter.mvc.errorhandling.RestExceptionResolver;
+import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerRegistry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -32,21 +34,25 @@ import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.filter.RequestContextFilter;
-import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.*;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.resource.*;
+import org.springframework.web.servlet.resource.AppCacheManifestTransformer;
+import org.springframework.web.servlet.resource.GzipResourceResolver;
+import org.springframework.web.servlet.resource.ResourceResolver;
+import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.servlet.Servlet;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ConditionalOnWebApplication
@@ -250,6 +256,14 @@ public class StarterMvcAutoConfiguration {
 
         @Autowired
         private ListableBeanFactory beanFactory;
+
+        @Autowired
+        RestExceptionResolver restExceptionResolver;
+
+        @Override
+        protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+            resolvers.add(this.restExceptionResolver);
+        }
 
         @Bean
         @Override

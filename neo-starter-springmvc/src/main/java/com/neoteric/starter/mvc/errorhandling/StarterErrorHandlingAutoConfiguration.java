@@ -1,6 +1,8 @@
 package com.neoteric.starter.mvc.errorhandling;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Sets;
+import com.neoteric.starter.jackson.StarterJacksonAutoConfiguration;
 import com.neoteric.starter.mvc.StarterMvcAutoConfiguration;
 import com.neoteric.starter.mvc.errorhandling.handler.ExceptionHandlerBinding;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
@@ -13,12 +15,15 @@ import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationBeanNameGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.context.annotation.Configuration;
@@ -39,12 +44,11 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-import static org.springframework.aop.interceptor.ExposeBeanNameAdvisors.getBeanName;
-
 
 @Slf4j
 @Configuration
 @AutoConfigureBefore(StarterMvcAutoConfiguration.class)
+@AutoConfigureAfter(StarterJacksonAutoConfiguration.class)
 public class StarterErrorHandlingAutoConfiguration implements BeanClassLoaderAware {
 
     @Autowired
@@ -77,45 +81,55 @@ public class StarterErrorHandlingAutoConfiguration implements BeanClassLoaderAwa
         for (String basePackage : getMappingBasePackages(beanFactory)) {
             if (StringUtils.hasText(basePackage)) {
                 for (BeanDefinition candidate : scanner.findCandidateComponents(basePackage)) {
-                    if (candidate instanceof AnnotatedBeanDefinition) {
-                        // verify annotated class is an interface
-                        AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidate;
-                        AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
-                        Assert.isTrue(annotationMetadata.isConcrete(),
-                                "@RestExceptionHandlerProvider can only be specified on a concrete class");
-
-                        Map<String, Object> attributes = annotationMetadata
-                                .getAnnotationAttributes(RestExceptionHandlerProvider.class.getCanonicalName());
-
-                        Class<?> exceptionHandlerClass = ClassUtils.forName(candidate.getBeanClassName(), this.classLoader);
-                        String handlerBeanName = getHandlerBeanName(exceptionHandlerClass);
-
-                        bindings.add(ExceptionHandlerBinding.builder()
-                                .exceptionClass(getExceptionClass(exceptionHandlerClass))
-                                .httpStatus(getHttpStatus(attributes))
-                                .logLevel(getLogLevel(attributes))
-                                .logger(LoggerFactory.getLogger(exceptionHandlerClass))
-                                .exceptionHandlerBeanName(getHandlerBeanName(handlerBeanName))
-                                .build());
-
-                        beanFactory.
-                                String name = getClientName(attributes);
-                        registerClientConfiguration(registry, name,
-                                attributes.get("configuration"));
-
-                        registerFeignClient(registry, annotationMetadata, attributes);
+                    // verify annotated class is an interface
+                    if (!(candidate instanceof AnnotatedBeanDefinition)) {
+                        continue;
                     }
 
-                    registry.addExceptionHandlerClass(ClassUtils.forName(candidate.getBeanClassName(), this.classLoader));
+                    AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidate;
+                    AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
+                    Assert.isTrue(annotationMetadata.isConcrete(),
+                            "@RestExceptionHandlerProvider can only be specified on a concrete class");
+
+                    Map<String, Object> attributes = annotationMetadata
+                            .getAnnotationAttributes(RestExceptionHandlerProvider.class.getCanonicalName());
+
+                    Class<?> exceptionHandlerClass = ClassUtils.forName(candidate.getBeanClassName(), this.classLoader);
+                    String handlerBeanName = getHandlerBeanName(exceptionHandlerClass);
+
+                    BeanDefinitionRegistry beanFactoryRegistry = (BeanDefinitionRegistry) beanFactory;
+
+                    BeanDefinition definition = BeanDefinitionBuilder
+                            .genericBeanDefinition(exceptionHandlerClass)
+                            .setScope(BeanDefinition.SCOPE_SINGLETON)
+                            .setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT)
+                            .getBeanDefinition();
+
+                    LOG.info("REGISTERING: {}", handlerBeanName);
+
+                    beanFactoryRegistry.registerBeanDefinition(handlerBeanName, definition);
+
+                    bindings.add(ExceptionHandlerBinding.builder()
+                            .exceptionClass(getExceptionClass(exceptionHandlerClass))
+                            .httpStatus(getHttpStatus(attributes))
+                            .logLevel(getLogLevel(attributes))
+                            .logger(LoggerFactory.getLogger(exceptionHandlerClass))
+                            .exceptionHandlerBeanName(handlerBeanName)
+                            .build());
                 }
             }
         }
 
-        RestExceptionHandlerRegistry registry = new RestExceptionHandlerRegistry(exceptionHandlerBindings);
-        registry.setApplicationContext(applicationContext);
-
+        RestExceptionHandlerRegistry registry = new RestExceptionHandlerRegistry(bindings);
         LOG.error("REGISTRY: {}", registry);
         return registry;
+    }
+
+    @Bean
+    RestExceptionResolver restExceptionResolver(ObjectMapper objectMapper, RestExceptionHandlerRegistry restExceptionHandlerRegistry) {
+        RestExceptionResolver restExceptionResolver = new RestExceptionResolver(objectMapper, restExceptionHandlerRegistry);
+        restExceptionResolver.setApplicationContext(this.applicationContext);
+        return restExceptionResolver;
     }
 
     private String getHandlerBeanName(Class<?> exceptionHandlerClass) {
