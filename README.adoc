@@ -35,6 +35,8 @@ To achieve that provide map property called `neostarter.mvc.classSuffixToPrefix`
 [source,yml]
 .application.yml
 ----
+
+image:https://badges.gitter.im/neoteric-eu/neo-starters.svg[link="https://gitter.im/neoteric-eu/neo-starters?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge"]
 neostarter:
   mvc:
     class-suffix-to-prefix:
