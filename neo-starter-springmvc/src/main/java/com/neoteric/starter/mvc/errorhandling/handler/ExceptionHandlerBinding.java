@@ -15,4 +15,6 @@ public final class ExceptionHandlerBinding {
     private final Logger logger;
     private final Level logLevel;
     private final HttpStatus httpStatus;
+    private final boolean suppressStacktrace;
+    private final boolean suppressException;
 }

@@ -2,7 +2,6 @@ package com.neoteric.starter.mvc.errorhandling.handler;
 
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.context.ApplicationContext;
 
 import java.util.Optional;
 import java.util.Set;
@@ -12,7 +11,6 @@ import java.util.Set;
 public class RestExceptionHandlerRegistry {
 
     private final Set<ExceptionHandlerBinding> exceptionHandlerBindings;
-    private ApplicationContext applicationContext;
 
     public RestExceptionHandlerRegistry(Set<ExceptionHandlerBinding> exceptionHandlerBindings) {
         this.exceptionHandlerBindings = exceptionHandlerBindings;

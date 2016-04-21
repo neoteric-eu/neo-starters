@@ -1,5 +1,6 @@
 package com.neoteric.starter.mvc.errorhandling;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
@@ -11,21 +12,27 @@ import java.util.Map;
 
 @Value
 @Builder
-@JsonDeserialize(builder = com.neoteric.starter.exception.ErrorData.ErrorDataBuilder.class)
+@JsonDeserialize(builder = ErrorData.ErrorDataBuilder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorData {
 
     ZonedDateTime timestamp;
     String requestId;
+    String path;
     Integer status;
     String error;
     Object errorCode;
-    String path;
-    Object message;
     String exception;
+    Map<String, Object> additionalInfo;
+    Object message;
     Map<String, String> stackTrace;
 
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class ErrorDataBuilder {
+    @JsonAnyGetter
+    Map<String, Object> getAdditionalInfo() {
+        return additionalInfo;
     }
+
+@JsonPOJOBuilder(withPrefix = "")
+public static class ErrorDataBuilder {
+}
 }

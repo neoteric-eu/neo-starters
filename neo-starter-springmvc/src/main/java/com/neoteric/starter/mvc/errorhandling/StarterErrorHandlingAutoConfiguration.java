@@ -8,6 +8,7 @@ import com.neoteric.starter.mvc.errorhandling.handler.ExceptionHandlerBinding;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerProvider;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerRegistry;
+import com.neoteric.starter.mvc.errorhandling.mapper.common.GlobalExceptionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -18,11 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
@@ -39,10 +40,10 @@ import org.springframework.util.StringUtils;
 import java.beans.Introspector;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Collections;
+import java.time.Clock;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -60,6 +61,12 @@ public class StarterErrorHandlingAutoConfiguration implements BeanClassLoaderAwa
     @Autowired
     private ResourceLoader resourceLoader;
 
+    @Autowired
+    private Clock clock;
+
+    @Autowired
+    private ServerProperties serverProperties;
+
     private ClassLoader classLoader;
 
     @Override
@@ -68,66 +75,96 @@ public class StarterErrorHandlingAutoConfiguration implements BeanClassLoaderAwa
     }
 
     @Bean
-    @ConditionalOnMissingBean(RestExceptionHandlerRegistry.class)
-    RestExceptionHandlerRegistry restExceptionHandlerRegistry(BeanFactory beanFactory) throws ClassNotFoundException {
+    Set<ExceptionHandlerBinding> scannedBindings(BeanFactory beanFactory) {
+        Set<ExceptionHandlerBinding> bindings = Sets.newHashSet();
+        String basePackage = getMappingBasePackage(beanFactory);
+        if (StringUtils.isEmpty(basePackage)) {
+            return bindings;
+        }
 
         ClassPathScanningCandidateComponentProvider scanner = new ClassPathScanningCandidateComponentProvider(false);
         scanner.setEnvironment(this.environment);
         scanner.setResourceLoader(this.resourceLoader);
         scanner.addIncludeFilter(new AnnotationTypeFilter(RestExceptionHandlerProvider.class));
 
-        Set<ExceptionHandlerBinding> bindings = Sets.newHashSet();
-
-        for (String basePackage : getMappingBasePackages(beanFactory)) {
-            if (StringUtils.hasText(basePackage)) {
-                for (BeanDefinition candidate : scanner.findCandidateComponents(basePackage)) {
-                    // verify annotated class is an interface
-                    if (!(candidate instanceof AnnotatedBeanDefinition)) {
-                        continue;
-                    }
-
-                    AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidate;
-                    AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
+        Set<ExceptionHandlerBinding> scannedBindings = scanner.findCandidateComponents(basePackage).stream()
+                .filter(beanDefinition -> AnnotatedBeanDefinition.class.isAssignableFrom(beanDefinition.getClass()))
+                .map(beanDefinition -> {
+                    AnnotatedBeanDefinition annotatedBeanDef = (AnnotatedBeanDefinition) beanDefinition;
+                    AnnotationMetadata annotationMetadata = annotatedBeanDef.getMetadata();
                     Assert.isTrue(annotationMetadata.isConcrete(),
                             "@RestExceptionHandlerProvider can only be specified on a concrete class");
-
+                    Class<?> exceptionHandlerClass = getExceptionClass(annotatedBeanDef);
                     Map<String, Object> attributes = annotationMetadata
                             .getAnnotationAttributes(RestExceptionHandlerProvider.class.getCanonicalName());
 
-                    Class<?> exceptionHandlerClass = ClassUtils.forName(candidate.getBeanClassName(), this.classLoader);
-                    String handlerBeanName = getHandlerBeanName(exceptionHandlerClass);
-
-                    BeanDefinitionRegistry beanFactoryRegistry = (BeanDefinitionRegistry) beanFactory;
-
-                    BeanDefinition definition = BeanDefinitionBuilder
-                            .genericBeanDefinition(exceptionHandlerClass)
-                            .setScope(BeanDefinition.SCOPE_SINGLETON)
-                            .setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT)
-                            .getBeanDefinition();
-
-                    LOG.info("REGISTERING: {}", handlerBeanName);
-
-                    beanFactoryRegistry.registerBeanDefinition(handlerBeanName, definition);
-
-                    bindings.add(ExceptionHandlerBinding.builder()
-                            .exceptionClass(getExceptionClass(exceptionHandlerClass))
-                            .httpStatus(getHttpStatus(attributes))
-                            .logLevel(getLogLevel(attributes))
+                    return ExceptionHandlerBinding.builder()
                             .logger(LoggerFactory.getLogger(exceptionHandlerClass))
-                            .exceptionHandlerBeanName(handlerBeanName)
-                            .build());
-                }
-            }
-        }
+                            .exceptionClass(getExceptionClass(exceptionHandlerClass))
+                            .exceptionHandlerBeanName(getHandlerBeanName(exceptionHandlerClass))
+                            .httpStatus((HttpStatus) attributes.get("httpStatus"))
+                            .logLevel((Level) attributes.get("logLevel"))
+                            .suppressStacktrace((boolean) attributes.get("suppressStacktrace"))
+                            .suppressException((boolean) attributes.get("suppressException"))
+                            .build();
+                }).collect(Collectors.toSet());
+
+        bindings.addAll(scannedBindings);
+        return bindings;
+    }
+
+    @Bean
+    Set<ExceptionHandlerBinding> defaultBindings() {
+        Set<ExceptionHandlerBinding> bindings = Sets.newHashSet();
+        bindings.add(ExceptionHandlerBinding.builder()
+                .exceptionClass(Exception.class)
+                .exceptionHandlerBeanName("globalExceptionHandler")
+                .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+                .logLevel(Level.ERROR)
+                .suppressException(false)
+                .suppressStacktrace(false)
+                .logger(LoggerFactory.getLogger(GlobalExceptionHandler.class))
+                .build());
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(RestExceptionHandlerRegistry.class)
+    RestExceptionHandlerRegistry restExceptionHandlerRegistry(BeanFactory beanFactory) throws ClassNotFoundException {
+
+
+//            BeanDefinitionRegistry beanFactoryRegistry = (BeanDefinitionRegistry) beanFactory;
+//            BeanDefinition definition = getExceptionHandlerBeanDefinition(exceptionHandlerClass);
+//            beanFactoryRegistry.registerBeanDefinition(handlerBeanName, definition);
+//            LOG.info("REGISTERING: {}", handlerBeanName);
 
         RestExceptionHandlerRegistry registry = new RestExceptionHandlerRegistry(bindings);
-        LOG.error("REGISTRY: {}", registry);
         return registry;
+    }
+
+    private Class<?> getExceptionClass(AnnotatedBeanDefinition beanDefinition) {
+        try {
+            return ClassUtils.forName(beanDefinition.getBeanClassName(), this.classLoader);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static BeanDefinition getExceptionHandlerBeanDefinition(Class<?> exceptionHandlerClass) {
+        return BeanDefinitionBuilder
+                .genericBeanDefinition(exceptionHandlerClass)
+                .setScope(BeanDefinition.SCOPE_SINGLETON)
+                .setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT)
+                .getBeanDefinition();
+    }
+
+    @Bean
+    ErrorDataBuilder errorDataBuilder() {
+        return new ErrorDataBuilder(clock, serverProperties);
     }
 
     @Bean
     RestExceptionResolver restExceptionResolver(ObjectMapper objectMapper, RestExceptionHandlerRegistry restExceptionHandlerRegistry) {
-        RestExceptionResolver restExceptionResolver = new RestExceptionResolver(objectMapper, restExceptionHandlerRegistry);
+        RestExceptionResolver restExceptionResolver = new RestExceptionResolver(objectMapper, errorDataBuilder(), restExceptionHandlerRegistry);
         restExceptionResolver.setApplicationContext(this.applicationContext);
         return restExceptionResolver;
     }
@@ -137,15 +174,7 @@ public class StarterErrorHandlingAutoConfiguration implements BeanClassLoaderAwa
         return Introspector.decapitalize(shortClassName);
     }
 
-    private Level getLogLevel(Map<String, Object> attributes) {
-        return (Level) attributes.get("logLevel");
-    }
-
-    private HttpStatus getHttpStatus(Map<String, Object> attributes) {
-        return (HttpStatus) attributes.get("httpStatus");
-    }
-
-    private Class<? extends Throwable> getExceptionClass(Class<?> clazz) throws ClassNotFoundException {
+    private Class<? extends Throwable> getExceptionClass(Class<?> clazz) {
         Type[] types = clazz.getGenericInterfaces();
         for (Type type : types) {
             if (type instanceof ParameterizedType && ((ParameterizedType) type).getRawType() == RestExceptionHandler.class) {
@@ -157,13 +186,12 @@ public class StarterErrorHandlingAutoConfiguration implements BeanClassLoaderAwa
         return null;
     }
 
-    private static Collection<String> getMappingBasePackages(BeanFactory beanFactory) {
+    private static String getMappingBasePackage(BeanFactory beanFactory) {
         try {
-            return AutoConfigurationPackages.get(beanFactory);
+            return AutoConfigurationPackages.get(beanFactory).get(0);
         } catch (IllegalStateException ex) {
-            LOG.error("XXXXX", ex);
-            // no auto-configuration package registered yet
-            return Collections.emptyList();
+            LOG.warn("AutoConfiguration is not enabled. Exception handlers scanning is off.");
+            return "";
         }
     }
 }
