@@ -15,4 +15,12 @@ public class StarterMvcProperties {
     private Map<String, String> classSuffixToPrefix;
     private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
     private String apiPath = "/api";
+    private RestErrorHandling restErrorHandling = new RestErrorHandling();
+
+    @Getter
+    @Setter
+    private class RestErrorHandling {
+        private boolean enabled = true;
+        private boolean defaultHandlersEnabled = true;
+    }
 }

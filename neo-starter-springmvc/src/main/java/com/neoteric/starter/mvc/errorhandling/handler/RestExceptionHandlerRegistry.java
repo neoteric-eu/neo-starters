@@ -10,10 +10,12 @@ import java.util.Set;
 @Getter
 public class RestExceptionHandlerRegistry {
 
+    public static String BEAN_NAME = "restExceptionHandlerRegistry";
+
     private final Set<ExceptionHandlerBinding> exceptionHandlerBindings;
 
-    public RestExceptionHandlerRegistry(Set<ExceptionHandlerBinding> exceptionHandlerBindings) {
-        this.exceptionHandlerBindings = exceptionHandlerBindings;
+    public RestExceptionHandlerRegistry(Set<ExceptionHandlerBinding> bindings) {
+        this.exceptionHandlerBindings = bindings;
     }
 
     public Optional<ExceptionHandlerBinding> findBindingFor(Class<? extends Throwable> exceptionClass) {

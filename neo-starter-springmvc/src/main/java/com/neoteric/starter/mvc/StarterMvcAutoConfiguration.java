@@ -257,12 +257,14 @@ public class StarterMvcAutoConfiguration {
         @Autowired
         private ListableBeanFactory beanFactory;
 
-        @Autowired
+        @Autowired(required = false)
         RestExceptionResolver restExceptionResolver;
 
         @Override
         protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
-            resolvers.add(this.restExceptionResolver);
+            if (restExceptionResolver != null) {
+                resolvers.add(this.restExceptionResolver);
+            }
         }
 
         @Bean
