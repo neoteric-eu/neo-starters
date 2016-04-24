@@ -8,6 +8,59 @@ Main starter for REST application development. It comprises of several
 enhancements over plain Spring Boot defaults in areas such as: Jackson,
 MVC, Handling Java 8 Date Time (JSR-310), etc.
 
+### REST Exception handling
+
+Spring MVC NeoStarter comes with its own implementation of resolving Exceptions (via `RestExceptionResolver` - inspired by
+https://github.com/jirutka/spring-rest-exception-handler/[Spring Rest Exception Handler project]).
+
+General concept is to map exceptions thrown by the application to a standardized JSON response, as below:
+[source,json]
+----
+{
+  "timestamp" : "2016-04-24T16:58:40.437Z", (1)
+  "requestId" : "a65dc528-cf6d-4a9f-9eba-f063de5bb151", (2)
+  "path" : "/api/endpoint", (3)
+  "status" : 500, (4)
+  "error" : "Internal Server Error", (5)
+  "exception" : "java.lang.RuntimeException", (6)
+  "message" : "Unknown error" (7)
+}
+----
+where:
+
+- (1) time, when the exception occured.
+- (2) request id assigned to current request, value fetched from `MDC.get("REQUEST_ID")`. It is skipped when no request id available.
+- (3) current request URI
+- (4) HTTP Status code returned
+- (5) HTTP Status phrase
+- (6) Exception, which caused application to stop
+- (7) Message with details regarding exception
+
+To provide particular exception handling create a class implementing `RestExceptionHandler`
+and annotate it with `@RestExceptionHandlerProvider`, example:
+
+[source,java]
+----
+@RestExceptionHandlerProvider (1)
+public class FallbackExceptionHandler implements RestExceptionHandler<Exception> {
+
+    public static final String FALLBACK_ERROR_MSG = "Unknown error";
+
+    @Override
+    public Object errorMessage(Exception exception, HttpServletRequest request) { (2)
+        return FALLBACK_ERROR_MSG;
+    }
+}
+----
+
+- (1) @RestExceptionHandlerProvider has 4 parameters
+
+Starter provides some of
+
+You can fully disable REST Exception handling behaviour with `neostarter.mvc.restErrorHandling.enabled=false`
+
+
+
 ### Swagger2 support
 
 This starter comes with a built in Swagger2 support (provided by http://springfox.github.io/springfox/[SpringFox])

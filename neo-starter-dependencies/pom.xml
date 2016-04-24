@@ -32,7 +32,7 @@
         <swagger-jersey2-jaxrs.version>1.5.6</swagger-jersey2-jaxrs.version>
         <junit.version>4.11</junit.version>
         <assertj-core.version>3.2.0</assertj-core.version>
-        <equalsverifier.version>1.7.2</equalsverifier.version>
+        <equalsverifier.version>2.0.2</equalsverifier.version>
         <junit-dataprovider.version>1.10.2</junit-dataprovider.version>
         <jersey2-version>2.22.1</jersey2-version>
         <paranamer.version>2.8</paranamer.version>

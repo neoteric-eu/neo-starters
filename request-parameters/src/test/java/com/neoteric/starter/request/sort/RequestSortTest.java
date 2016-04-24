@@ -23,7 +23,6 @@ public class RequestSortTest {
     public void testEqualsAndHashCode() {
         EqualsVerifier
                 .forClass(RequestSort.class)
-                .allFieldsShouldBeUsed()
                 .verify();
     }
 }
