@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.springframework.http.ResponseEntity.status;
+
 public final class ErrorDataBuilder {
 
     private final Clock clock;
@@ -29,20 +31,23 @@ public final class ErrorDataBuilder {
     }
 
     public ErrorData build(RestExceptionHandler handler, ExceptionHandlerBinding binding,
-                                  HttpServletRequest request, Exception ex) {
+                           HttpServletRequest request, Exception ex) {
         //Validate if object is of type, String, List, Map
         HttpStatus httpStatus = binding.getHttpStatus();
         ErrorData.ErrorDataBuilder builder = ErrorData.builder()
                 .timestamp(ZonedDateTime.now(clock))
-                .requestId(String.valueOf(MDC.get(StarterConstants.REQUEST_ID)))
+                .requestId(MDC.get(StarterConstants.REQUEST_ID) == null ? null : MDC.get(StarterConstants.REQUEST_ID).toString())
                 .status(httpStatus.value())
                 .error(httpStatus.getReasonPhrase())
                 .message(handler.errorMessage(ex, request))
                 .additionalInfo(handler.additionalInfo(ex, request))
-                .path(request.getRequestURI())
-                .exception(ex.getClass().getName());
+                .path(request.getRequestURI());
 
-        if (shouldIncludeStackTrace(serverProperties.getError(), request)) {
+        if (!binding.isSuppressException()) {
+            builder.exception(ex.getClass().getName());
+        }
+
+        if (shouldIncludeStackTrace(binding, serverProperties.getError(), request)) {
             addStackTrace(builder, ex);
         }
 
@@ -68,7 +73,10 @@ public final class ErrorDataBuilder {
                         LinkedHashMap::new));
     }
 
-    private boolean shouldIncludeStackTrace(ErrorProperties errorProperties, HttpServletRequest request) {
+    private boolean shouldIncludeStackTrace(ExceptionHandlerBinding binding, ErrorProperties errorProperties, HttpServletRequest request) {
+        if (binding.isSuppressStacktrace()) {
+            return false;
+        }
         ErrorProperties.IncludeStacktrace include = errorProperties.getIncludeStacktrace();
         return include == ErrorProperties.IncludeStacktrace.ALWAYS ||
                 (include == ErrorProperties.IncludeStacktrace.ON_TRACE_PARAM && getTraceParameter(request));

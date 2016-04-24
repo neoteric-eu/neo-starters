@@ -88,7 +88,7 @@ public class RestExceptionResolver extends AbstractHandlerExceptionResolver impl
     }
 
 
-    private class NoExceptionHandlerFoundException extends RuntimeException {
+    public static class NoExceptionHandlerFoundException extends RuntimeException {
     }
 
 }

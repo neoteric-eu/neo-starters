@@ -9,10 +9,7 @@ import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.actuate.endpoint.InfoEndpoint;
 import org.springframework.boot.actuate.info.Info;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cloud.bootstrap.config.PropertySourceBootstrapConfiguration;
 import org.springframework.cloud.context.environment.EnvironmentChangeEvent;
@@ -41,6 +38,7 @@ import java.util.Map;
 public class RefreshEndpointAutoConfiguration {
 
 	@ConditionalOnBean(EndpointAutoConfiguration.class)
+	@ConditionalOnMissingClass("org.springframework.boot.actuate.info.InfoContributor")
 	@Bean
 	InfoEndpointRebinderConfiguration infoEndpointRebinderConfiguration() {
 		return new InfoEndpointRebinderConfiguration();

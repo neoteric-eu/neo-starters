@@ -19,6 +19,9 @@ public class RestExceptionHandlerRegistry {
     }
 
     public Optional<ExceptionHandlerBinding> findBindingFor(Class<? extends Throwable> exceptionClass) {
+        if (exceptionHandlerBindings == null || exceptionHandlerBindings.isEmpty()) {
+            return Optional.empty();
+        }
         int currentDistance = Integer.MAX_VALUE;
         ExceptionHandlerBinding closestBinding = null;
         for (ExceptionHandlerBinding binding : exceptionHandlerBindings) {

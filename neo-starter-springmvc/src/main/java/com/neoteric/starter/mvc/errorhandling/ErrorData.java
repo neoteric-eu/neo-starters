@@ -21,7 +21,6 @@ public class ErrorData {
     String path;
     Integer status;
     String error;
-    Object errorCode;
     String exception;
     Map<String, Object> additionalInfo;
     Object message;

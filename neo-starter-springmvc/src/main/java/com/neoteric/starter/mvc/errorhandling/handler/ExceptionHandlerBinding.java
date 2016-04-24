@@ -2,6 +2,7 @@ package com.neoteric.starter.mvc.errorhandling.handler;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -13,12 +14,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 @Data
+@EqualsAndHashCode(of = "exceptionClass")
 @Builder
-public final class ExceptionHandlerBinding {
+public class ExceptionHandlerBinding {
 
     private final String exceptionHandlerBeanName;
     private final Class<?> exceptionHandlerClass;
-    private final Class<? extends Throwable> exceptionClass;
+    private final Class<? extends Exception> exceptionClass;
     private final Logger logger;
     private final Level logLevel;
     private final HttpStatus httpStatus;
@@ -26,8 +28,9 @@ public final class ExceptionHandlerBinding {
     private final boolean suppressException;
 
     public static ExceptionHandlerBinding fromAnnotatedClass(Class<?> exceptionHandlerClass) {
+        Assert.notNull(exceptionHandlerClass);
         RestExceptionHandlerProvider annotation = exceptionHandlerClass.getAnnotation(RestExceptionHandlerProvider.class);
-        Assert.notNull(annotation, exceptionHandlerClass + " class in not annotated with @RestExceptionHandlerProvider");
+        Assert.state(annotation != null, exceptionHandlerClass + " class in not annotated with @RestExceptionHandlerProvider");
         return builder()
                 .exceptionHandlerClass(exceptionHandlerClass)
                 .logger(LoggerFactory.getLogger(exceptionHandlerClass))
@@ -45,15 +48,14 @@ public final class ExceptionHandlerBinding {
         return Introspector.decapitalize(shortClassName);
     }
 
-    private static Class<? extends Throwable> getExceptionClass(Class<?> clazz) {
+    @SuppressWarnings("unchecked")
+    private static Class<? extends Exception> getExceptionClass(Class<?> clazz) {
         Type[] types = clazz.getGenericInterfaces();
         for (Type type : types) {
             if (type instanceof ParameterizedType && ((ParameterizedType) type).getRawType() == RestExceptionHandler.class) {
-                //noinspection unchecked
-                return (Class<? extends Throwable>) ((ParameterizedType) type).getActualTypeArguments()[0];
+                return (Class<? extends Exception>) ((ParameterizedType) type).getActualTypeArguments()[0];
             }
         }
-        //Won't get in here
-        return null;
+        throw new IllegalStateException(clazz + " has to implement RestExceptionHandler interface");
     }
 }

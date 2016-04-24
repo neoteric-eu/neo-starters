@@ -6,10 +6,12 @@ import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerProvid
 import javax.servlet.http.HttpServletRequest;
 
 @RestExceptionHandlerProvider
-public class GlobalExceptionHandler implements RestExceptionHandler<Exception> {
+public class FallbackExceptionHandler implements RestExceptionHandler<Exception> {
+
+    public static final String FALLBACK_ERROR_MSG = "Unknown error";
 
     @Override
     public Object errorMessage(Exception throwable, HttpServletRequest request) {
-        return "w00t";
+        return FALLBACK_ERROR_MSG;
     }
 }

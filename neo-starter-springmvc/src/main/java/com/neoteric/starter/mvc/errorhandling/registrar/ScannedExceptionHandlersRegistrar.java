@@ -11,6 +11,8 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -22,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class ScannedExceptionHandlersRegistrar extends AbstractExceptionHandlerRegistrar implements ResourceLoaderAware, BeanClassLoaderAware {
 
     private ClassLoader classLoader;
