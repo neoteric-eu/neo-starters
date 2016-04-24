@@ -17,37 +17,37 @@ General concept is to map exceptions thrown by the application to a standardized
 [source,json]
 ----
 {
-  "timestamp" : "2016-04-24T16:58:40.437Z", (1)
-  "requestId" : "a65dc528-cf6d-4a9f-9eba-f063de5bb151", (2)
-  "path" : "/api/endpoint", (3)
-  "status" : 500, (4)
-  "error" : "Internal Server Error", (5)
-  "exception" : "java.lang.RuntimeException", (6)
-  "message" : "Unknown error" (7)
+  "timestamp" : "2016-04-24T16:58:40.437Z", <1>
+  "requestId" : "a65dc528-cf6d-4a9f-9eba-f063de5bb151", <2>
+  "path" : "/api/endpoint", <3>
+  "status" : 500, <4>
+  "error" : "Internal Server Error", <5>
+  "exception" : "java.lang.RuntimeException", <6>
+  "message" : "Unknown error" <7>
 }
 ----
 where:
 
-- (1) time, when the exception occured.
-- (2) request id assigned to current request, value fetched from `MDC.get("REQUEST_ID")`. It is skipped when no request id available.
-- (3) current request URI
-- (4) HTTP Status code returned
-- (5) HTTP Status phrase
-- (6) Exception, which caused application to stop
-- (7) Message with details regarding exception
+- <1> time, when the exception occured.
+- <2> request id assigned to current request, value fetched from `MDC.get("REQUEST_ID")`. It is skipped when no request id available.
+- <3> current request URI
+- <4> HTTP Status code returned
+- <5> HTTP Status phrase
+- <6> Exception, which caused application to stop
+- <7> Message with details regarding exception
 
 To provide particular exception handling create a class implementing `RestExceptionHandler`
 and annotate it with `@RestExceptionHandlerProvider`, example:
 
 [source,java]
 ----
-@RestExceptionHandlerProvider (1)
+@RestExceptionHandlerProvider <1>
 public class FallbackExceptionHandler implements RestExceptionHandler<Exception> {
 
     public static final String FALLBACK_ERROR_MSG = "Unknown error";
 
     @Override
-    public Object errorMessage(Exception exception, HttpServletRequest request) { (2)
+    public Object errorMessage(Exception exception, HttpServletRequest request) { <2>
         return FALLBACK_ERROR_MSG;
     }
 }
