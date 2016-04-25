@@ -3,7 +3,7 @@ package com.neoteric.starter.mvc.errorhandling;
 import com.google.common.collect.ImmutableMap;
 import com.neoteric.starter.clock.TimeZoneAutoConfiguration;
 import com.neoteric.starter.embedded.MockEmbeddedServletContainerFactory;
-import com.neoteric.starter.jackson.StarterJacksonAutoConfiguration;
+import com.neoteric.starter.jackson.StarterJacksonBeforeAutoConfiguration;
 import com.neoteric.starter.mvc.StarterMvcAutoConfiguration;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.common.FallbackExceptionHandler;
@@ -108,7 +108,7 @@ public class StarterErrorHandlingAutoConfigurationTest {
     @Target(ElementType.TYPE)
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
-    @Import({StarterJacksonAutoConfiguration.class, JacksonAutoConfiguration.class,StarterErrorHandlingAutoConfiguration.class,
+    @Import({StarterJacksonBeforeAutoConfiguration.class, JacksonAutoConfiguration.class,StarterErrorHandlingAutoConfiguration.class,
             ServerPropertiesAutoConfiguration.class, DispatcherServletAutoConfiguration.class, TimeZoneAutoConfiguration.class,
             StarterMvcAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class, ErrorMvcAutoConfiguration.class,
             PropertyPlaceholderAutoConfiguration.class})

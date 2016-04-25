@@ -1,7 +1,7 @@
 package com.neoteric.starter.mvc.errorhandling;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neoteric.starter.jackson.StarterJacksonAutoConfiguration;
+import com.neoteric.starter.jackson.StarterJacksonBeforeAutoConfiguration;
 import com.neoteric.starter.mvc.StarterMvcAutoConfiguration;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerRegistry;
 import com.neoteric.starter.mvc.errorhandling.registrar.DefaultExceptionHandlersRegistrar;
@@ -25,7 +25,7 @@ import java.time.Clock;
 @Configuration
 @ConditionalOnProperty(prefix = "neostarter.mvc.restErrorHandling", value = "enabled", havingValue = "true", matchIfMissing = true)
 @AutoConfigureBefore(StarterMvcAutoConfiguration.class)
-@AutoConfigureAfter(StarterJacksonAutoConfiguration.class)
+@AutoConfigureAfter(StarterJacksonBeforeAutoConfiguration.class)
 public class StarterErrorHandlingAutoConfiguration {
 
     @Import(ScannedExceptionHandlersRegistrar.class)

@@ -6,4 +6,5 @@ com.neoteric.starter.feign.StarterFeignAutoConfiguration,\
 com.neoteric.starter.mvc.StarterMvcAutoConfiguration,\
 com.neoteric.starter.mvc.errorhandling.StarterErrorHandlingAutoConfiguration,\
 com.neoteric.starter.swagger.SwaggerAutoConfiguration,\
-com.neoteric.starter.jackson.StarterJacksonAutoConfiguration
+com.neoteric.starter.jackson.StarterJacksonBeforeAutoConfiguration,\
+com.neoteric.starter.jackson.StarterJacksonAfterAutoConfiguration
