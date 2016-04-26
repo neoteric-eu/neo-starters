@@ -1,7 +1,7 @@
 package com.neoteric.starter.mvc;
 
 import com.neoteric.starter.mvc.errorhandling.RestExceptionResolver;
-import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerRegistry;
+import com.neoteric.starter.mvc.validation.JsonPropertyAnnotationAwareValidatorFactoryBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -28,6 +28,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.DefaultMessageCodesResolver;
 import org.springframework.validation.MessageCodesResolver;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 import org.springframework.web.context.request.RequestContextListener;
@@ -37,7 +39,6 @@ import org.springframework.web.filter.RequestContextFilter;
 import org.springframework.web.servlet.*;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
-import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.springframework.web.servlet.resource.AppCacheManifestTransformer;
@@ -259,6 +260,16 @@ public class StarterMvcAutoConfiguration {
 
         @Autowired(required = false)
         RestExceptionResolver restExceptionResolver;
+
+        @Bean
+        public LocalValidatorFactoryBean validator() {
+            return new JsonPropertyAnnotationAwareValidatorFactoryBean();
+        }
+
+        @Override
+        protected Validator getValidator() {
+            return validator();
+        }
 
         @Override
         protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {

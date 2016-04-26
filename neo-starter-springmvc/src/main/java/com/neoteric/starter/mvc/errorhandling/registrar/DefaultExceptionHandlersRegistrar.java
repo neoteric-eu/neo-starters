@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.common.FallbackExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.common.HttpMessageNotReadableExceptionHandler;
+import com.neoteric.starter.mvc.errorhandling.handler.common.MethodArgumentNotValidExceptionHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 import java.util.Set;
@@ -12,6 +13,7 @@ public class DefaultExceptionHandlersRegistrar extends AbstractExceptionHandlerR
 
     static final ImmutableSet<Class<? extends RestExceptionHandler<? extends Exception>>> DEFAULT_EXCEPTION_HANDLERS =
             ImmutableSet.of(FallbackExceptionHandler.class,
+                    MethodArgumentNotValidExceptionHandler.class,
                     HttpMessageNotReadableExceptionHandler.class);
 
     @Override

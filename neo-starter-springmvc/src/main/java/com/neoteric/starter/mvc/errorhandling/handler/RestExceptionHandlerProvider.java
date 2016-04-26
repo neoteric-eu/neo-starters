@@ -13,9 +13,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface RestExceptionHandlerProvider {
 
-    Level logLevel() default Level.ERROR;
     HttpStatus httpStatus() default HttpStatus.INTERNAL_SERVER_ERROR;
-    boolean suppressStacktrace() default false;
+    Level logLevel() default Level.ERROR;
+    boolean suppressStackTrace() default false;
     boolean suppressException() default false;
 
 }

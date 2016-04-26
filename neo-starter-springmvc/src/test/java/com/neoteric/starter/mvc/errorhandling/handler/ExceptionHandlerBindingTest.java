@@ -102,7 +102,7 @@ public class ExceptionHandlerBindingTest {
         assertThat(binding.isSuppressStacktrace()).isTrue();
     }
 
-    @RestExceptionHandlerProvider(httpStatus = HttpStatus.BAD_REQUEST, logLevel = Level.WARN, suppressException = true, suppressStacktrace = true)
+    @RestExceptionHandlerProvider(httpStatus = HttpStatus.BAD_REQUEST, logLevel = Level.WARN, suppressException = true, suppressStackTrace = true)
     private static class IllegalStateExceptionExceptionNonDefaultsProvider implements RestExceptionHandler<IllegalStateException> {
 
         @Override

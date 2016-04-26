@@ -1,9 +1,11 @@
 package com.neoteric.starter.mvc.errorhandling;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import com.google.common.collect.Maps;
 import lombok.Builder;
 import lombok.Value;
 
@@ -22,16 +24,29 @@ public class ErrorData {
     Integer status;
     String error;
     String exception;
+    @JsonIgnore
     Map<String, Object> additionalInfo;
     Object message;
+    @JsonIgnore
     Map<String, String> stackTrace;
 
+    // Workaround to always return stacktrace at the end
     @JsonAnyGetter
     Map<String, Object> getAdditionalInfo() {
-        return additionalInfo;
+        if (additionalInfo == null && stackTrace == null) {
+            return null;
+        }
+        Map<String, Object> additional = Maps.newLinkedHashMap();
+        if (additionalInfo != null) {
+            additional.putAll(additionalInfo);
+        }
+        if (stackTrace != null) {
+            additional.put("stackTrace", stackTrace);
+        }
+        return additional;
     }
 
-@JsonPOJOBuilder(withPrefix = "")
-public static class ErrorDataBuilder {
-}
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class ErrorDataBuilder {
+    }
 }

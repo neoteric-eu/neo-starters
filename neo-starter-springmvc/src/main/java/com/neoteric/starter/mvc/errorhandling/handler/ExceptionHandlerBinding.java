@@ -38,7 +38,7 @@ public class ExceptionHandlerBinding {
                 .exceptionHandlerBeanName(getHandlerBeanName(exceptionHandlerClass))
                 .httpStatus(annotation.httpStatus())
                 .logLevel(annotation.logLevel())
-                .suppressStacktrace(annotation.suppressStacktrace())
+                .suppressStacktrace(annotation.suppressStackTrace())
                 .suppressException(annotation.suppressException())
                 .build();
     }

@@ -51,7 +51,7 @@ public abstract class AbstractExceptionHandlerRegistrar implements ImportBeanDef
         ExceptionHandlerBinding binding = ExceptionHandlerBinding.fromAnnotatedClass(handlerClass);
         registry.registerBeanDefinition(binding.getExceptionHandlerBeanName(), getExceptionHandlerBeanDefinition(handlerClass));
         bindings.add(binding);
-        LOG.debug("{}{} {} [status: {}, level: {}, stacktrace: {}, exception: {}] registered.",
+        LOG.debug("{}{} {} [status: {}, level: {}, stackTrace: {}, exception: {}] registered.",
                 StarterConstants.LOG_PREFIX, handlerPrefix(handlerClass), handlerClass.getSimpleName(), binding.getHttpStatus(),
                 binding.getLogLevel(), binding.isSuppressStacktrace(), binding.isSuppressException());
     }
