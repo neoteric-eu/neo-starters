@@ -21,7 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.Set;
 
 @Slf4j
-public class JsonPropertyAnnotationAwareValidatorFactoryBean extends LocalValidatorFactoryBean {
+public class JsonPropertyAwareValidatorFactoryBean extends LocalValidatorFactoryBean {
 
     @Override
     protected void processConstraintViolations(Set<ConstraintViolation<Object>> violations, Errors errors) {

@@ -26,20 +26,15 @@ import java.util.stream.Stream;
 @SuppressWarnings("squid:S2095")
 public class MethodArgumentNotValidExceptionHandler implements RestExceptionHandler<MethodArgumentNotValidException> {
 
+    private static final String VIOLATIONS = "violations";
+
     @Override
     public Object errorMessage(MethodArgumentNotValidException exception, HttpServletRequest request) {
         BindingResult bindingResult = exception.getBindingResult();
-        StringBuilder message = new StringBuilder();
         int errorCount = bindingResult.getErrorCount();
 
-        message.append(bindingResult.getObjectName());
-        message.append(" has ");
-        message.append(errorCount);
-        message.append(" validation error");
-        if (errorCount > 1) {
-            message.append("s");
-        }
-        return message.toString();
+        return String.join("", bindingResult.getObjectName(), " has ", String.valueOf(errorCount), " validation error",
+                errorCount > 1 ? "s" : "");
     }
 
     @Override
@@ -50,7 +45,7 @@ public class MethodArgumentNotValidExceptionHandler implements RestExceptionHand
                 bindingResult.getFieldErrors().stream()
                         .map(FieldErrorMapper.INSTANCE))
                 .collect(Collectors.toList());
-        return ImmutableMap.of("violations", validationErrors);
+        return ImmutableMap.of(VIOLATIONS, validationErrors);
     }
 
     private enum ObjectErrorMapper implements Function<ObjectError, Violation> {
@@ -85,6 +80,6 @@ public class MethodArgumentNotValidExceptionHandler implements RestExceptionHand
                 .filter(s -> !s.contains("."))
                 .findFirst()
                 .map(type -> CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, type))
-                .orElse("N/A");
+                .orElse(null);
     }
 }

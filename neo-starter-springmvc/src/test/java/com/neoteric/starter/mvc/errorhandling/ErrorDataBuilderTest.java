@@ -87,7 +87,10 @@ public class ErrorDataBuilderTest {
         assertThat(errorData.getTimestamp()).isEqualTo(ZonedDateTime.now(FIXED_CLOCK));
         assertThat(errorData.getRequestId()).isEqualTo(REQUEST_ID);
         assertThat(errorData.getStackTrace()).isNotEmpty();
-        assertThat(errorData.getAdditionalInfo()).hasSize(1).containsEntry("field", "value");
+        assertThat(errorData.getAdditionalInfo())
+                .hasSize(2)
+                .containsKey("stackTrace")
+                .containsEntry("field", "value");
     }
 
     @Test

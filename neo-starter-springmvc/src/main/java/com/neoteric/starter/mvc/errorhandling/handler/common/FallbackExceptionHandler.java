@@ -4,6 +4,7 @@ import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerProvider;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestExceptionHandlerProvider
 public class FallbackExceptionHandler implements RestExceptionHandler<Exception> {
@@ -14,4 +15,5 @@ public class FallbackExceptionHandler implements RestExceptionHandler<Exception>
     public Object errorMessage(Exception throwable, HttpServletRequest request) {
         return FALLBACK_ERROR_MSG;
     }
+
 }
