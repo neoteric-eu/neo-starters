@@ -1,5 +1,6 @@
 package com.neoteric.starter.mvc.errorhandling.handler.common;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerProvider;
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 @RestExceptionHandlerProvider(httpStatus = HttpStatus.BAD_REQUEST, logLevel = Level.WARN)
+@SuppressWarnings("squid:S2095")
 public class MethodArgumentNotValidExceptionHandler implements RestExceptionHandler<MethodArgumentNotValidException> {
 
     @Override
@@ -41,7 +43,6 @@ public class MethodArgumentNotValidExceptionHandler implements RestExceptionHand
     }
 
     @Override
-    @SuppressWarnings("squid:S2095")
     public Map<String, Object> additionalInfo(MethodArgumentNotValidException exception, HttpServletRequest request) {
         BindingResult bindingResult = exception.getBindingResult();
         List<Violation> validationErrors = Stream.concat(bindingResult.getGlobalErrors().stream()
@@ -59,17 +60,12 @@ public class MethodArgumentNotValidExceptionHandler implements RestExceptionHand
                 return Violation.builder()
                         .property(objectError.getObjectName())
                         .message(objectError.getDefaultMessage())
-                        .type(Arrays.stream(objectError.getCodes())
-                                .filter(s -> !s.contains("."))
-                                .findFirst()
-                                .map(String::toUpperCase)
-                                .orElse("N/A"))
+                        .type(getType(objectError))
                         .build();
             }
         }
     }
 
-    @SuppressWarnings("squid:S2095")
     private enum FieldErrorMapper implements Function<FieldError, Violation> {
         INSTANCE {
             @Override
@@ -77,14 +73,18 @@ public class MethodArgumentNotValidExceptionHandler implements RestExceptionHand
                 return Violation.builder()
                         .invalidValue(fieldError.getRejectedValue())
                         .property(fieldError.getField())
-                        .type(Arrays.stream(fieldError.getCodes())
-                                .filter(s -> !s.contains("."))
-                                .findFirst()
-                                .map(String::toUpperCase)
-                                .orElse("N/A"))
+                        .type(getType(fieldError))
                         .message(fieldError.getDefaultMessage())
                         .build();
             }
         }
+    }
+
+    private static String getType(ObjectError objectError) {
+        return Arrays.stream(objectError.getCodes())
+                .filter(s -> !s.contains("."))
+                .findFirst()
+                .map(type -> CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_UNDERSCORE, type))
+                .orElse("N/A");
     }
 }
