@@ -1,4 +1,4 @@
-package com.neoteric.starter.mvc.errorhandling.handler.common;
+package com.neoteric.starter.mvc.errorhandling.handlers.common;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.collect.ImmutableMap;

@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.mvc.errorhandling.handler.ExceptionHandlerBinding;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
+import com.neoteric.starter.mvc.errorhandling.resolver.ErrorData;
+import com.neoteric.starter.mvc.errorhandling.resolver.ErrorDataBuilder;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.jboss.logging.MDC;

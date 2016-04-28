@@ -1,12 +1,11 @@
-package com.neoteric.starter.mvc.errorhandling.handler.common;
+package com.neoteric.starter.mvc.errorhandling.handlers.common;
 
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerProvider;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
-@RestExceptionHandlerProvider
+@RestExceptionHandlerProvider(suppressException = true)
 public class FallbackExceptionHandler implements RestExceptionHandler<Exception> {
 
     public static final String FALLBACK_ERROR_MSG = "Unknown error";

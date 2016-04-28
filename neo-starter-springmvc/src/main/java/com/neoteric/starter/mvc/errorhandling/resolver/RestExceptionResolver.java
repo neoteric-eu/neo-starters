@@ -1,4 +1,4 @@
-package com.neoteric.starter.mvc.errorhandling;
+package com.neoteric.starter.mvc.errorhandling.resolver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;

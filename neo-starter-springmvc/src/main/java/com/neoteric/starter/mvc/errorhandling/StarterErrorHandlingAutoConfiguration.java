@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoteric.starter.jackson.StarterJacksonBeforeAutoConfiguration;
 import com.neoteric.starter.mvc.StarterMvcAutoConfiguration;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerRegistry;
-import com.neoteric.starter.mvc.errorhandling.registrar.DefaultExceptionHandlersRegistrar;
-import com.neoteric.starter.mvc.errorhandling.registrar.RestExceptionHandlerRegistryRegistrar;
-import com.neoteric.starter.mvc.errorhandling.registrar.ScannedExceptionHandlersRegistrar;
+import com.neoteric.starter.mvc.errorhandling.resolver.ErrorDataBuilder;
+import com.neoteric.starter.mvc.errorhandling.resolver.RestExceptionResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -16,7 +15,6 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import java.time.Clock;
 
@@ -27,19 +25,6 @@ import java.time.Clock;
 @AutoConfigureBefore(StarterMvcAutoConfiguration.class)
 @AutoConfigureAfter(StarterJacksonBeforeAutoConfiguration.class)
 public class StarterErrorHandlingAutoConfiguration {
-
-    @Import(ScannedExceptionHandlersRegistrar.class)
-    static class ExceptionHandlersRegistryConfiguration {
-    }
-
-    @ConditionalOnProperty(prefix = "neostarter.mvc.restErrorHandling", value = "defaultHandlersEnabled", havingValue = "true", matchIfMissing = true)
-    @Import(DefaultExceptionHandlersRegistrar.class)
-    static class DefaultExceptionHandlersRegistryConfiguration {
-    }
-
-    @Import(RestExceptionHandlerRegistryRegistrar.class)
-    static class HandlerRegistryConfiguration {
-    }
 
     @Autowired
     private ApplicationContext applicationContext;

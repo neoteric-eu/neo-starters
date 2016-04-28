@@ -1,4 +1,4 @@
-package com.neoteric.starter.mvc.errorhandling;
+package com.neoteric.starter.mvc.errorhandling.resolver;
 
 import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.mvc.errorhandling.handler.ExceptionHandlerBinding;

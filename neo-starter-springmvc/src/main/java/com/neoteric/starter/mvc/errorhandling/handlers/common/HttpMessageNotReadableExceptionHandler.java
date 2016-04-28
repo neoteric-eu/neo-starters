@@ -1,4 +1,4 @@
-package com.neoteric.starter.mvc.errorhandling.handler.common;
+package com.neoteric.starter.mvc.errorhandling.handlers.common;
 
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerProvider;
@@ -8,7 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestExceptionHandlerProvider(httpStatus = HttpStatus.BAD_REQUEST, logLevel = Level.WARN)
+@RestExceptionHandlerProvider(httpStatus = HttpStatus.BAD_REQUEST, logLevel = Level.ERROR)
 public class HttpMessageNotReadableExceptionHandler implements RestExceptionHandler<HttpMessageNotReadableException> {
 
     @Override

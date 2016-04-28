@@ -1,11 +1,10 @@
-package com.neoteric.starter.mvc.errorhandling.handler.common;
+package com.neoteric.starter.mvc.errorhandling.handlers.common;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 public class MethodArgumentNotValidExceptionHandlerTest {

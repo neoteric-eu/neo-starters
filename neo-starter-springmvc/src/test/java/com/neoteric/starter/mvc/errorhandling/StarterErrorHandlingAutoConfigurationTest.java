@@ -6,7 +6,8 @@ import com.neoteric.starter.embedded.MockEmbeddedServletContainerFactory;
 import com.neoteric.starter.jackson.StarterJacksonBeforeAutoConfiguration;
 import com.neoteric.starter.mvc.StarterMvcAutoConfiguration;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
-import com.neoteric.starter.mvc.errorhandling.handler.common.FallbackExceptionHandler;
+import com.neoteric.starter.mvc.errorhandling.handlers.common.FallbackExceptionHandler;
+import com.neoteric.starter.mvc.errorhandling.resolver.RestExceptionResolver;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
@@ -110,6 +111,8 @@ public class StarterErrorHandlingAutoConfigurationTest {
     @Documented
     @Import({StarterJacksonBeforeAutoConfiguration.class, JacksonAutoConfiguration.class,StarterErrorHandlingAutoConfiguration.class,
             ServerPropertiesAutoConfiguration.class, DispatcherServletAutoConfiguration.class, TimeZoneAutoConfiguration.class,
+            ExceptionHandlersRegistryAutoConfiguration.class, ScannedExceptionHandlersAutoConfiguration.class,
+            DefaultExceptionHandlersAutoConfiguration.class, SecurityExceptionHandlersAutoConfiguration.class,
             StarterMvcAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class, ErrorMvcAutoConfiguration.class,
             PropertyPlaceholderAutoConfiguration.class})
     @AutoConfigurationPackage

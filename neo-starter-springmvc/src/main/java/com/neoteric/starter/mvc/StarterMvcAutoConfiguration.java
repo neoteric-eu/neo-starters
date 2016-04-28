@@ -1,6 +1,6 @@
 package com.neoteric.starter.mvc;
 
-import com.neoteric.starter.mvc.errorhandling.RestExceptionResolver;
+import com.neoteric.starter.mvc.errorhandling.resolver.RestExceptionResolver;
 import com.neoteric.starter.mvc.validation.JsonPropertyAwareValidatorFactoryBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

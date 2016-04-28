@@ -1,4 +1,4 @@
-package com.neoteric.starter.mvc.errorhandling;
+package com.neoteric.starter.mvc.errorhandling.resolver;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,7 +32,7 @@ public class ErrorData {
 
     // Workaround to always return stacktrace at the end
     @JsonAnyGetter
-    Map<String, Object> getAdditionalInfo() {
+    public Map<String, Object> getAdditionalInfo() {
         if (additionalInfo == null && stackTrace == null) {
             return null;
         }

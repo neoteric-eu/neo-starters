@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.*;
 public class JsonPropertyAwareValidatorFactoryBeanTest {
 
     private static final String BEAN_NAME = "bean";
-    private static final String INVALID_VALUE = "invalid";
     private static final String JSON_NAME = "jsonName";
     private JsonPropertyAwareValidatorFactoryBean validatorFactoryBean;
 

@@ -1,5 +1,6 @@
-package com.neoteric.starter.mvc.errorhandling.registrar;
+package com.neoteric.starter.mvc.errorhandling;
 
+import com.google.common.collect.ImmutableSet;
 import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.mvc.errorhandling.handler.ExceptionHandlerBinding;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
@@ -21,6 +22,13 @@ public abstract class AbstractExceptionHandlerRegistrar implements ImportBeanDef
 
     private static final String DEFAULT = "Default";
     private static final String CUSTOM = "Custom";
+    private static final ImmutableSet<Class<? extends RestExceptionHandler<? extends Exception>>> DEFAULT_HANDLERS =
+            ImmutableSet.<Class<? extends RestExceptionHandler<? extends Exception>>> builder()
+                    .addAll(DefaultExceptionHandlersAutoConfiguration.DefaultExceptionHandlersRegistrar.EXCEPTION_HANDLERS)
+                    .addAll(DefaultExceptionHandlersAutoConfiguration.CustomExceptionHandlersRegistrar.EXCEPTION_HANDLERS)
+                    .addAll(SecurityExceptionHandlersAutoConfiguration.SecurityExceptionHandlersRegistrar.EXCEPTION_HANDLERS)
+            .build();
+
 
     protected abstract Set<Class<? extends RestExceptionHandler<? extends Exception>>> exceptionHandlerClasses(BeanDefinitionRegistry registry);
 
@@ -43,7 +51,7 @@ public abstract class AbstractExceptionHandlerRegistrar implements ImportBeanDef
     }
 
     private String handlerPrefix(Class<? extends RestExceptionHandler<? extends Exception>> exceptionHandlerClass) {
-        return DefaultExceptionHandlersRegistrar.DEFAULT_EXCEPTION_HANDLERS.contains(exceptionHandlerClass) ? DEFAULT : CUSTOM;
+        return DEFAULT_HANDLERS.contains(exceptionHandlerClass) ? DEFAULT : CUSTOM;
     }
 
     private void registerExceptionHandler(BeanDefinitionRegistry registry, Set<ExceptionHandlerBinding> bindings,
