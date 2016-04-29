@@ -1,15 +1,14 @@
 package com.neoteric.starter.mvc;
 
 import com.google.common.base.CaseFormat;
-import com.google.common.collect.ImmutableMap;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.support.StaticWebApplicationContext;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 
@@ -20,134 +19,148 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
 
     private final StaticWebApplicationContext wac = new StaticWebApplicationContext();
     private ClassNameAwareRequestMappingHandlerMapping handlerMapping;
+    private StarterMvcProperties.ApiProperties apiProps;
 
-    @Before
-    public void setUpHandlerMapping() {
-        this.handlerMapping = new ClassNameAwareRequestMappingHandlerMapping();
+    private void mappingHandler(StarterMvcProperties.ApiProperties apiProperties) {
+        this.handlerMapping = new ClassNameAwareRequestMappingHandlerMapping(apiProperties);
         this.handlerMapping.setApplicationContext(wac);
     }
 
-    @Test
-    public void shouldNotAddAnyPrefixIfNoConfigProvided() throws Exception {
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListController.class.getMethod("getList"), ListController.class);
+    private void assertPattern(RequestMappingInfo info, String pattern) {
         assertThat(info).isNotNull();
         assertThat(info.getPatternsCondition().getPatterns())
                 .hasSize(1)
-                .contains("/getList");
+                .contains(pattern);
+    }
+
+    @Before
+    public void setUpApiProps() {
+        apiProps = new StarterMvcProperties.ApiProperties();
     }
 
     @Test
-    public void shouldAddOnlyClassNamePrefixIfEmptyInitialPrefixProvided() throws Exception {
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Controller", ""));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListController.class.getMethod("getList"), ListController.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/list/getList");
-    }
-
-    @Test
-    public void shouldAddFullPrefix() throws Exception {
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Controller", "/api"));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListController.class.getMethod("getList"), ListController.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/api/list/getList");
+    public void shouldNotAddAnyPrefixIfNoConfigProvidedForApiController() throws Exception {
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
+        assertPattern(info, "/list-endpoint-api-controller/getList");
     }
 
 
     @Test
     @Parameters({"api", "/api", "api/", "/api/"})
-    public void shouldHandleAllPrefixPossibilities(String prefix) throws Exception {
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Controller", prefix));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListController.class.getMethod("getList"), ListController.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/api/list/getList");
+    public void addApiPathPrefixWhenSetUpForApiController(String apiPath) throws Exception {
+        apiProps.setPath(apiPath);
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
+        assertPattern(info, "/api/list-endpoint-api-controller/getList");
     }
 
     @Test
-    public void shouldPickAppropriatePrefix() throws Exception {
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Api2", "/api/v2", "Api", "/api/v1"));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(EndpointApi.class.getMethod("get"), EndpointApi.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/api/v1/endpoint");
+    @Parameters({"v1", "/v1", "v1/", "/v1/"})
+    public void addPrefixWhenDefaultPrefixSetUpForApiController(String defaultPrefix) throws Exception {
+        apiProps.getResourceProperties().setDefaultPrefix(defaultPrefix);
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
+        assertPattern(info, "/v1/list-endpoint-api-controller/getList");
     }
 
     @Test
-    public void shouldPickFirstEntryIfCollapsingEntries() throws Exception {
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Api", "/api/v1", "pi", "/pi"));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(EndpointApi.class.getMethod("get"), EndpointApi.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/api/v1/endpoint");
+    @Parameters({
+            "List?Controller, /endpoint-api/getList",
+            "ListController, /list-endpoint-api-controller/getList",
+            "List?Controller?, /endpoint-api/getList",
+            "?Controller, /list-endpoint-api/getList",
+            "List?, /endpoint-api-controller/getList",
+            "SomeList?, /list-endpoint-api-controller/getList", // won't match
+            "List?ControllerEnd, /list-endpoint-api-controller/getList", // won't match
+            "?, /list-endpoint-api-controller/getList"})
+    public void shouldHandlePrefixAndSuffixWhenPatternProvided(String pattern, String expectedUrl) throws Exception {
+        apiProps.getResourceProperties().setClassNamePattern(pattern);
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
+        assertPattern(info, expectedUrl);
     }
 
     @Test
-    public void shouldFormatWithHyphenByDefault() throws Exception {
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Controller", ""));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(SomeImportantController.class.getMethod("get"),
-                SomeImportantController.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/some-important/get");
+    public void shouldIntegrateEveryOptionForApiController() throws Exception {
+        apiProps.setPath("/api");
+        apiProps.getResourceProperties().setDefaultPrefix("v1");
+        apiProps.getResourceProperties().setClassNamePattern("List?Controller");
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
+        assertPattern(info, "/api/v1/endpoint-api/getList");
+    }
+
+    @Test
+    public void shouldNotProcessApiOptionsForRestController() throws Exception {
+        apiProps.setPath("/api");
+        apiProps.getResourceProperties().setDefaultPrefix("v1");
+        apiProps.getResourceProperties().setClassNamePattern("List?Controller");
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListRestController.class.getMethod("getList"), ListRestController.class);
+        assertPattern(info, "/getList");
     }
 
     @Test
     public void shouldFormatName() throws Exception {
-        handlerMapping.setCaseFormat(CaseFormat.LOWER_CAMEL);
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Controller", ""));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(SomeImportantController.class.getMethod("get"),
-                SomeImportantController.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/someImportant/get");
+        apiProps.getResourceProperties().setClassNamePattern("List?Controller");
+        apiProps.getResourceProperties().setCaseFormat(CaseFormat.LOWER_CAMEL);
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
+        assertPattern(info, "/endpointApi/getList");
     }
 
     @Test
-    public void shouldProperlyOrderPrefixAndClassRequestMapping() throws Exception {
-        handlerMapping.setCaseFormat(CaseFormat.LOWER_CAMEL);
-        handlerMapping.setClassSuffixToPrefix(ImmutableMap.of("Controller", "/api"));
-        RequestMappingInfo info = handlerMapping.getMappingForMethod(ImportantController.class.getMethod("get"),
-                ImportantController.class);
-        assertThat(info).isNotNull();
-        assertThat(info.getPatternsCondition().getPatterns())
-                .hasSize(1)
-                .contains("/api/important/v1/get");
+    public void shouldUseExplicitPrefixForApiControler() throws Exception {
+        apiProps.getResourceProperties().setDefaultPrefix("v1");
+        apiProps.getResourceProperties().setClassNamePattern("?Controller");
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(PrefixedApiController.class.getMethod("get"), PrefixedApiController.class);
+        assertPattern(info, "/v2/prefixed-api/get");
     }
 
-
-    @Controller
-    @RequestMapping("/v1")
-    static class ImportantController {
-
-        @GetMapping("/get")
-        public void get() {
-        }
-
+    @Test
+    public void shouldAddRequestMappingValueAfterApiControllerPrefixes() throws Exception {
+        apiProps.getResourceProperties().setDefaultPrefix("v1");
+        apiProps.getResourceProperties().setClassNamePattern("?Controller");
+        mappingHandler(apiProps);
+        RequestMappingInfo info = handlerMapping.getMappingForMethod(ClassMappingController.class.getMethod("get"), ClassMappingController.class);
+        assertPattern(info, "/v1/class-mapping/hi/get");
     }
 
-    @Controller
-    static class SomeImportantController {
-
-        @GetMapping("/get")
-        public void get() {
-        }
-
-    }
-
-    @Controller
-    static class ListController {
+    @RestController
+    static class ListRestController {
 
         @GetMapping("/getList")
         public void getList() {
+        }
+
+    }
+
+    @ApiController
+    static class ListEndpointApiController {
+
+        @GetMapping("/getList")
+        public void getList() {
+        }
+
+    }
+
+    @ApiController(prefix = "v2")
+    static class PrefixedApiController {
+
+        @GetMapping("/get")
+        public void get() {
+        }
+
+    }
+
+    @ApiController
+    @RequestMapping("/hi")
+    static class ClassMappingController {
+
+        @GetMapping("/get")
+        public void get() {
         }
 
     }

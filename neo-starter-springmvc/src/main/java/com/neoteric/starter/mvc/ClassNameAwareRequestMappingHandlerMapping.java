@@ -13,12 +13,17 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Setter
 public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
 
-    private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
-    private Map<String, String> classSuffixToPrefix;
+    private StarterMvcProperties.ApiProperties apiProps;
+
+    public ClassNameAwareRequestMappingHandlerMapping(StarterMvcProperties.ApiProperties apiProps) {
+        this.apiProps = apiProps;
+    }
 
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
@@ -53,45 +58,49 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
     }
 
     private boolean shouldAddClassNameContext(Class<?> handlerType) {
-        if (classSuffixToPrefix == null || classSuffixToPrefix.isEmpty()) {
-            return false;
-        }
-
-
-        String className = ClassUtils.getShortName(handlerType);
-        return classSuffixToPrefix.keySet().stream().anyMatch(className::endsWith);
+        return handlerType.isAnnotationPresent(ApiController.class);
     }
 
     private RequestMappingInfo prefixMappingInfo(Class<?> handlerType) {
-        String className = ClassUtils.getShortName(handlerType);
         StringBuilder completePrefix = new StringBuilder();
-        Map.Entry<String, String> entry = classSuffixToPrefix.entrySet()
-                .stream()
-                .filter(e -> className.endsWith(e.getKey()))
-                .findFirst()
-                .get(); // I'm sure I will get entry as validation was done beforehand
 
-        String prefix = resolvePrefix(entry.getValue());
+        String apiPath = resolvePrefix(apiProps.getPath());
+        if (StringUtils.hasLength(apiPath)) {
+            completePrefix.append(apiPath);
+        }
+        String prefix = resolvePrefix(retrievePrefix(handlerType));
 
         if (StringUtils.hasLength(prefix)) {
             completePrefix.append(prefix);
-            completePrefix.append("/");
         }
-
-        String classPath = className.substring(0, className.lastIndexOf(entry.getKey()));
-
-        if (classPath.length() > 0) {
-            completePrefix.append(resolveClassName(classPath));
-        }
+        completePrefix.append("/");
+        completePrefix.append(resolveClassName(ClassUtils.getShortName(handlerType)));
 
         return RequestMappingInfo
                 .paths(completePrefix.toString())
                 .build();
     }
 
-    private String resolveClassName(String classPath) {
-        String path = classPath.substring(classPath.lastIndexOf('.') + 1); // tackles inner static classes
-        return CaseFormat.UPPER_CAMEL.to(caseFormat, path);
+    private String retrievePrefix(Class<?> handlerType) {
+        ApiController annotation = handlerType.getAnnotation(ApiController.class);
+        return StringUtils.isEmpty(annotation.prefix()) ? apiProps.getResourceProperties().getDefaultPrefix() : annotation.prefix();
+    }
+
+    private String resolveClassName(String className) {
+        String resolvedClassName = className.substring(className.lastIndexOf('.') + 1); // tackles inner static classes
+        String classNamePattern = apiProps.getResourceProperties().getClassNamePattern();
+        if (classNamePattern != null) {
+            String[] split = classNamePattern.split("\\?", 2);
+            if (split.length > 1) {
+            Pattern pattern = Pattern.compile("^" + split[0] + "([a-zA-Z0-9].*)" + split[1] + "$");
+                Matcher matcher = pattern.matcher(resolvedClassName);
+                if (matcher.find()) {
+                    resolvedClassName = matcher.group(1);
+                }
+            }
+        }
+
+        return CaseFormat.UPPER_CAMEL.to(apiProps.getResourceProperties().getCaseFormat(), resolvedClassName);
     }
 
     private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {

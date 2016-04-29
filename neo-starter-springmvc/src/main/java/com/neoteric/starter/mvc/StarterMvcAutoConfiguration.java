@@ -253,13 +253,13 @@ public class StarterMvcAutoConfiguration {
         private WebMvcProperties mvcProperties;
 
         @Autowired
-        private StarterMvcProperties starterMvcProperties;
-
-        @Autowired
         private ListableBeanFactory beanFactory;
 
         @Autowired(required = false)
         RestExceptionResolver restExceptionResolver;
+
+        @Autowired
+        StarterMvcProperties starterMvcProperties;
 
         @Bean
         public LocalValidatorFactoryBean validator() {
@@ -292,9 +292,8 @@ public class StarterMvcAutoConfiguration {
         @Override
         public RequestMappingHandlerMapping requestMappingHandlerMapping() {
             // Must be @Primary for MvcUriComponentsBuilder to work
-            ClassNameAwareRequestMappingHandlerMapping handlerMapping = new ClassNameAwareRequestMappingHandlerMapping();
-            handlerMapping.setClassSuffixToPrefix(starterMvcProperties.getClassSuffixToPrefix());
-            handlerMapping.setCaseFormat(starterMvcProperties.getCaseFormat());
+            ClassNameAwareRequestMappingHandlerMapping handlerMapping =
+                    new ClassNameAwareRequestMappingHandlerMapping(starterMvcProperties.getApiProperties());
             handlerMapping.setOrder(0);
             handlerMapping.setInterceptors(getInterceptors());
             handlerMapping.setContentNegotiationManager(mvcContentNegotiationManager());
