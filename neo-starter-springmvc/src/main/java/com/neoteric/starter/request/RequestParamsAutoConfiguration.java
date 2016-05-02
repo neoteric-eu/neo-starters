@@ -1,6 +1,7 @@
 package com.neoteric.starter.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.neoteric.starter.mvc.StarterMvcProperties;
 import com.neoteric.starter.request.params.RequestParametersFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -17,10 +18,10 @@ import org.springframework.context.annotation.Configuration;
 public class RequestParamsAutoConfiguration {
 
     @Autowired
-    JerseyProperties jerseyProperties;
+    StarterMvcProperties starterMvcProperties;
 
     @Bean
     FilterRegistrationBean registerRequestParamsFilter(ObjectMapper objectMapper) throws Exception {
-        return new FilterRegistrationBean(new RequestParametersFilter(objectMapper, jerseyProperties.getApplicationPath()));
+        return new FilterRegistrationBean(new RequestParametersFilter(objectMapper, starterMvcProperties.getApi().getPath()));
     }
 }

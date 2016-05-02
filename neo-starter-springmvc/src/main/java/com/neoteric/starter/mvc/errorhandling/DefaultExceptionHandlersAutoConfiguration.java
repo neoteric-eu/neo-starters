@@ -2,10 +2,7 @@ package com.neoteric.starter.mvc.errorhandling;
 
 import com.google.common.collect.ImmutableSet;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
-import com.neoteric.starter.mvc.errorhandling.handlers.common.FallbackExceptionHandler;
-import com.neoteric.starter.mvc.errorhandling.handlers.common.HttpMessageNotReadableExceptionHandler;
-import com.neoteric.starter.mvc.errorhandling.handlers.common.IllegalArgumentExceptionHandler;
-import com.neoteric.starter.mvc.errorhandling.handlers.common.MethodArgumentNotValidExceptionHandler;
+import com.neoteric.starter.mvc.errorhandling.handlers.common.*;
 import com.neoteric.starter.mvc.errorhandling.handlers.custom.ResourceConflictExceptionHandler;
 import com.neoteric.starter.mvc.errorhandling.handlers.custom.ResourceNotFoundExceptionHandler;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -38,6 +35,7 @@ public class DefaultExceptionHandlersAutoConfiguration {
                         FallbackExceptionHandler.class,
                         MethodArgumentNotValidExceptionHandler.class,
                         IllegalArgumentExceptionHandler.class,
+                        NoHandlerFoundExceptionHandler.class,
                         HttpMessageNotReadableExceptionHandler.class);
 
         @Override

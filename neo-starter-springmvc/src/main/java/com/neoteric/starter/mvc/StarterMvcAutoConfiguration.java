@@ -293,7 +293,7 @@ public class StarterMvcAutoConfiguration {
         public RequestMappingHandlerMapping requestMappingHandlerMapping() {
             // Must be @Primary for MvcUriComponentsBuilder to work
             ClassNameAwareRequestMappingHandlerMapping handlerMapping =
-                    new ClassNameAwareRequestMappingHandlerMapping(starterMvcProperties.getApiProperties());
+                    new ClassNameAwareRequestMappingHandlerMapping(starterMvcProperties.getApi());
             handlerMapping.setOrder(0);
             handlerMapping.setInterceptors(getInterceptors());
             handlerMapping.setContentNegotiationManager(mvcContentNegotiationManager());

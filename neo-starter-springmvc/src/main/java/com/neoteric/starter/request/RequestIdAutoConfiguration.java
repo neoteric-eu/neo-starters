@@ -1,5 +1,6 @@
 package com.neoteric.starter.request;
 
+import com.neoteric.starter.mvc.StarterMvcProperties;
 import com.neoteric.starter.request.tracing.RequestIdFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jersey.JerseyProperties;
@@ -13,11 +14,11 @@ import org.springframework.context.annotation.Configuration;
 public class RequestIdAutoConfiguration {
 
     @Autowired
-    JerseyProperties jerseyProperties;
+    StarterMvcProperties starterMvcProperties;
 
     @Bean
     FilterRegistrationBean registerRequestIdFilter() {
-        return  new FilterRegistrationBean(new RequestIdFilter(jerseyProperties.getApplicationPath()));
+        return  new FilterRegistrationBean(new RequestIdFilter(starterMvcProperties.getApi().getPath()));
     }
 
 }

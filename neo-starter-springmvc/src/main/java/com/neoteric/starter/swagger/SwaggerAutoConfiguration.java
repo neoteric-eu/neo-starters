@@ -65,10 +65,10 @@ public class SwaggerAutoConfiguration {
 
     private Predicate<String> getPath() {
         Predicate<String> paths;
-        if (Strings.isNullOrEmpty(starterMvcProperties.getApiProperties().getPath())) {
+        if (Strings.isNullOrEmpty(starterMvcProperties.getApi().getPath())) {
             paths = PathSelectors.any();
         } else {
-            paths = PathSelectors.ant(starterMvcProperties.getApiProperties().getPath() + "/**");
+            paths = PathSelectors.ant(starterMvcProperties.getApi().getPath() + "/**");
         }
         return paths;
     }

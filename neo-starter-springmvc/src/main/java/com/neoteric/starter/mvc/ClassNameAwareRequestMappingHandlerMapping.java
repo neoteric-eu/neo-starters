@@ -12,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,20 +41,6 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
         return info;
     }
 
-    private String resolvePrefix(String initialPrefix) {
-        if (!StringUtils.hasLength(initialPrefix)) {
-            return initialPrefix;
-        }
-        String prefixToReturn = initialPrefix;
-
-        if (!initialPrefix.startsWith("/")) {
-            prefixToReturn = "/" + initialPrefix;
-        }
-        if (initialPrefix.endsWith("/")) {
-            prefixToReturn = prefixToReturn.substring(0, prefixToReturn.length() - 1);
-        }
-        return prefixToReturn;
-    }
 
     private boolean shouldAddClassNameContext(Class<?> handlerType) {
         return handlerType.isAnnotationPresent(ApiController.class);
@@ -64,11 +49,11 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
     private RequestMappingInfo prefixMappingInfo(Class<?> handlerType) {
         StringBuilder completePrefix = new StringBuilder();
 
-        String apiPath = resolvePrefix(apiProps.getPath());
+        String apiPath = PrefixResolver.resolve(apiProps.getPath());
         if (StringUtils.hasLength(apiPath)) {
             completePrefix.append(apiPath);
         }
-        String prefix = resolvePrefix(retrievePrefix(handlerType));
+        String prefix = PrefixResolver.resolve(retrievePrefix(handlerType));
 
         if (StringUtils.hasLength(prefix)) {
             completePrefix.append(prefix);
@@ -83,12 +68,12 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
 
     private String retrievePrefix(Class<?> handlerType) {
         ApiController annotation = handlerType.getAnnotation(ApiController.class);
-        return StringUtils.isEmpty(annotation.prefix()) ? apiProps.getResourceProperties().getDefaultPrefix() : annotation.prefix();
+        return StringUtils.isEmpty(annotation.prefix()) ? apiProps.getResources().getDefaultPrefix() : annotation.prefix();
     }
 
     private String resolveClassName(String className) {
         String resolvedClassName = className.substring(className.lastIndexOf('.') + 1); // tackles inner static classes
-        String classNamePattern = apiProps.getResourceProperties().getClassNamePattern();
+        String classNamePattern = apiProps.getResources().getClassNamePattern();
         if (classNamePattern != null) {
             String[] split = classNamePattern.split("\\?", 2);
             if (split.length > 1) {
@@ -100,7 +85,7 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
             }
         }
 
-        return CaseFormat.UPPER_CAMEL.to(apiProps.getResourceProperties().getCaseFormat(), resolvedClassName);
+        return CaseFormat.UPPER_CAMEL.to(apiProps.getResources().getCaseFormat(), resolvedClassName);
     }
 
     private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {

@@ -1,6 +1,7 @@
 package com.neoteric.starter.request.tracing;
 
 import com.neoteric.starter.StarterConstants;
+import com.neoteric.starter.mvc.PrefixResolver;
 import org.jboss.logging.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,21 +27,20 @@ public class RequestIdFilter extends OncePerRequestFilter {
     private final String applicationPath;
 
     public RequestIdFilter(String applicationPath) {
-        this.applicationPath = applicationPath;
+        this.applicationPath = applicationPath == null ? "" : PrefixResolver.resolve(applicationPath);
     }
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-//        String path = new UrlPathHelper().getPathWithinApplication(request);
-//        return !path.startsWith(applicationPath);
-        return false;
+        String path = new UrlPathHelper().getPathWithinApplication(request);
+        return !path.startsWith(applicationPath);
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         String requestId = request.getHeader(StarterConstants.REQUEST_ID);
 
-        String path = new UrlPathHelper().getPathWithinApplication(request);
         if (requestId == null || requestId.isEmpty()) {
             requestId = UUID.randomUUID().toString();
             LOG.trace("Request ID header not found. Assigning new Request ID: [{}]", requestId);

@@ -58,7 +58,7 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
     @Test
     @Parameters({"v1", "/v1", "v1/", "/v1/"})
     public void addPrefixWhenDefaultPrefixSetUpForApiController(String defaultPrefix) throws Exception {
-        apiProps.getResourceProperties().setDefaultPrefix(defaultPrefix);
+        apiProps.getResources().setDefaultPrefix(defaultPrefix);
         mappingHandler(apiProps);
         RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
         assertPattern(info, "/v1/list-endpoint-api-controller/getList");
@@ -75,7 +75,7 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
             "List?ControllerEnd, /list-endpoint-api-controller/getList", // won't match
             "?, /list-endpoint-api-controller/getList"})
     public void shouldHandlePrefixAndSuffixWhenPatternProvided(String pattern, String expectedUrl) throws Exception {
-        apiProps.getResourceProperties().setClassNamePattern(pattern);
+        apiProps.getResources().setClassNamePattern(pattern);
         mappingHandler(apiProps);
         RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
         assertPattern(info, expectedUrl);
@@ -84,8 +84,8 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
     @Test
     public void shouldIntegrateEveryOptionForApiController() throws Exception {
         apiProps.setPath("/api");
-        apiProps.getResourceProperties().setDefaultPrefix("v1");
-        apiProps.getResourceProperties().setClassNamePattern("List?Controller");
+        apiProps.getResources().setDefaultPrefix("v1");
+        apiProps.getResources().setClassNamePattern("List?Controller");
         mappingHandler(apiProps);
         RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
         assertPattern(info, "/api/v1/endpoint-api/getList");
@@ -94,8 +94,8 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
     @Test
     public void shouldNotProcessApiOptionsForRestController() throws Exception {
         apiProps.setPath("/api");
-        apiProps.getResourceProperties().setDefaultPrefix("v1");
-        apiProps.getResourceProperties().setClassNamePattern("List?Controller");
+        apiProps.getResources().setDefaultPrefix("v1");
+        apiProps.getResources().setClassNamePattern("List?Controller");
         mappingHandler(apiProps);
         RequestMappingInfo info = handlerMapping.getMappingForMethod(ListRestController.class.getMethod("getList"), ListRestController.class);
         assertPattern(info, "/getList");
@@ -103,8 +103,8 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
 
     @Test
     public void shouldFormatName() throws Exception {
-        apiProps.getResourceProperties().setClassNamePattern("List?Controller");
-        apiProps.getResourceProperties().setCaseFormat(CaseFormat.LOWER_CAMEL);
+        apiProps.getResources().setClassNamePattern("List?Controller");
+        apiProps.getResources().setCaseFormat(CaseFormat.LOWER_CAMEL);
         mappingHandler(apiProps);
         RequestMappingInfo info = handlerMapping.getMappingForMethod(ListEndpointApiController.class.getMethod("getList"), ListEndpointApiController.class);
         assertPattern(info, "/endpointApi/getList");
@@ -112,8 +112,8 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
 
     @Test
     public void shouldUseExplicitPrefixForApiControler() throws Exception {
-        apiProps.getResourceProperties().setDefaultPrefix("v1");
-        apiProps.getResourceProperties().setClassNamePattern("?Controller");
+        apiProps.getResources().setDefaultPrefix("v1");
+        apiProps.getResources().setClassNamePattern("?Controller");
         mappingHandler(apiProps);
         RequestMappingInfo info = handlerMapping.getMappingForMethod(PrefixedApiController.class.getMethod("get"), PrefixedApiController.class);
         assertPattern(info, "/v2/prefixed-api/get");
@@ -121,8 +121,8 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
 
     @Test
     public void shouldAddRequestMappingValueAfterApiControllerPrefixes() throws Exception {
-        apiProps.getResourceProperties().setDefaultPrefix("v1");
-        apiProps.getResourceProperties().setClassNamePattern("?Controller");
+        apiProps.getResources().setDefaultPrefix("v1");
+        apiProps.getResources().setClassNamePattern("?Controller");
         mappingHandler(apiProps);
         RequestMappingInfo info = handlerMapping.getMappingForMethod(ClassMappingController.class.getMethod("get"), ClassMappingController.class);
         assertPattern(info, "/v1/class-mapping/hi/get");

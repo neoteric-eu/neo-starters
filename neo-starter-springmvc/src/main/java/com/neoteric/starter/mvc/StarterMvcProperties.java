@@ -14,9 +14,9 @@ import java.util.Map;
 public class StarterMvcProperties {
 
     @NestedConfigurationProperty
-    private final RestErrorHandling restErrorHandling = new RestErrorHandling();
+    private final RestErrorHandling errorHandling = new RestErrorHandling();
     @NestedConfigurationProperty
-    private final ApiProperties apiProperties = new ApiProperties();
+    private final ApiProperties api = new ApiProperties();
 
     @Getter
     @Setter
@@ -24,7 +24,7 @@ public class StarterMvcProperties {
         private String path;
 
         @NestedConfigurationProperty
-        private final ResourceProperties resourceProperties = new ResourceProperties();
+        private final ResourceProperties resources = new ResourceProperties();
     }
 
 
