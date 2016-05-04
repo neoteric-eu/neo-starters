@@ -57,20 +57,22 @@ public class RestExceptionResolver extends AbstractHandlerExceptionResolver impl
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object object, Exception ex) {
         // See http://stackoverflow.com/a/12979543/2217862
         request.removeAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
         ExceptionHandlerBinding binding = restExceptionHandlerRegistry.findBindingFor(ex.getClass())
                 .orElseThrow(NoExceptionHandlerFoundException::new);
-        RestExceptionHandler<?> handler = applicationContext.getBean(binding.getExceptionHandlerBeanName(), RestExceptionHandler.class);
+        RestExceptionHandler handler = applicationContext.getBean(binding.getExceptionHandlerBeanName(), RestExceptionHandler.class);
 
         errorLogger.log(binding, ex);
         ErrorData errorData = errorDataBuilder.build(handler, binding, request, ex);
+        handler.customizeResponse(ex, request, response);
         return processResponse(errorData, binding, new ServletWebRequest(request, response));
     }
 
     private ModelAndView processResponse(ErrorData errorData, ExceptionHandlerBinding binding, ServletWebRequest servletWebRequest) {
-        ResponseEntity<ErrorData> responseEntity = new ResponseEntity<>(errorData, new HttpHeaders(), binding.getHttpStatus());
+        ResponseEntity<ErrorData> responseEntity = new ResponseEntity<>(errorData, binding.getHttpStatus());
         MethodParameter returnMethodParameter = new MethodParameter(methodParameter);
         ModelAndViewContainer mavContainer = new ModelAndViewContainer();
         try {

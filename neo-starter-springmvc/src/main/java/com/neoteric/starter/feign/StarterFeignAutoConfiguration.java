@@ -29,24 +29,6 @@ public class StarterFeignAutoConfiguration {
     @Autowired
     CustomFeignProperties feignProperties;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Bean
-    public Contract feignContract() {
-        return new SpringMvcContract();
-    }
-
-    @Bean
-    public Decoder feignDecoder() {
-        return new JacksonDecoder(objectMapper);
-    }
-
-    @Bean
-    public Encoder feignEncoder() {
-        return new JacksonEncoder(objectMapper);
-    }
-
     @Bean
     public RequestIdAppendInterceptor idAppendInterceptor() {
         return new RequestIdAppendInterceptor();

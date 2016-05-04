@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: Sample Spring MVC application SECURED
+server:
+  port: 8443
+  ssl:
+
+    key-store: classpath:sample.jks
+    key-store-password: secret
+    key-password: password
+neostarter:
+  mvc:
+    api:
+      path: api
+      resources:
+        class-name-pattern: ?Endpoint
+sampleApp:
+  ribbon:
+    listOfServers: localhost:8001

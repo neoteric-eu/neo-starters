@@ -8,13 +8,9 @@ import com.neoteric.starter.mvc.errorhandling.handlers.custom.ResourceNotFoundEx
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.AuthenticationException;
 
 import java.util.Set;
 
@@ -36,6 +32,9 @@ public class DefaultExceptionHandlersAutoConfiguration {
                         MethodArgumentNotValidExceptionHandler.class,
                         IllegalArgumentExceptionHandler.class,
                         NoHandlerFoundExceptionHandler.class,
+                        HttpMediaTypeNotAcceptableExceptionHandler.class,
+                        HttpRequestMethodNotSupportedExceptionHandler.class,
+                        HttpMediaTypeNotSupportedExceptionHandler.class,
                         HttpMessageNotReadableExceptionHandler.class);
 
         @Override

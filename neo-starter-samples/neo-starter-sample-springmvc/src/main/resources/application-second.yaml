@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Sample Spring MVC application 2
+server:
+  port: 8002
+neostarter:
+  mvc:
+    api:
+      path: api
+      resources:
+        class-name-pattern: ?Endpoint
+sampleApp:
+  ribbon:
+    listOfServers: localhost:8001
