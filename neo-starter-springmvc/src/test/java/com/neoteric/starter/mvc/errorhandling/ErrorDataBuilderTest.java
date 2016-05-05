@@ -68,12 +68,12 @@ public class ErrorDataBuilderTest {
         MockitoAnnotations.initMocks(this);
         builder = new ErrorDataBuilder(FIXED_CLOCK, serverProperties);
         handler = new IllegalArgumentExceptionHandler();
-        MDC.put(StarterConstants.REQUEST_ID, REQUEST_ID);
+        MDC.put(StarterConstants.REQUEST_ID_HEADER, REQUEST_ID);
     }
 
     @After
     public void resetMDC() {
-        MDC.remove(StarterConstants.REQUEST_ID);
+        MDC.remove(StarterConstants.REQUEST_ID_HEADER);
     }
 
     @Test

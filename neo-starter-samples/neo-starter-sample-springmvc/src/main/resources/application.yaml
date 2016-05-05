@@ -9,9 +9,11 @@ neostarter:
       path: api
       resources:
         class-name-pattern: ?Endpoint
+  feign:
+    logger-level: full
 sampleApp:
   ribbon:
-    listOfServers: localhost:8443
+    listOfServers: localhost:8002
 saasManager:
   ribbon:
     listOfServers: https://dev.skillhunt.ntrc.eu

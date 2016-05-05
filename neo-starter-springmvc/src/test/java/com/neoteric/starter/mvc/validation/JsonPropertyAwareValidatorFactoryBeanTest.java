@@ -58,14 +58,14 @@ public class JsonPropertyAwareValidatorFactoryBeanTest {
     @Test
     public void classValidationWithWrongFieldName_ShouldThrowIllegalStateException() throws Exception {
         expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage(Matchers.contains("xxx"));
+        expectedException.expectMessage("xxx");
         validatorFactoryBean.validate(bean, errors, PropertyPathWrongNameValidation.class);
     }
 
     @Test
     public void classValidationWithJsonProperty_ShouldThrowIllegalStateException() throws Exception {
         expectedException.expect(IllegalStateException.class);
-        expectedException.expectMessage(Matchers.contains(JSON_NAME));
+        expectedException.expectMessage(JSON_NAME);
         validatorFactoryBean.validate(bean, errors, PropertyPathWithJsonPropertyValidation.class);
     }
 

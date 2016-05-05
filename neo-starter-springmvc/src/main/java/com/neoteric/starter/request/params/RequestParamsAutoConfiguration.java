@@ -1,4 +1,4 @@
-package com.neoteric.starter.request;
+package com.neoteric.starter.request.params;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoteric.starter.mvc.StarterMvcProperties;

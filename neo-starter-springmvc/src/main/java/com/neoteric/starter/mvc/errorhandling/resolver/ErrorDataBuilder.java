@@ -36,7 +36,7 @@ public final class ErrorDataBuilder {
         HttpStatus httpStatus = binding.getHttpStatus();
         ErrorData.ErrorDataBuilder builder = ErrorData.builder()
                 .timestamp(ZonedDateTime.now(clock))
-                .requestId(MDC.get(StarterConstants.REQUEST_ID) == null ? null : MDC.get(StarterConstants.REQUEST_ID).toString())
+                .requestId(MDC.get(StarterConstants.REQUEST_ID_HEADER) == null ? null : MDC.get(StarterConstants.REQUEST_ID_HEADER).toString())
                 .status(httpStatus.value())
                 .error(httpStatus.getReasonPhrase())
                 .message(handler.errorMessage(ex, request))
