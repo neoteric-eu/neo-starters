@@ -1,14 +1,17 @@
 package com.neoteric.starter.mvc;
 
 import com.neoteric.starter.mvc.errorhandling.resolver.RestExceptionResolver;
+import com.neoteric.starter.mvc.format.StarterDefaultFormattingConversionService;
 import com.neoteric.starter.mvc.validation.JsonPropertyAwareValidatorFactoryBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.web.*;
@@ -24,6 +27,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.DefaultMessageCodesResolver;
@@ -260,6 +264,14 @@ public class StarterMvcAutoConfiguration {
 
         @Autowired
         StarterMvcProperties starterMvcProperties;
+
+        //TODO: Document it (default iso format)
+        @Override
+        public FormattingConversionService mvcConversionService() {
+            FormattingConversionService conversionService = new StarterDefaultFormattingConversionService();
+            addFormatters(conversionService);
+            return conversionService;
+        }
 
         @Bean
         public LocalValidatorFactoryBean validator() {

@@ -2,9 +2,7 @@ package com.neoteric.starter.request.tracing;
 
 import com.google.common.collect.Lists;
 import com.neoteric.starter.mvc.StarterMvcProperties;
-import com.neoteric.starter.request.tracing.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,8 +10,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
-import javax.servlet.DispatcherType;
-import java.util.EnumSet;
 import java.util.List;
 
 @Configuration
@@ -27,8 +23,8 @@ public class RequestIdTracingAutoConfiguration {
     List<RequestIdListener> requestIdListeners = Lists.newArrayList();
 
     @Bean
-    RequestIdHystrixConcurrencyStrategy requestIdHystrixConcurrencyStrategy() {
-        return new RequestIdHystrixConcurrencyStrategy();
+    MDCHystrixConcurrencyStrategy requestIdHystrixConcurrencyStrategy() {
+        return new MDCHystrixConcurrencyStrategy();
     }
 
     @Bean

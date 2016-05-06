@@ -139,18 +139,4 @@ public class StarterErrorHandlingAutoConfigurationTest {
             throw new RuntimeException("eao");
         }
     }
-
-    @RestController
-    static class ExceptionHandler implements RestExceptionHandler<RuntimeException>{
-
-        @Override
-        public Object errorMessage(RuntimeException exception, HttpServletRequest request) {
-            return "error";
-        }
-
-        @Override
-        public Map<String, Object> additionalInfo(RuntimeException exception, HttpServletRequest request) {
-            return ImmutableMap.of("path", "overriddenPath");
-        }
-    }
 }

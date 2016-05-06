@@ -14,13 +14,13 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Slf4j
-public class RequestIdHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
+public class MDCHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
 
-    public RequestIdHystrixConcurrencyStrategy() {
+    public MDCHystrixConcurrencyStrategy() {
         try {
             HystrixPlugins plugins = HystrixPlugins.getInstance();
             HystrixConcurrencyStrategy concurrencyStrategy = plugins.getConcurrencyStrategy();
-            if (concurrencyStrategy instanceof RequestIdHystrixConcurrencyStrategy) {
+            if (concurrencyStrategy instanceof MDCHystrixConcurrencyStrategy) {
                 return;
             }
 
@@ -35,7 +35,7 @@ public class RequestIdHystrixConcurrencyStrategy extends HystrixConcurrencyStrat
             plugins.registerEventNotifier(eventNotifier);
             plugins.registerMetricsPublisher(metricsPublisher);
             plugins.registerPropertiesStrategy(propertiesStrategy);
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
             LOG.error("Failed to register MDC Hystrix Concurrency Strategy", e);
         }
     }
@@ -50,15 +50,15 @@ public class RequestIdHystrixConcurrencyStrategy extends HystrixConcurrencyStrat
 
     @Override
     public <T> Callable<T> wrapCallable(Callable<T> callable) {
-        return new MdcCallable<T>(callable);
+        return new MDCCallable<T>(callable);
     }
 
-    private static class MdcCallable<T> implements Callable<T> {
+    private static class MDCCallable<T> implements Callable<T> {
 
         private final Callable<T> actual;
         private final Map<String, String> parentMdcContextMap;
 
-        public MdcCallable(Callable<T> callable) {
+        public MDCCallable(Callable<T> callable) {
             this.actual = callable;
             parentMdcContextMap = MDC.getCopyOfContextMap();
         }

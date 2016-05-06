@@ -25,4 +25,5 @@ public class MethodArgumentNotValidExceptionHandlerTest {
         Object o = handler.errorMessage(exception, MOCK_REQUEST);
     }
 
+
 }
