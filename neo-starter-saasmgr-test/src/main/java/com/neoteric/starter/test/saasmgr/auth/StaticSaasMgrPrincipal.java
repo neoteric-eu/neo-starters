@@ -1,8 +1,8 @@
 package com.neoteric.starter.test.saasmgr.auth;
 
-import com.neoteric.starter.saasmgr.auth.Feature;
-import com.neoteric.starter.saasmgr.auth.SaasMgrPrincipal;
-import com.neoteric.starter.saasmgr.client.model.AccountStatus;
+import com.neoteric.starter.saasmgr.principal.Feature;
+import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
+import com.neoteric.starter.saasmgr.model.AccountStatus;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Arrays;

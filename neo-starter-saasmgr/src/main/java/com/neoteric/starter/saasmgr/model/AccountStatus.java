@@ -1,4 +1,4 @@
-package com.neoteric.starter.saasmgr.client.model;
+package com.neoteric.starter.saasmgr.model;
 
 public enum AccountStatus {
     INACTIVE("INACTIVE"),

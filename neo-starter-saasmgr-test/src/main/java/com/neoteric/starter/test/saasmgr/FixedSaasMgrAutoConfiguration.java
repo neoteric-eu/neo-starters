@@ -1,7 +1,7 @@
 package com.neoteric.starter.test.saasmgr;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
-import com.neoteric.starter.saasmgr.auth.SaasMgrPrincipal;
+import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 import com.neoteric.starter.test.saasmgr.auth.StaticSaasMgrPrincipal;
 import com.neoteric.starter.test.saasmgr.auth.TestSaasMgrAuthenticator;
 import lombok.extern.slf4j.Slf4j;

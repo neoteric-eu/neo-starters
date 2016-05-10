@@ -1,8 +1,9 @@
-package com.neoteric.starter.saasmgr.auth;
+package com.neoteric.starter.saasmgr.principal;
 
-import com.google.common.base.MoreObjects;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
+@ToString
 public class Feature implements GrantedAuthority {
 
     private final String name;
@@ -18,12 +19,5 @@ public class Feature implements GrantedAuthority {
 
     public static Feature of(String name) {
         return new Feature(name);
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("name", name)
-                .toString();
     }
 }

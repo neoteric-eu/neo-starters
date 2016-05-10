@@ -3,12 +3,18 @@ package com.neoteric.starter.saasmgr;
 import com.neoteric.starter.saasmgr.auth.DefaultSaasMgrAuthenticator;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
+import com.neoteric.starter.saasmgr.client.RestTemplateSaasMgrClient;
+import com.neoteric.starter.saasmgr.client.SaasMgrClient;
+import com.neoteric.starter.saasmgr.client.feign.FeignSaasMgrClient;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationFilter;
+import feign.Feign;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.jersey.JerseyProperties;
@@ -28,6 +34,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_AUTH_CACHE;
 import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_CACHE_MANAGER;
@@ -35,22 +42,22 @@ import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_CACH
 @Slf4j
 @Configuration
 @ConditionalOnWebApplication
-@EnableConfigurationProperties(SaasMgrCacheProperties.class)
+@EnableConfigurationProperties(SaasMgrProperties.class)
 @AutoConfigureAfter(CacheAutoConfiguration.class)
 @EnableCaching
-public class SaasMgrSecurityAutoConfiguration {
+public class SaasMgrAutoConfiguration {
+
+    @Autowired
+    SaasMgrClient saasMgrClient;
 
     @Bean
     SaasMgrAuthenticator saasMgrConnector() {
-        return new DefaultSaasMgrAuthenticator();
+        return new DefaultSaasMgrAuthenticator(saasMgrClient);
     }
 
     @Autowired
-    SaasMgrAuthenticator authenticator;
-
-    @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new SaasMgrAuthenticationProvider(authenticator));
+        auth.authenticationProvider(new SaasMgrAuthenticationProvider(saasMgrConnector()));
     }
 
     @Configuration
@@ -70,12 +77,12 @@ public class SaasMgrSecurityAutoConfiguration {
     static class SaasMgrCachingConfig extends CachingConfigurerSupport {
 
         @Autowired
-        SaasMgrCacheProperties saasMgrCacheProperties;
+        SaasMgrProperties saasMgrProperties;
 
         @Bean(destroyMethod = "shutdown")
         public net.sf.ehcache.CacheManager ehCacheManager() {
             CacheConfiguration cacheConfiguration = new CacheConfiguration(SAAS_MGR_AUTH_CACHE, 1000)
-                    .timeToLiveSeconds(saasMgrCacheProperties.getTimeToLiveSeconds());
+                    .timeToLiveSeconds(saasMgrProperties.getCache().getTimeToLiveSeconds());
 
             net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
             config.addCache(cacheConfiguration);
@@ -94,7 +101,6 @@ public class SaasMgrSecurityAutoConfiguration {
     @Configuration
     @EnableGlobalMethodSecurity(prePostEnabled = true)
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-    @EnableFeignClients
     static class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Autowired

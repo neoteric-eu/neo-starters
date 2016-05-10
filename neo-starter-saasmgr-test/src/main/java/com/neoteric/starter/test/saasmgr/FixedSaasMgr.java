@@ -1,6 +1,6 @@
 package com.neoteric.starter.test.saasmgr;
 
-import com.neoteric.starter.saasmgr.client.model.AccountStatus;
+import com.neoteric.starter.saasmgr.model.AccountStatus;
 
 import java.lang.annotation.*;
 

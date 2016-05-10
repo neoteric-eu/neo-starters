@@ -1,0 +1,159 @@
+{
+  "data": {
+    "token": "zm6InsRW8rAfywycYsgI4iqHWRTPdnqxmLuV25M82Qh3CJpazLxFTEbEHmA2kpgZZRNXDWkKbxVUyIhJ",
+    "user": {
+      "additionalEmails": [
+        {
+          "address": "demo@neoteric.eu",
+          "createdAt": "2016-03-02T13:02:39.568Z",
+          "status": "CONFIRMED"
+        },
+        {
+          "address": "trichert+4@neoteric.eu",
+          "createdAt": "2016-03-02T13:02:39.559Z",
+          "status": "PENDING"
+        },
+        {
+          "address": "trichert+6@neoteric.eu",
+          "createdAt": "2016-03-02T13:08:36.699Z",
+          "status": "PENDING"
+        },
+        {
+          "address": "sdgf@as.pl",
+          "createdAt": "2016-03-04T12:18:29.212Z",
+          "status": "PENDING"
+        },
+        {
+          "address": "dasdsa@sasd.pl",
+          "createdAt": "2016-03-04T12:19:21.796Z",
+          "status": "PENDING"
+        },
+        {
+          "address": "b1259051@trbvn.com",
+          "createdAt": "2016-03-04T12:20:22.258Z",
+          "status": "PENDING"
+        },
+        {
+          "address": "thencel@ntrc.eu",
+          "createdAt": "2016-03-04T12:22:33.902Z",
+          "status": "PENDING"
+        },
+        {
+          "address": "cxz@fd",
+          "createdAt": "2016-03-05T16:38:10.562Z",
+          "status": "PENDING"
+        }
+      ],
+      "createdAt": null,
+      "customers": [
+        {
+          "constraints": [
+            {
+              "currentValue": 0.0,
+              "key": "USER_NUMBER",
+              "maxValue": 10.0
+            }
+          ],
+          "customerId": "5351090b8fe7f4e7b99d6e67",
+          "customerName": "Neoteric clinic-dev",
+          "featureKeys": [
+            "SM_APPLICATION_DELETE",
+            "SH_OFFER_CREATE",
+            "SM_APPLICATION_UPDATE",
+            "NF_ADMIN",
+            "NF_USER",
+            "SH_JOB_APP_CREATE",
+            "TAG_TAG_UPDATE",
+            "SH_APP_INVITE_UPDATE",
+            "SM_BUNDLE_UPDATE",
+            "SH_APP_REFLINK_UPDATE",
+            "SM_ROLE_CREATE",
+            "TAG_ITEM_CREATE",
+            "SM_BUNDLE_DELETE",
+            "SH_APP_INVITE_DELETE",
+            "SM_CUSTOMER_CREATE",
+            "SM_APPLICATION_GET",
+            "SH_APP_REFLINK_DELETE",
+            "SH_PROFILE_CREATE",
+            "SM_BUNDLE_GET",
+            "SH_APP_INVITE_CREATE",
+            "TAG_ITEM_GET",
+            "SH_REFERENCE_UPDATE",
+            "SM_USER_STATUS_ANY",
+            "SM_ROLE_DELETE_ANY",
+            "SH_REFERENCE_GET",
+            "SH_REFERENCE_CREATE",
+            "SH_OFFER_DELETE",
+            "SH_APP_INVITE_GET",
+            "SH_PROFILE_GET",
+            "SM_ROLE_DELETE",
+            "SH_JOB_APP_DELETE",
+            "SH_APP_REFLINK_CREATE",
+            "SM_BUNDLE_CREATE",
+            "SM_ROLE_GET",
+            "TAG_TAG_CREATE",
+            "SM_CUSTOMER_DELETE",
+            "SM_USER_UPDATE_OWN",
+            "SM_USER_UPDATE",
+            "SM_CUSTOMER_UPDATE_ANY",
+            "SM_APPLICATION_GET_ANY",
+            "SM_CUSTOMER_GET",
+            "SH_PROFILE_DELETE",
+            "SM_USER_DELETE_ANY",
+            "SM_USER_GET_ANY",
+            "SM_USER_UPDATE_ANY",
+            "SM_BUNDLE_PROVIDE",
+            "SH_JOB_APP_GET",
+            "SM_CUSTOMER_CREATE_ANY",
+            "SM_CUSTOMER_DELETE_ANY",
+            "SM_ROLE_UPDATE",
+            "SM_ROLE_UPDATE_ANY",
+            "TAG_TAG_GET",
+            "SM_APPLICATION_CREATE",
+            "TAG_TAG_DELETE",
+            "SM_BUNDLE_BUY",
+            "SM_ROLE_CREATE_ANY",
+            "SH_JOB_APP_UPDATE",
+            "SH_PROFILE_UPDATE",
+            "SH_REFERENCE_DELETE",
+            "NF_SYSTEM_ADMIN",
+            "SM_CUSTOMER_GET_ANY",
+            "SH_APP_REFLINK_GET",
+            "SM_USER_GET",
+            "SM_CUSTOMER_UPDATE",
+            "SH_OFFER_UPDATE"
+          ],
+          "hashCode": -376865639,
+          "roles": [
+            {
+              "roleId": "53576b379d33da5ee72b45cf",
+              "roleName": "system-admin"
+            },
+            {
+              "roleId": "53576d9c9d33da5ee72b45d3",
+              "roleName": "admin"
+            }
+          ],
+          "status": "ACTIVE"
+        }
+      ],
+      "email": "demo@neoteric.eu",
+      "firstName": "Maciej",
+      "id": "5357699c9d33da5ee72b45ce",
+      "language": "pl_PL",
+      "lastName": "Śmiechowski",
+      "lastPassChange": null,
+      "newsletter": false,
+      "otherProperties": null,
+      "phoneNumber": "602557952",
+      "social": {
+        "linkedIn": null
+      },
+      "termsOfService": null,
+      "timezone": null,
+      "updatedAt": null,
+      "userStatus": "ACTIVE"
+    }
+  },
+  "meta": null
+}

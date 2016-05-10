@@ -1,6 +1,6 @@
 package com.neoteric.starter.test.saasmgr;
 
-import com.neoteric.starter.saasmgr.client.model.AccountStatus;
+import com.neoteric.starter.saasmgr.model.AccountStatus;
 import com.neoteric.starter.test.saasmgr.auth.StaticSaasMgrPrincipal;
 import lombok.Builder;
 import lombok.Value;

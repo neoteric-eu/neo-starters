@@ -1,5 +1,6 @@
 package com.neoteric.starter.saasmgr.auth;
 
+import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

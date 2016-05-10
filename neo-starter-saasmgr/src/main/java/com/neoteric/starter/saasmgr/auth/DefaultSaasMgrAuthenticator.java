@@ -1,49 +1,31 @@
 package com.neoteric.starter.saasmgr.auth;
 
 import com.neoteric.starter.saasmgr.client.SaasMgrClient;
-import com.neoteric.starter.saasmgr.client.model.Customer;
-import com.neoteric.starter.saasmgr.client.model.LoginData;
+import com.neoteric.starter.saasmgr.model.Customer;
+import com.neoteric.starter.saasmgr.model.LoginData;
+import com.neoteric.starter.saasmgr.principal.DefaultSaasMgrPrincipal;
+import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import feign.FeignException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
+@Slf4j
+@AllArgsConstructor
 public class DefaultSaasMgrAuthenticator implements SaasMgrAuthenticator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultSaasMgrAuthenticator.class);
-
-    @Autowired
-    private SaasMgrClient saasMgrClient;
+    private final SaasMgrClient saasMgrClient;
 
     @Override
     public SaasMgrPrincipal authenticate(String token, String customerId) {
-        LoginData loginData = null;
-        try {
-            loginData = saasMgrClient.getLoginInfo(token, customerId);
-        } catch (HystrixRuntimeException e) {
-            if (e.getCause() instanceof FeignException) {
-                FeignException feignException = (FeignException) e.getCause();
-                if (feignException.status() == HttpStatus.UNAUTHORIZED.value()) {
-                    throw new BadCredentialsException("SaasMgr authentication failed.", e);
-                } else if (feignException.status() > HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-                    throw new AuthenticationServiceException("SaasMgr authentication returned error", e);
-                }
-            } else {
-                LOG.error("Other Hystrix Exception: ", e);
-                throw new AuthenticationServiceException("SaasMgr authentication returned error.", e);
-            }
-        }
-        catch (RuntimeException e) {
-            LOG.error("General error: ", e);
-            throw new AuthenticationServiceException("SaasMgr authentication returned error.", e);
-        }
+        LoginData loginData = saasMgrClient.getLoginInfo(token, customerId);
         return extractAuthenticationDetails(loginData, customerId);
     }
 

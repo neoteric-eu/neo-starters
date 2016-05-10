@@ -1,7 +1,7 @@
 package com.neoteric.starter.saasmgr.filter;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationToken;
-import com.neoteric.starter.saasmgr.client.SaasMgrClient;
+import com.neoteric.starter.saasmgr.client.feign.SaasMgr;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
@@ -33,9 +33,10 @@ public class SaasMgrAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String customerId = request.getHeader(SaasMgrClient.CUSTOMER_ID_HEADER);
-        String token = request.getHeader(SaasMgrClient.AUTHORIZATION_HEADER);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String customerId = request.getHeader(SaasMgr.CUSTOMER_ID_HEADER);
+        String token = request.getHeader(SaasMgr.AUTHORIZATION_HEADER);
         Authentication authToken = new SaasMgrAuthenticationToken(customerId, token);
         SecurityContextHolder.getContext().setAuthentication(authToken);
         try {

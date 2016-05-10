@@ -1,13 +1,14 @@
-package com.neoteric.starter.saasmgr.auth;
+package com.neoteric.starter.saasmgr.principal;
 
-import com.google.common.base.MoreObjects;
-import com.neoteric.starter.saasmgr.client.model.AccountStatus;
+import com.neoteric.starter.saasmgr.model.AccountStatus;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ToString
 public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
 
     private final String userId;
@@ -105,17 +106,5 @@ public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
             return new DefaultSaasMgrPrincipal(userId, email, customerId, customerName, features, status);
         }
 
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("userId", userId)
-                .add("email", email)
-                .add("customerId", customerId)
-                .add("customerName", customerName)
-                .add("features", features)
-                .add("status", status)
-                .toString();
     }
 }

@@ -1,7 +1,7 @@
 package com.neoteric.starter.test.saasmgr.auth;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
-import com.neoteric.starter.saasmgr.auth.SaasMgrPrincipal;
+import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 
 public class TestSaasMgrAuthenticator implements SaasMgrAuthenticator {
 
