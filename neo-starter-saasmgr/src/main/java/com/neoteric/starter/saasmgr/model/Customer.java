@@ -1,5 +1,6 @@
 package com.neoteric.starter.saasmgr.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -9,6 +10,7 @@ import java.util.List;
 @Value
 @Builder(toBuilder = true)
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Customer {
 
     private final String customerId;

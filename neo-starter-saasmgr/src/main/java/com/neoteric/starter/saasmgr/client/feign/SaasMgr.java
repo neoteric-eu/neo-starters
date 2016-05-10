@@ -20,7 +20,7 @@ public interface SaasMgr {
     String AUTHORIZATION_HEADER = "Authorization";
     String CUSTOMER_ID_HEADER = "X-Customer-Id";
 
-    @RequestMapping(method = RequestMethod.GET, value = "api/v1/users/authToken",  produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(method = RequestMethod.GET, value = "api/v2/users/authToken",  produces = MediaType.APPLICATION_JSON_VALUE)
     @Cacheable(cacheManager = SAAS_MGR_CACHE_MANAGER, cacheNames = SAAS_MGR_AUTH_CACHE)
     LoginDataWrapper getLoginInfo(@RequestHeader(AUTHORIZATION_HEADER) String token, @RequestHeader(CUSTOMER_ID_HEADER) String customerId);
 }

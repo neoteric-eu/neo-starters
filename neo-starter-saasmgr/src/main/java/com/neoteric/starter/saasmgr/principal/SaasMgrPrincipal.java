@@ -1,9 +1,11 @@
 package com.neoteric.starter.saasmgr.principal;
 
 import com.neoteric.starter.saasmgr.model.AccountStatus;
+import com.neoteric.starter.saasmgr.model.SubscriptionConstraint;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface SaasMgrPrincipal {
     String getUserId();
@@ -11,5 +13,6 @@ public interface SaasMgrPrincipal {
     String getCustomerName();
     String getEmail();
     Collection<? extends GrantedAuthority> getAuthorities();
+    List<SubscriptionConstraint> getConstraints();
     AccountStatus getStatus();
 }

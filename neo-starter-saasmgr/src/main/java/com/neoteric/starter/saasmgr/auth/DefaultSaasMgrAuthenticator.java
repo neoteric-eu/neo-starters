@@ -5,15 +5,9 @@ import com.neoteric.starter.saasmgr.model.Customer;
 import com.neoteric.starter.saasmgr.model.LoginData;
 import com.neoteric.starter.saasmgr.principal.DefaultSaasMgrPrincipal;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
-import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -45,6 +39,7 @@ public class DefaultSaasMgrAuthenticator implements SaasMgrAuthenticator {
         return DefaultSaasMgrPrincipal.builder()
                 .userId(userId)
                 .email(email)
+                .constraints(foundedCustomer.getConstraints())
                 .customerId(foundedCustomer.getCustomerId())
                 .customerName(foundedCustomer.getCustomerName())
                 .features(foundedCustomer.getFeatureKeys())

@@ -1,5 +1,6 @@
 package com.neoteric.starter.test.saasmgr.auth;
 
+import com.neoteric.starter.saasmgr.model.SubscriptionConstraint;
 import com.neoteric.starter.saasmgr.principal.Feature;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 import com.neoteric.starter.saasmgr.model.AccountStatus;
@@ -7,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public final class StaticSaasMgrPrincipal implements SaasMgrPrincipal {
@@ -16,6 +18,7 @@ public final class StaticSaasMgrPrincipal implements SaasMgrPrincipal {
     public static String customerName;
     public static String email;
     public static AccountStatus accountStatus;
+    public static List<SubscriptionConstraint> constraints;
     public static String[] features;
 
     @Override
@@ -41,6 +44,11 @@ public final class StaticSaasMgrPrincipal implements SaasMgrPrincipal {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.stream(features).map(Feature::of).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SubscriptionConstraint> getConstraints() {
+        return constraints;
     }
 
     @Override

@@ -16,4 +16,9 @@ public @interface FixedSaasMgr {
     String userId() default "userId";
     AccountStatus accountStatus() default AccountStatus.ACTIVE;
     String[] features() default {};
+
+    /**
+     * Pattern: "KEY;0.5;10.0" Key name; max value; current value
+     */
+    String[] constraints() default {};
 }

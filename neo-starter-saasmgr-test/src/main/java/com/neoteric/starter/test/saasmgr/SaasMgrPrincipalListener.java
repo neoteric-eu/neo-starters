@@ -1,13 +1,20 @@
 package com.neoteric.starter.test.saasmgr;
 
 import com.neoteric.starter.saasmgr.model.AccountStatus;
+import com.neoteric.starter.saasmgr.model.SubscriptionConstraint;
 import com.neoteric.starter.test.saasmgr.auth.StaticSaasMgrPrincipal;
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+
 import static com.neoteric.starter.test.saasmgr.StarterSaasTestProfiles.FIXED_SAAS_MGR;
+import static com.neoteric.starter.test.saasmgr.auth.StaticSaasMgrPrincipal.constraints;
 
 public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
 
@@ -20,6 +27,7 @@ public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
         String email;
         AccountStatus accountStatus;
         String[] features;
+        List<SubscriptionConstraint> constraints;
     }
 
     private static final ThreadLocal<Details> DETAILS_HOLDER = new ThreadLocal<>();
@@ -85,6 +93,16 @@ public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
         StaticSaasMgrPrincipal.email = annotation.email();
         StaticSaasMgrPrincipal.accountStatus = annotation.accountStatus();
         StaticSaasMgrPrincipal.features = annotation.features();
+        StaticSaasMgrPrincipal.constraints = getConstraints(annotation.constraints());
+    }
+
+    private List<SubscriptionConstraint> getConstraints(String[] constraints) {
+        return Arrays.stream(constraints)
+                .map(con -> {
+                    String[] splitted = con.split(";");
+                    return new SubscriptionConstraint(splitted[0], Double.valueOf(splitted[1]), Double.valueOf(splitted[2]));
+                })
+                .collect(Collectors.toList());
     }
 
     private void setPrincipal(Details details) {
@@ -94,5 +112,6 @@ public class SaasMgrPrincipalListener extends AbstractTestExecutionListener {
         StaticSaasMgrPrincipal.email = details.getEmail();
         StaticSaasMgrPrincipal.accountStatus = details.getAccountStatus();
         StaticSaasMgrPrincipal.features = details.getFeatures();
+        StaticSaasMgrPrincipal.constraints = details.getConstraints();
     }
 }
