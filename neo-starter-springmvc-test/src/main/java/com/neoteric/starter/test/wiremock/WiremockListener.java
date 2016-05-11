@@ -2,8 +2,9 @@ package com.neoteric.starter.test.wiremock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import com.neoteric.starter.test.StarterTestUtils;
-import com.neoteric.starter.test.wiremock.ribbon.RibbonTestServer;
+import com.neoteric.starter.test.TestContextHelper;
+import com.netflix.loadbalancer.ILoadBalancer;
+import com.netflix.loadbalancer.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
@@ -12,7 +13,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 import static com.neoteric.starter.test.StarterTestConstants.LOG_PREFIX;
-import static com.neoteric.starter.test.StarterTestProfiles.WIREMOCK;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 @Slf4j
 public class WiremockListener extends AbstractTestExecutionListener {
@@ -22,20 +25,24 @@ public class WiremockListener extends AbstractTestExecutionListener {
 
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
-
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, WIREMOCK)) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class)) {
             return;
         }
 
         port = getFreeServerPort();
         server = new WireMockServer(port);
-        RibbonTestServer.setPort(port);
+
+
+        ILoadBalancer mockedBalancer = contextHelper.getBean(ILoadBalancer.class);
+        when(mockedBalancer.chooseServer(any())).thenReturn(new Server("localhost", port));
         LOG.info("{}WireMock started on port {}\n", LOG_PREFIX, port);
     }
 
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, WIREMOCK) || server == null) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class) || server == null) {
             return;
         }
         server.start();
@@ -44,7 +51,8 @@ public class WiremockListener extends AbstractTestExecutionListener {
 
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, WIREMOCK) || server == null) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class) || server == null) {
             return;
         }
         server.resetRequests();
@@ -53,10 +61,13 @@ public class WiremockListener extends AbstractTestExecutionListener {
 
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, WIREMOCK) || server == null) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class) || server == null) {
             return;
         }
         server.stop();
+        ILoadBalancer mockedBalancer = contextHelper.getBean(ILoadBalancer.class);
+        reset(mockedBalancer);
     }
 
     private int getFreeServerPort() throws IOException {

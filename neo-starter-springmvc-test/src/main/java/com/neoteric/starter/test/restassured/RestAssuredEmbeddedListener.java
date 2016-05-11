@@ -3,33 +3,36 @@ package com.neoteric.starter.test.restassured;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
+import com.neoteric.starter.test.SpringBootEmbeddedTest;
+import com.neoteric.starter.test.TestContextHelper;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 import static com.neoteric.starter.test.StarterTestConstants.JACKSON_OBJECT_MAPPER_BEAN;
 import static com.neoteric.starter.test.StarterTestConstants.LOCAL_SERVER_PORT;
 
-public class RestAssuredListener extends AbstractTestExecutionListener {
+@Order(800) //TODO: Check if still necessary
+public class RestAssuredEmbeddedListener extends AbstractTestExecutionListener {
 
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
-        if (AnnotationUtils.findAnnotation(testContext.getTestClass(), ContainerIntegrationTest.class) == null) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        if (contextHelper.testClassAnnotationNotPresent(SpringBootEmbeddedTest.class)) {
             return;
         }
-        ApplicationContext applicationContext = testContext.getApplicationContext();
-        String property = applicationContext.getEnvironment().getProperty(LOCAL_SERVER_PORT);
-        RestAssured.port = Integer.parseInt(property);
 
-        ObjectMapper objectMapper = applicationContext.getBean(JACKSON_OBJECT_MAPPER_BEAN, ObjectMapper.class);
+        RestAssured.port = Integer.parseInt(contextHelper.getProperty(LOCAL_SERVER_PORT));
+        ObjectMapper objectMapper = contextHelper.getBean(JACKSON_OBJECT_MAPPER_BEAN, ObjectMapper.class);
 
         RestAssured.config = RestAssured.config().objectMapperConfig(
                 new ObjectMapperConfig().jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
     }
 
     @Override
-    public int getOrder() {
-        return 800;
+    public void afterTestClass(TestContext testContext) throws Exception {
+        RestAssured.reset();
     }
 }
