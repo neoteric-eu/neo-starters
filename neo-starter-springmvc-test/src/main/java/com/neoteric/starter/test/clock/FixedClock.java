@@ -6,7 +6,6 @@ import org.springframework.boot.test.mock.mockito.MockReset;
 import java.lang.annotation.*;
 import java.time.Clock;
 
-@Inherited
 @Documented
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
