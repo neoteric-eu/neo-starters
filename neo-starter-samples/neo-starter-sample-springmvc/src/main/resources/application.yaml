@@ -9,8 +9,6 @@ neostarter:
       path: api
       resources:
         class-name-pattern: ?Endpoint
-  feign:
-    logger-level: full
 sampleApp:
   ribbon:
     listOfServers: localhost:8002

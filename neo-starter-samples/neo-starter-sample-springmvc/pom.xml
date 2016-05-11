@@ -25,6 +25,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>neo-starter-springmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>

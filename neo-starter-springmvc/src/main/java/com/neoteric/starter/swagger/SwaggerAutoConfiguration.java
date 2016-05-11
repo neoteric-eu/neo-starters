@@ -30,7 +30,7 @@ import springfox.documentation.swagger2.web.Swagger2Controller;
 public class SwaggerAutoConfiguration {
 
     @Import({Swagger2DocumentationConfiguration.class, BeanValidatorPluginsConfiguration.class})
-    @PropertySource("swagger-defaults.properties")
+    @PropertySource("classpath:swagger-defaults.properties")
     static class SwaggerConfiguration {
     }
 
