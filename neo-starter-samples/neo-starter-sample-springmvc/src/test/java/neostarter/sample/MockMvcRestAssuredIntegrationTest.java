@@ -1,6 +1,7 @@
 package neostarter.sample;
 
 import com.jayway.restassured.module.mockmvc.RestAssuredMockMvc;
+import com.neoteric.starter.test.SpringBootMockMvcTest;
 import neostarter.sample.model.Customer;
 import org.junit.After;
 import org.junit.Before;
@@ -16,13 +17,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.ZonedDateTime;
 
-import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.given;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.get;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootMockMvcTest
 @AutoConfigureMockMvc
 public class MockMvcRestAssuredIntegrationTest {
 
@@ -48,16 +46,8 @@ public class MockMvcRestAssuredIntegrationTest {
     @Test
     public void test() throws Exception {
 
-        when(greeterClient.getCustomerToGreet())
-                .thenReturn(Customer.builder()
-                        .firstName("John")
-                        .lastName("Doe")
-                        .time(ZonedDateTime.now())
-                        .build());
 
-        given()
-                .when()
-                .get("/api/second")
+                get("/api/second")
                 .then()
                 .statusCode(200);
     }

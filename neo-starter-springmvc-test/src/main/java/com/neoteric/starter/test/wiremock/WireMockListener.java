@@ -1,7 +1,6 @@
 package com.neoteric.starter.test.wiremock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
 import com.neoteric.starter.test.TestContextHelper;
 import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.Server;
@@ -18,7 +17,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-public class WiremockListener extends AbstractTestExecutionListener {
+public class WireMockListener extends AbstractTestExecutionListener {
 
     private WireMockServer server;
     private int port;
@@ -26,7 +25,7 @@ public class WiremockListener extends AbstractTestExecutionListener {
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
         TestContextHelper contextHelper = new TestContextHelper(testContext);
-        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class)) {
+        if (contextHelper.testClassAnnotationNotPresent(WireMock.class)) {
             return;
         }
 
@@ -42,17 +41,17 @@ public class WiremockListener extends AbstractTestExecutionListener {
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
         TestContextHelper contextHelper = new TestContextHelper(testContext);
-        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class) || server == null) {
+        if (contextHelper.testClassAnnotationNotPresent(WireMock.class) || server == null) {
             return;
         }
         server.start();
-        WireMock.configureFor(port);
+        com.github.tomakehurst.wiremock.client.WireMock.configureFor(port);
     }
 
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
         TestContextHelper contextHelper = new TestContextHelper(testContext);
-        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class) || server == null) {
+        if (contextHelper.testClassAnnotationNotPresent(WireMock.class) || server == null) {
             return;
         }
         server.resetRequests();
@@ -62,7 +61,7 @@ public class WiremockListener extends AbstractTestExecutionListener {
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
         TestContextHelper contextHelper = new TestContextHelper(testContext);
-        if (contextHelper.testClassAnnotationNotPresent(Wiremock.class) || server == null) {
+        if (contextHelper.testClassAnnotationNotPresent(WireMock.class) || server == null) {
             return;
         }
         server.stop();

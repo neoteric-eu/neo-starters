@@ -9,6 +9,8 @@ import org.springframework.boot.context.web.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
+
 import static com.jayway.restassured.RestAssured.given;
 
 @RunWith(SpringRunner.class)

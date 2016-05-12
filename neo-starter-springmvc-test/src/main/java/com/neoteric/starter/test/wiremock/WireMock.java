@@ -10,5 +10,5 @@ import java.lang.annotation.*;
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @MockBean(value = ILoadBalancer.class, reset = MockReset.NONE)
-public @interface Wiremock {
+public @interface WireMock {
 }

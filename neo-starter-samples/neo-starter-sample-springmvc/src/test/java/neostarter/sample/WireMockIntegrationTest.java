@@ -1,11 +1,9 @@
 package neostarter.sample;
 
 import com.neoteric.starter.test.SpringBootEmbeddedTest;
-import com.neoteric.starter.test.clock.FixedClock;
-import com.neoteric.starter.test.wiremock.Wiremock;
+import com.neoteric.starter.test.wiremock.WireMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -13,8 +11,8 @@ import static com.jayway.restassured.RestAssured.given;
 
 @RunWith(SpringRunner.class)
 @SpringBootEmbeddedTest
-@Wiremock
-public class WiremockIntegrationTest {
+@WireMock
+public class WireMockIntegrationTest {
 
     @Test
     public void test() throws Exception {

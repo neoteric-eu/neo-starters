@@ -10,7 +10,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @SpringBootTest
-@AutoConfigureMockMvc
 public @interface SpringBootMockMvcTest {
 
     @AliasFor(annotation = SpringBootTest.class)
