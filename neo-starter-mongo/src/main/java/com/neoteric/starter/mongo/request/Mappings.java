@@ -43,10 +43,10 @@ public interface Mappings {
     static Criteria buildRegex(Criteria criteria, Object regexValue) {
         if (regexValue instanceof List) {
             return criteria.all(((List<String>) regexValue).stream()
-                    .map(regex -> Pattern.compile(regex))
+                    .map(regex -> Pattern.compile(regex, Pattern.CASE_INSENSITIVE))
                     .collect(Collectors.toList()));
         } else {
-            return criteria.regex((String) regexValue);
+            return criteria.regex(Pattern.compile((String) regexValue, Pattern.CASE_INSENSITIVE));
         }
     }
 }

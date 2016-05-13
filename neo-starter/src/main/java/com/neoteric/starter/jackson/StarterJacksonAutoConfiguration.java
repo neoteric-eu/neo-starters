@@ -25,6 +25,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static com.neoteric.starter.StarterConstants.ConfigBeans.JACKSON_JSR310_DATE_FORMAT;
+import static org.springframework.boot.Banner.Mode.LOG;
 
 @Configuration
 @Slf4j

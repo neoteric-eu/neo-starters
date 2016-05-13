@@ -1,0 +1,8 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.neoteric.starter.clock.TimeZoneAutoConfiguration,\
+com.neoteric.starter.request.RequestIdAutoConfiguration,\
+com.neoteric.starter.request.RequestParamsAutoConfiguration,\
+com.neoteric.starter.feign.StarterFeignAutoConfiguration,\
+com.neoteric.starter.mvc.StarterMvcAutoConfiguration,\
+com.neoteric.starter.swagger.SwaggerAutoConfiguration,\
+com.neoteric.starter.jackson.StarterJacksonAutoConfiguration

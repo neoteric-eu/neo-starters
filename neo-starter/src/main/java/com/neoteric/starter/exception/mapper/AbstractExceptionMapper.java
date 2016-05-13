@@ -44,7 +44,7 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
     }
 
     @FunctionalInterface
-    interface LoggerFunction {
+    private interface LoggerFunction {
         void log(Logger logger, Throwable error);
     }
 
