@@ -1,8 +1,8 @@
 package com.neoteric.starter.request.params;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.neoteric.starter.mvc.PrefixResolver;
 import com.neoteric.starter.request.RequestParameters;
+import com.neoteric.starter.utils.PrefixResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;

@@ -1,7 +1,6 @@
 package com.neoteric.starter.test.clock;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.neoteric.starter.test.TestContextHelper;
+import com.neoteric.starter.test.utils.TestContextHelper;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
@@ -9,7 +8,6 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.TimeZone;
 
-import static javafx.scene.input.KeyCode.T;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 

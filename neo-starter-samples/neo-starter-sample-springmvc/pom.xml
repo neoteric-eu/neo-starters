@@ -18,6 +18,10 @@
             <groupId>com.neoteric.starter</groupId>
             <artifactId>neo-starter-springmvc</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>neo-starter-saasmgr</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -27,6 +31,11 @@
         <dependency>
             <groupId>com.neoteric.starter</groupId>
             <artifactId>neo-starter-springmvc-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>neo-starter-saasmgr-test</artifactId>
             <scope>test</scope>
         </dependency>
 

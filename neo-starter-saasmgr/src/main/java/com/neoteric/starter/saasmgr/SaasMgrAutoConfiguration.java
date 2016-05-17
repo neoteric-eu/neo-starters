@@ -3,21 +3,17 @@ package com.neoteric.starter.saasmgr;
 import com.neoteric.starter.saasmgr.auth.DefaultSaasMgrAuthenticator;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
-import com.neoteric.starter.saasmgr.client.RestTemplateSaasMgrClient;
 import com.neoteric.starter.saasmgr.client.SaasMgrClient;
-import com.neoteric.starter.saasmgr.client.feign.FeignSaasMgrClient;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationFilter;
-import feign.Feign;
+import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.jersey.JerseyProperties;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -25,7 +21,6 @@ import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.support.NoOpCacheManager;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -34,7 +29,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.client.RestTemplate;
 
 import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_AUTH_CACHE;
 import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_CACHE_MANAGER;
@@ -103,12 +97,18 @@ public class SaasMgrAutoConfiguration {
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
     static class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-        @Autowired
-        JerseyProperties jerseyProperties;
+
+        @Value("#{environment.getProperty('neostarter.mvc.api.path') ?: environment.getProperty('neostarter.saasmgr.api.path') ?: ''}")
+        String apiPath;
+
+        @Bean
+        SaasMgrAuthenticationMatcher saasMgrAuthenticationMatcher() {
+            return new SaasMgrAuthenticationMatcher(apiPath);
+        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            SaasMgrAuthenticationFilter filter = new SaasMgrAuthenticationFilter(jerseyProperties.getApplicationPath());
+            SaasMgrAuthenticationFilter filter = new SaasMgrAuthenticationFilter(saasMgrAuthenticationMatcher());
             http.addFilterBefore(filter, BasicAuthenticationFilter.class)
                     .csrf().disable();
         }

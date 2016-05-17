@@ -1,6 +1,7 @@
-package com.neoteric.starter.test.saasmgr;
+package com.neoteric.starter.test.saasmgr.mockmvc;
 
 import com.neoteric.starter.saasmgr.model.AccountStatus;
+import org.springframework.security.test.context.support.WithSecurityContext;
 
 import java.lang.annotation.*;
 
@@ -8,7 +9,8 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})
-public @interface FixedSaasMgr {
+@WithSecurityContext(factory = WithSaasMgrPrincipalContextFactory.class)
+public @interface WithSaasMgrPrincipal {
 
     String customerId() default "customerId";
     String customerName() default "customerName";

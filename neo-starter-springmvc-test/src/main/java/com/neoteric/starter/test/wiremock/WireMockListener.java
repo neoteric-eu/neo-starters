@@ -1,7 +1,7 @@
 package com.neoteric.starter.test.wiremock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import com.neoteric.starter.test.TestContextHelper;
+import com.neoteric.starter.test.utils.TestContextHelper;
 import com.netflix.loadbalancer.ILoadBalancer;
 import com.netflix.loadbalancer.Server;
 import lombok.extern.slf4j.Slf4j;

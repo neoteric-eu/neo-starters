@@ -9,6 +9,8 @@ neostarter:
       path: api
       resources:
         class-name-pattern: ?Endpoint
+  swagger:
+    title: abc
 sampleApp:
   ribbon:
     listOfServers: localhost:8002

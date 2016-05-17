@@ -1,4 +1,4 @@
-package com.neoteric.starter.test;
+package com.neoteric.starter.test.utils;
 
 import lombok.AllArgsConstructor;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -38,5 +38,4 @@ public class TestContextHelper {
     public String getProperty(String property) {
         return testContext.getApplicationContext().getEnvironment().getProperty(property);
     }
-
 }

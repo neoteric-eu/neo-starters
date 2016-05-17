@@ -7,6 +7,7 @@ import java.lang.annotation.*;
 import java.time.Clock;
 
 @Documented
+@Inherited
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @MockBean(value = Clock.class, reset = MockReset.NONE)

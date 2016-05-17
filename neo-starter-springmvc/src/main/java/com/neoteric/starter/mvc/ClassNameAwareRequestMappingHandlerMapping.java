@@ -1,6 +1,7 @@
 package com.neoteric.starter.mvc;
 
 import com.google.common.base.CaseFormat;
+import com.neoteric.starter.utils.PrefixResolver;
 import lombok.Setter;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.util.ClassUtils;

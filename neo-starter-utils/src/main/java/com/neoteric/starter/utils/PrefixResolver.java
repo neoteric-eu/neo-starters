@@ -1,11 +1,10 @@
-package com.neoteric.starter.mvc;
+package com.neoteric.starter.utils;
 
 import org.springframework.util.StringUtils;
 
 public final class PrefixResolver {
 
-    private PrefixResolver() {
-    }
+    private PrefixResolver() {}
 
     public static String resolve(String initialPrefix) {
         if (!StringUtils.hasLength(initialPrefix)) {

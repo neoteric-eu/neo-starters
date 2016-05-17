@@ -2,6 +2,7 @@ package com.neoteric.starter.saasmgr;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -18,6 +19,15 @@ public class SaasMgrProperties {
     @NestedConfigurationProperty
     private final FeignProperties feign = new FeignProperties();
 
+    @NestedConfigurationProperty
+    private final ApiSaasProperties api = new ApiSaasProperties();
+
+    @Getter
+    @Setter
+    public static class ApiSaasProperties {
+        private String path;
+    }
+
     @Getter
     @Setter
     public static class FeignProperties {
@@ -30,7 +40,7 @@ public class SaasMgrProperties {
         /**
          * Name of Feign client
          */
-        private String name = "saasManager";
+        private String name;
     }
 
     @NestedConfigurationProperty

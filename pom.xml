@@ -52,6 +52,7 @@
     <modules>
         <!-- Setup -->
         <module>neo-starter-dependencies</module>
+        <module>neo-starter-utils</module>
         <module>request-parameters</module>
 
         <!-- Actual starters -->

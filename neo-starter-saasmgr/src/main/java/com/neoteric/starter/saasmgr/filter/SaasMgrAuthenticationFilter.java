@@ -2,11 +2,9 @@ package com.neoteric.starter.saasmgr.filter;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationToken;
 import com.neoteric.starter.saasmgr.client.feign.SaasMgr;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -15,21 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@AllArgsConstructor
 public class SaasMgrAuthenticationFilter extends OncePerRequestFilter {
 
-    private final String applicationPath;
-
-    public SaasMgrAuthenticationFilter(String applicationPath) {
-        this.applicationPath = applicationPath;
-    }
+    private final SaasMgrAuthenticationMatcher authenticationMatcher;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return new NegatedRequestMatcher(
-                new AndRequestMatcher(
-                        ContainsSaasMgrHeadersMatcher.INSTANCE,
-                        new AntPathRequestMatcher(applicationPath + "/**")))
-                .matches(request);
+        return authenticationMatcher.matches(request);
     }
 
     @Override

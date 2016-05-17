@@ -1,7 +1,7 @@
 package com.neoteric.starter.request.tracing;
 
 import com.neoteric.starter.StarterConstants;
-import com.neoteric.starter.mvc.PrefixResolver;
+import com.neoteric.starter.utils.PrefixResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.MDC;
 import org.springframework.util.StringUtils;
@@ -10,14 +10,11 @@ import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
 /**
  * Servlet filter to pick up ID of the com.neoteric.starter.request. If not found, generates new one and propagates.
