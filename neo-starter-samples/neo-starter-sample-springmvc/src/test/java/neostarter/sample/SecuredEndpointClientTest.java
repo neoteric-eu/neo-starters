@@ -23,7 +23,24 @@ public class SecuredEndpointClientTest {
 
     @Test
     public void shouldEnterWithSaasPrincipalViaRestAssuredMockMVC() throws Exception {
-        get("/api/secured")
+        get("/api/secured/saas")
+                .then()
+                .log().all()
+                .statusCode(200);
+    }
+
+    @Test
+    @FixedSaasMgr(customerName = "XXX", features = "NF_USER")
+    public void shouldEnterWithSaasPrincipalViaRestAssuredMockMVCOnMethod() throws Exception {
+        get("/api/secured/saas")
+                .then()
+                .log().all()
+                .statusCode(200);
+    }
+
+    @Test
+    public void shouldEnterWithSaasPrincipalViaRestAssuredMockMVC3() throws Exception {
+        get("/api/secured/saas")
                 .then()
                 .log().all()
                 .statusCode(200);

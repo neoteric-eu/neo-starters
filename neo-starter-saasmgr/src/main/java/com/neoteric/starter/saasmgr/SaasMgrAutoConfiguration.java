@@ -1,8 +1,6 @@
 package com.neoteric.starter.saasmgr;
 
-import com.neoteric.starter.saasmgr.auth.DefaultSaasMgrAuthenticator;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
-import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
 import com.neoteric.starter.saasmgr.client.SaasMgrClient;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationFilter;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;
@@ -45,13 +43,13 @@ public class SaasMgrAutoConfiguration {
     SaasMgrClient saasMgrClient;
 
     @Bean
-    SaasMgrAuthenticator saasMgrConnector() {
-        return new DefaultSaasMgrAuthenticator(saasMgrClient);
+    SaasMgrAuthenticationProvider saasMgrAuthenticationProvider() {
+        return new SaasMgrAuthenticationProvider(saasMgrClient);
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new SaasMgrAuthenticationProvider(saasMgrConnector()));
+        auth.authenticationProvider(saasMgrAuthenticationProvider());
     }
 
     @Configuration

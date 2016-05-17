@@ -1,18 +1,12 @@
 package com.neoteric.starter.test.saasmgr.embedded;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
-import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
-import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationFilter;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;
 import com.neoteric.starter.saasmgr.model.AccountStatus;
-import org.mockito.Answers;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockReset;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.ProviderManager;
 
 import java.lang.annotation.*;
-import java.time.Clock;
 
 @Documented
 @Inherited

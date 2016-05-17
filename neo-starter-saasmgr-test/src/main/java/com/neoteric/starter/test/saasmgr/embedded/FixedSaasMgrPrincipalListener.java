@@ -2,14 +2,12 @@ package com.neoteric.starter.test.saasmgr.embedded;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationToken;
-import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationFilter;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;
 import com.neoteric.starter.saasmgr.model.SubscriptionConstraint;
 import com.neoteric.starter.saasmgr.principal.DefaultSaasMgrPrincipal;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 import com.neoteric.starter.test.utils.TestContextHelper;
 import org.assertj.core.util.Lists;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
@@ -92,6 +90,7 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
         Authentication token = new SaasMgrAuthenticationToken(principal, "fixed Credentials", principal.getAuthorities());
         SaasMgrAuthenticationProvider authenticationProvider = helper.getBean(SaasMgrAuthenticationProvider.class);
         when(authenticationProvider.authenticate(any())).thenReturn(token);
+        when(authenticationProvider.supports(any())).thenReturn(true);
     }
 
     private List<SubscriptionConstraint> getConstraints(String[] constraints) {

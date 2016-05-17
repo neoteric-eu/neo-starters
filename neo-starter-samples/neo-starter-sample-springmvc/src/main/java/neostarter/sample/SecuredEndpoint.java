@@ -18,7 +18,7 @@ public class SecuredEndpoint {
     }
 
     @GetJson("/saas")
-    @PreAuthorize("hasAuthority('NF_USER')")
+    @PreAuthorize("permitAll()")
     public String greeterFromSaas() {
         return "Hello " + SaasMgrAuthUtils.getPrincipal().getCustomerName();
     }
