@@ -45,7 +45,6 @@ public class ClassNameAwareRequestMappingHandlerMappingTest {
         assertPattern(info, "/list-endpoint-api-controller/getList");
     }
 
-
     @Test
     @Parameters({"api", "/api", "api/", "/api/"})
     public void addApiPathPrefixWhenSetUpForApiController(String apiPath) throws Exception {
