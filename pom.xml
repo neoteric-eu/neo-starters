@@ -52,19 +52,19 @@
     <modules>
         <!-- Setup -->
         <module>neo-starter-dependencies</module>
+        <module>neo-starter-utils</module>
         <module>request-parameters</module>
 
         <!-- Actual starters -->
         <module>neo-starter</module>
-        <module>neo-starter-springmvc</module>
         <module>neo-starter-test</module>
+        <module>neo-starter-springmvc</module>
+        <module>neo-starter-springmvc-test</module>
         <module>neo-starter-mongo</module>
         <module>neo-starter-mongo-test</module>
         <module>neo-starter-rabbitmq</module>
         <module>neo-starter-metrics</module>
-
         <module>neo-starter-samples</module>
-
         <module>neo-starter-parent</module>
         <module>neo-starter-parent-neoteric</module>
         <module>neo-starter-saasmgr</module>

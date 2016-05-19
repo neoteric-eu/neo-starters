@@ -35,6 +35,14 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
 
     private static final String LOG_MESSAGE = "Exception mapped: ";
 
+    private static final ImmutableMap<Level, LoggerFunction> LOGGERS = ImmutableMap.<Level, LoggerFunction>builder()
+            .put(Level.ERROR, (logger, error) -> logger.error(LOG_MESSAGE, error))
+            .put(Level.WARN, (logger, error) -> logger.warn(LOG_MESSAGE, error))
+            .put(Level.INFO, (logger, error) -> logger.info(LOG_MESSAGE, error))
+            .put(Level.DEBUG, (logger, error) -> logger.debug(LOG_MESSAGE, error))
+            .put(Level.TRACE, (logger, error) -> logger.trace(LOG_MESSAGE, error))
+            .build();
+
     protected abstract HttpStatus httpStatus();
     protected abstract Logger logger();
     protected abstract Level logLevel();
@@ -48,13 +56,6 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
         void log(Logger logger, Throwable error);
     }
 
-    ImmutableMap<Level, LoggerFunction> LOGGERS = ImmutableMap.<Level, LoggerFunction>builder()
-            .put(Level.ERROR, (logger, error) -> logger.error(LOG_MESSAGE, error))
-            .put(Level.WARN, (logger, error) -> logger.warn(LOG_MESSAGE, error))
-            .put(Level.INFO, (logger, error) -> logger.info(LOG_MESSAGE, error))
-            .put(Level.DEBUG, (logger, error) -> logger.debug(LOG_MESSAGE, error))
-            .put(Level.TRACE, (logger, error) -> logger.trace(LOG_MESSAGE, error))
-            .build();
 
     @Autowired
     ServerProperties serverProperties;
@@ -107,6 +108,7 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
         errorBuilder.path(requestFacade.getRequestURI());
     }
 
+    @SuppressWarnings("squid:S1148")
     private void addStackTrace(ErrorData.ErrorDataBuilder errorBuilder, Throwable error) {
         StringWriter stackTrace = new StringWriter();
         error.printStackTrace(new PrintWriter(stackTrace));
@@ -114,6 +116,7 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
         errorBuilder.stackTrace(parseStackTraceToMap(stackTrace.toString()));
     }
 
+    @SuppressWarnings("squid:S2095") // Resources should be close - false positive
     private Map<String, String> parseStackTraceToMap(String stackTrace) {
         String[] splittedStackTrace = stackTrace.replaceAll("\t", "  ").split("\\R");
         return IntStream.range(0, splittedStackTrace.length)
@@ -125,16 +128,16 @@ public abstract class AbstractExceptionMapper<E extends Throwable> implements Ex
     }
 
     private boolean shouldIncludeStackTrace(ErrorProperties errorProperties,
-                                              Optional<RequestFacade> requestFacadeOptional) {
+                                            Optional<RequestFacade> requestFacadeOptional) {
         ErrorProperties.IncludeStacktrace include = errorProperties.getIncludeStacktrace();
-        if (include == ErrorProperties.IncludeStacktrace.ALWAYS) {
-            return true;
-        }
-        return requestFacadeOptional.isPresent() && include == ErrorProperties.IncludeStacktrace.ON_TRACE_PARAM && getTraceParameter(requestFacadeOptional.get());
+        return include == ErrorProperties.IncludeStacktrace.ALWAYS ||
+                (requestFacadeOptional.isPresent() &&
+                        include == ErrorProperties.IncludeStacktrace.ON_TRACE_PARAM &&
+                        getTraceParameter(requestFacadeOptional.get()));
     }
 
     private boolean getTraceParameter(HttpServletRequest request) {
         String parameter = request.getParameter("trace");
-        return parameter != null && !"false".equals(parameter.toLowerCase());
+        return parameter != null && !"false".equalsIgnoreCase(parameter);
     }
 }

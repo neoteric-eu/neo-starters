@@ -1,18 +1,12 @@
 package com.neoteric.starter.feign;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import feign.Contract;
+import com.neoteric.starter.feign.tracing.RequestIdAppendInterceptor;
 import feign.Feign;
 import feign.Logger;
-import feign.codec.Decoder;
-import feign.codec.Encoder;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cloud.netflix.feign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -28,24 +22,6 @@ public class StarterFeignAutoConfiguration {
 
     @Autowired
     CustomFeignProperties feignProperties;
-
-    @Autowired
-    ObjectMapper objectMapper;
-
-    @Bean
-    public Contract feignContract() {
-        return new SpringMvcContract();
-    }
-
-    @Bean
-    public Decoder feignDecoder() {
-        return new JacksonDecoder(objectMapper);
-    }
-
-    @Bean
-    public Encoder feignEncoder() {
-        return new JacksonEncoder(objectMapper);
-    }
 
     @Bean
     public RequestIdAppendInterceptor idAppendInterceptor() {

@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: Sample Spring MVC application
+server:
+  port: 8001
+neostarter:
+  mvc:
+    api:
+      path: api
+      resources:
+        class-name-pattern: ?Endpoint
+  swagger:
+    title: abc
+sampleApp:
+  ribbon:
+    listOfServers: localhost:8002
+saasManager:
+  ribbon:
+    listOfServers: https://dev.skillhunt.ntrc.eu

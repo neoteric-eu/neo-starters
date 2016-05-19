@@ -1,12 +1,17 @@
 package com.neoteric.starter.mvc;
 
+import com.neoteric.starter.mvc.errorhandling.resolver.RestExceptionResolver;
+import com.neoteric.starter.mvc.format.StarterDefaultFormattingConversionService;
+import com.neoteric.starter.mvc.validation.JsonPropertyAwareValidatorFactoryBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.web.*;
@@ -14,10 +19,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.context.web.OrderedHiddenHttpMethodFilter;
 import org.springframework.boot.context.web.OrderedHttpPutFormContentFilter;
 import org.springframework.boot.context.web.OrderedRequestContextFilter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.core.Ordered;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.GenericConverter;
@@ -25,31 +27,37 @@ import org.springframework.core.io.Resource;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.format.support.FormattingConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.validation.DefaultMessageCodesResolver;
 import org.springframework.validation.MessageCodesResolver;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.accept.ContentNegotiationManager;
 import org.springframework.web.bind.support.ConfigurableWebBindingInitializer;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.filter.HttpPutFormContentFilter;
 import org.springframework.web.filter.RequestContextFilter;
-import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.*;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.i18n.FixedLocaleResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.resource.*;
+import org.springframework.web.servlet.resource.AppCacheManifestTransformer;
+import org.springframework.web.servlet.resource.GzipResourceResolver;
+import org.springframework.web.servlet.resource.ResourceResolver;
+import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.springframework.web.servlet.view.BeanNameViewResolver;
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.servlet.Servlet;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Configuration
 @ConditionalOnWebApplication
@@ -58,6 +66,7 @@ import java.util.*;
 @ConditionalOnMissingBean(WebMvcConfigurationSupport.class)
 @AutoConfigureOrder(Ordered.HIGHEST_PRECEDENCE + 9)
 @AutoConfigureAfter(DispatcherServletAutoConfiguration.class)
+@PropertySource("classpath:mvc-defaults.properties")
 public class StarterMvcAutoConfiguration {
 
     @Bean
@@ -248,10 +257,38 @@ public class StarterMvcAutoConfiguration {
         private WebMvcProperties mvcProperties;
 
         @Autowired
-        private StarterMvcProperties starterMvcProperties;
+        private ListableBeanFactory beanFactory;
+
+        @Autowired(required = false)
+        RestExceptionResolver restExceptionResolver;
 
         @Autowired
-        private ListableBeanFactory beanFactory;
+        StarterMvcProperties starterMvcProperties;
+
+        //TODO: Document it (default iso format)
+        @Override
+        public FormattingConversionService mvcConversionService() {
+            FormattingConversionService conversionService = new StarterDefaultFormattingConversionService();
+            addFormatters(conversionService);
+            return conversionService;
+        }
+
+        @Bean
+        public LocalValidatorFactoryBean validator() {
+            return new JsonPropertyAwareValidatorFactoryBean();
+        }
+
+        @Override
+        protected Validator getValidator() {
+            return validator();
+        }
+
+        @Override
+        protected void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
+            if (restExceptionResolver != null) {
+                resolvers.add(this.restExceptionResolver);
+            }
+        }
 
         @Bean
         @Override
@@ -267,9 +304,8 @@ public class StarterMvcAutoConfiguration {
         @Override
         public RequestMappingHandlerMapping requestMappingHandlerMapping() {
             // Must be @Primary for MvcUriComponentsBuilder to work
-            ClassNameAwareRequestMappingHandlerMapping handlerMapping = new ClassNameAwareRequestMappingHandlerMapping();
-            handlerMapping.setClassSuffixToPrefix(starterMvcProperties.getClassSuffixToPrefix());
-            handlerMapping.setCaseFormat(starterMvcProperties.getCaseFormat());
+            ClassNameAwareRequestMappingHandlerMapping handlerMapping =
+                    new ClassNameAwareRequestMappingHandlerMapping(starterMvcProperties.getApi());
             handlerMapping.setOrder(0);
             handlerMapping.setInterceptors(getInterceptors());
             handlerMapping.setContentNegotiationManager(mvcContentNegotiationManager());

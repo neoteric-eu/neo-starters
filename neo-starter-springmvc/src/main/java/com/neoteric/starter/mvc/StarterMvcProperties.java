@@ -4,6 +4,7 @@ import com.google.common.base.CaseFormat;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
 import java.util.Map;
 
@@ -12,7 +13,33 @@ import java.util.Map;
 @Setter
 public class StarterMvcProperties {
 
-    private Map<String, String> classSuffixToPrefix;
-    private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
-    private String apiPath = "/api";
+    @NestedConfigurationProperty
+    private final RestErrorHandling errorHandling = new RestErrorHandling();
+    @NestedConfigurationProperty
+    private final ApiProperties api = new ApiProperties();
+
+    @Getter
+    @Setter
+    public static class ApiProperties {
+        private String path;
+
+        @NestedConfigurationProperty
+        private final ResourceProperties resources = new ResourceProperties();
+    }
+
+
+    @Getter
+    @Setter
+    public static class ResourceProperties {
+        private String defaultPrefix;
+        private CaseFormat caseFormat = CaseFormat.LOWER_HYPHEN;
+        private String classNamePattern;
+    }
+
+    @Getter
+    @Setter
+    public static class RestErrorHandling {
+        private boolean enabled = true;
+        private boolean defaultHandlersEnabled = true;
+    }
 }

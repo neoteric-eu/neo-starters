@@ -35,7 +35,9 @@ import org.springframework.util.Assert;
 import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Set;
 
 @Configuration
 @EnableConfigurationProperties({MongoProperties.class, EmbeddedMongoProperties.class})
@@ -144,8 +146,7 @@ public class NeotericEmbeddedMongoAutoConfiguration {
                                                     Set<Feature> features) {
             Assert.notNull(version, "version must not be null");
             this.version = version;
-            this.features = (features == null ? Collections.<Feature>emptySet()
-                    : features);
+            this.features = features == null ? Collections.<Feature>emptySet() : features;
         }
 
         @Override

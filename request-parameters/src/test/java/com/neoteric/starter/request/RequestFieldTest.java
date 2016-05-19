@@ -29,7 +29,6 @@ public class RequestFieldTest {
     public void testEqualsAndHashCode() {
         EqualsVerifier
                 .forClass(RequestField.class)
-                .allFieldsShouldBeUsed()
                 .verify();
     }
 }

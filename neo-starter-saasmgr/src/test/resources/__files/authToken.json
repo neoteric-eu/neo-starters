@@ -1,0 +1,73 @@
+{
+  "data": {
+    "token": "zm6InsRW8rAfywycYsgI4iqHWRTPdnqxmLuV25M82Qh3CJpazLxFTEbEHmA2kpgZZRNXDWkKbxVUyIhJ",
+    "user": {
+      "additionalEmails": [
+        {
+          "address": "demo@neoteric.eu",
+          "createdAt": "2016-03-02T13:02:39.568Z",
+          "status": "CONFIRMED"
+        },
+        {
+          "address": "cxz@fd",
+          "createdAt": "2016-03-05T16:38:10.562Z",
+          "status": "PENDING"
+        }
+      ],
+      "createdAt": null,
+      "customers": [
+        {
+          "constraints": [
+            {
+              "currentValue": 0.0,
+              "key": "USER_NUMBER",
+              "maxValue": 10.0
+            }
+          ],
+          "customerId": "5351090b8fe7f4e7b99d6e67",
+          "customerName": "Neoteric clinic-dev",
+          "featureKeys": [
+            "SM_APPLICATION_DELETE",
+            "SH_OFFER_CREATE",
+            "SM_APPLICATION_UPDATE",
+            "NF_ADMIN",
+            "NF_USER",
+            "SH_JOB_APP_CREATE",
+            "TAG_TAG_UPDATE",
+            "SH_APP_INVITE_UPDATE",
+            "SH_OFFER_UPDATE"
+          ],
+          "hashCode": -376865639,
+          "roles": [
+            {
+              "roleId": "53576b379d33da5ee72b45cf",
+              "roleName": "system-admin"
+            },
+            {
+              "roleId": "53576d9c9d33da5ee72b45d3",
+              "roleName": "admin"
+            }
+          ],
+          "status": "ACTIVE"
+        }
+      ],
+      "email": "demo@neoteric.eu",
+      "firstName": "Maciej",
+      "id": "5357699c9d33da5ee72b45ce",
+      "language": "pl_PL",
+      "lastName": "Śmiechowski",
+      "lastPassChange": null,
+      "newsletter": false,
+      "otherProperties": null,
+      "phoneNumber": "602557952",
+      "social": {
+        "linkedIn": null
+      },
+      "termsOfService": null,
+      "timezone": null,
+      "updatedAt": null,
+      "userStatus": "ACTIVE"
+    }
+  },
+  "meta": null
+}

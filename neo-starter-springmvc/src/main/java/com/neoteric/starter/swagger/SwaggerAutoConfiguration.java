@@ -30,7 +30,7 @@ import springfox.documentation.swagger2.web.Swagger2Controller;
 public class SwaggerAutoConfiguration {
 
     @Import({Swagger2DocumentationConfiguration.class, BeanValidatorPluginsConfiguration.class})
-    @PropertySource("swagger-defaults.properties")
+    @PropertySource("classpath:swagger-defaults.properties")
     static class SwaggerConfiguration {
     }
 
@@ -65,10 +65,10 @@ public class SwaggerAutoConfiguration {
 
     private Predicate<String> getPath() {
         Predicate<String> paths;
-        if (Strings.isNullOrEmpty(starterMvcProperties.getApiPath())) {
+        if (Strings.isNullOrEmpty(starterMvcProperties.getApi().getPath())) {
             paths = PathSelectors.any();
         } else {
-            paths = PathSelectors.ant(starterMvcProperties.getApiPath() + "/**");
+            paths = PathSelectors.ant(starterMvcProperties.getApi().getPath() + "/**");
         }
         return paths;
     }
