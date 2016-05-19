@@ -426,6 +426,24 @@ public class MongoCriteriaIntegrationTest {
     }
 
     @Test
+    public void testReturnObjectBasedOnRegexCriteriaWithIgnoreCase() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Julian", 5, fixedDateWithOffset(3)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
+
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("regexIgnoreCaseFilters.json"));
+
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(2);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        assertThat(results.get(1)).isEqualTo(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+    }
+
+    @Test
     public void testReturnObjectBasedOnRegexArrayCriteria() throws Exception {
         ZonedDateTime now = ZonedDateTime.now();
         mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
@@ -436,6 +454,23 @@ public class MongoCriteriaIntegrationTest {
         mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
 
         Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("regexArrayFilters.json"));
+
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+    }
+
+    @Test
+    public void testReturnObjectBasedOnRegexArrayIgnoreCaseCriteria() throws Exception {
+        ZonedDateTime now = ZonedDateTime.now();
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Johnny", 7, fixedDateWithOffset(1)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("James", 2, fixedDateWithOffset(2)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Julian", 5, fixedDateWithOffset(3)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Adam", 3, fixedDateWithOffset(4)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bob", 5, fixedDateWithOffset(5)));
+        mongoTemplate.insert(FooModelMother.fullyPopulated("Bogdan", 1, fixedDateWithOffset(6)));
+
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("regexArrayIgnoreCaseFilters.json"));
 
         List<FooModel> results = performCriteriaCall(criteria);
         assertThat(results.size()).isEqualTo(1);
