@@ -14,6 +14,7 @@ import com.neoteric.starter.request.sort.RequestSort;
 import com.neoteric.starter.request.sort.SortParser;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -39,6 +41,7 @@ import java.util.TimeZone;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @RunWith(SpringRunner.class)
+@TestPropertySource(properties = "spring.data.mongodb.port=0")
 @ContextConfiguration(classes = {MongoConvertersAutoConfiguration.class,
         EmbeddedMongoAutoConfiguration.class,
         MongoAutoConfiguration.class,
@@ -53,8 +56,8 @@ public class MongoCriteriaIntegrationTest {
     @Autowired
     private RequestParamsCriteriaBuilder requestParamsCriteriaBuilder;
 
-    @Before
-    public void initCriteriaTest() {
+    @BeforeClass
+    public static void initCriteriaTest() {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")));
     }
 
