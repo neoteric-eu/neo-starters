@@ -30,7 +30,7 @@ public class SaasMgrClientTestHelper {
     }
 
     protected static void stubForCompleteResponse() {
-        stubFor(get(urlEqualTo("/api/v2/users/authToken"))
+        stubFor(get(urlEqualTo("/api/v2/users/authInfo"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -38,7 +38,7 @@ public class SaasMgrClientTestHelper {
     }
 
     protected static void stubForUnauthorized() {
-        stubFor(get(urlEqualTo("/api/v2/users/authToken"))
+        stubFor(get(urlEqualTo("/api/v2/users/authInfo"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.UNAUTHORIZED.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)));
@@ -46,7 +46,7 @@ public class SaasMgrClientTestHelper {
 
 
     protected static void stubForServiceUnavailable() {
-        stubFor(get(urlEqualTo("/api/v2/users/authToken"))
+        stubFor(get(urlEqualTo("/api/v2/users/authInfo"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.SERVICE_UNAVAILABLE.value())
                         .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)));

@@ -25,7 +25,7 @@ public class RestTemplateSaasMgrClient implements SaasMgrClient {
     @Override
     public LoginData getLoginInfo(String token, String customerId) {
         URI targetUrl = UriComponentsBuilder.fromUriString(hostName)
-                .path("/api/v2/users/authToken")
+                .path("/api/v2/users/authInfo")
                 .build().toUri();
 
         try {

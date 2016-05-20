@@ -19,8 +19,8 @@ public class WireMockIntegrationTest {
 
         stubFor(get(urlEqualTo("/api/first"))
                 .willReturn(aResponse()
-                        .withHeader("Content-Type", "text/plain")
-                        .withBody("Hello world!")));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"first\":\"John\",\"last\":\"Doe\"}")));
 
         given()
                 .when()

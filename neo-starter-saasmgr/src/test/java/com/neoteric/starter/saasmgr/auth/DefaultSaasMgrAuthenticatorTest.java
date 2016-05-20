@@ -3,7 +3,7 @@ package com.neoteric.starter.saasmgr.auth;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+//@RunWith(MockitoJUnitRunner.class)
 public class DefaultSaasMgrAuthenticatorTest {
 
 //    public static final String CUSTOMER_ID = "5351090b8fe7f4e7b99d6e67";

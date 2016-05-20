@@ -18,6 +18,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.time.ZonedDateTime;
 
 import static com.jayway.restassured.module.mockmvc.RestAssuredMockMvc.get;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootMockMvcTest
@@ -46,6 +47,7 @@ public class MockMvcRestAssuredIntegrationTest {
     @Test
     public void test() throws Exception {
 
+        when(greeterClient.getCustomerToGreet()).thenReturn(Customer.builder().firstName("Andrew").build());
 
                 get("/api/second")
                 .then()

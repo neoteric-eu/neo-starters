@@ -33,6 +33,5 @@
 
     <modules>
         <module>neo-starter-sample-springmvc</module>
-        <module>neo-starter-sample-simple</module>
     </modules>
 </project>
