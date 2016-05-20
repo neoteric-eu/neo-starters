@@ -1,11 +1,17 @@
 node {
-    stage 'Git Checkout'
+    stage 'Checkout'
+    checkout scm
 
-    // Checkout code from repository and update any submodules
-    checkout  scm
+    stage 'Build'
+     mvn 'clean compile'
 
-    stage 'Code compile'
+    stage 'Test'
+     mvn 'test'
 
-    env.PATH = "${tool 'Maven 3'}/bin:${env.PATH}"
-    sh 'mvn clean package'
+    stage 'Code quality'
+    echo 'Mocked Sonar for now'
+}
+
+def mvn(args) {
+    sh "${tool 'M3'}/bin/mvn ${args}"
 }
