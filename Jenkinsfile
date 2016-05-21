@@ -3,7 +3,7 @@ node {
     checkout scm
 
     stage 'Build'
-     mvn 'clean compile'
+     mvn 'clean package -DskipTests'
 
     stage 'Test'
      mvn 'test'
