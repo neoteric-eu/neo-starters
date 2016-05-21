@@ -47,6 +47,7 @@
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven.build.timestamp.format>yyMMddHHmmss</maven.build.timestamp.format>
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+        <sonar-maven-plugin.version>3.0.1</sonar-maven-plugin.version>
     </properties>
 
     <modules>
@@ -113,6 +114,12 @@
                     <releaseVersion>0.1.0.${maven.build.timestamp}</releaseVersion>
                     <tagNameFormat>0.1.0.${maven.build.timestamp}</tagNameFormat>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
