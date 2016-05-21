@@ -9,7 +9,7 @@ node {
      mvn 'test'
 
     stage 'Code quality'
-    echo 'Mocked Sonar for now'
+    mvn 'sonar:sonar'
 }
 
 def mvn(args) {
