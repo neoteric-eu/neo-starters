@@ -8,8 +8,11 @@ node {
     stage 'Test'
      mvn 'test'
 
-    stage 'Code quality'
+    stage 'Sonar'
     mvn 'sonar:sonar'
+
+    stage 'Deploy SNAPSHOT'
+    mvn 'deploy'
 }
 
 def mvn(args) {
