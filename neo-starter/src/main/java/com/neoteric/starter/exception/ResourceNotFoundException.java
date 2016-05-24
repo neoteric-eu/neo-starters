@@ -9,6 +9,10 @@ public abstract class ResourceNotFoundException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public ResourceNotFoundException(String errorMessage) {
+        super(errorMessage);
+    }
+
     public String getErrorCode() {
         return errorCode;
     }

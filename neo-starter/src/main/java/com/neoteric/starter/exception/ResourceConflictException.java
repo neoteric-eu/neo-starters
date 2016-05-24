@@ -9,6 +9,10 @@ public class ResourceConflictException extends RuntimeException {
         this.errorCode = errorCode;
     }
 
+    public ResourceConflictException(String errorMessage) {
+        super(errorMessage);
+    }
+
     public String getErrorCode() {
         return errorCode;
     }
