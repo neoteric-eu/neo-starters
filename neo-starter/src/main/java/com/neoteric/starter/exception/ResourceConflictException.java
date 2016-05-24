@@ -2,11 +2,14 @@ package com.neoteric.starter.exception;
 
 public class ResourceConflictException extends RuntimeException {
 
-    public ResourceConflictException(String id, String resourceName) {
-        super(resourceName + " '" + id + "' in conflict");
+    private String errorCode;
+
+    public ResourceConflictException(String errorCode, String errorMessage) {
+        super(errorMessage);
+        this.errorCode = errorCode;
     }
 
-    public ResourceConflictException(String fieldName, String value, String resourceName) {
-        super(resourceName + " with " + fieldName + " = " + value + " in conflict");
+    public String getErrorCode() {
+        return errorCode;
     }
 }
