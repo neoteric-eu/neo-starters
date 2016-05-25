@@ -32,4 +32,9 @@ public class ResourceNotFoundExceptionMapper extends AbstractExceptionMapper<Res
     protected Object message(ResourceNotFoundException resourceNotFoundException) {
         return resourceNotFoundException.getMessage();
     }
+
+    @Override
+    protected Object errorCode(ResourceNotFoundException ex) {
+        return ex.getErrorCode();
+    }
 }

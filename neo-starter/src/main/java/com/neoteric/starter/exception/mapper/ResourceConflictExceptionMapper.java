@@ -32,4 +32,9 @@ public class ResourceConflictExceptionMapper extends AbstractExceptionMapper<Res
     protected Object message(ResourceConflictException ex) {
         return ex.getMessage();
     }
+
+    @Override
+    protected Object errorCode(ResourceConflictException ex) {
+        return ex.getErrorCode();
+    }
 }

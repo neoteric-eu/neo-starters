@@ -2,11 +2,18 @@ package com.neoteric.starter.exception;
 
 public abstract class ResourceNotFoundException extends RuntimeException {
 
-    public ResourceNotFoundException(String id, String resourceName) {
-        super(resourceName + " '" + id + "' not found");
+    private String errorCode;
+
+    public ResourceNotFoundException(String errorCode, String errorMessage) {
+        super(errorMessage);
+        this.errorCode = errorCode;
     }
-    
-    public ResourceNotFoundException(String fieldName, String value, String resourceName) {
-        super(resourceName + " with " + fieldName + " = " + value + " not found");
+
+    public ResourceNotFoundException(String errorMessage) {
+        super(errorMessage);
+    }
+
+    public String getErrorCode() {
+        return errorCode;
     }
 }
