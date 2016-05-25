@@ -11,6 +11,7 @@ node {
     stage 'Test'
     mvn 'test -B -e -V'
 
+    stage 'Sonar'
     if ('development'.equalsIgnoreCase(env.BRANCH_NAME)) {
         echo 'Development branch - running regular Sonar'
         mvn 'sonar:sonar -B -e -V'
