@@ -17,7 +17,7 @@ node {
         mvn 'sonar:sonar -B -e -V'
     } else if (env.CHANGE_ID != null) {
         echo 'Pull request - running Sonar preview'
-        mvn "sonar:sonar -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.repository=neoteric-eu/neo-starters -Dsonar.github.oauth=20f125b1eda550ab88a23272a67055c1130abba3 -Dsonar.analysis.mode=issues -B -e -V"
+        mvn "sonar:sonar -Dsonar.github.pullRequest=${env.CHANGE_ID} -Dsonar.github.repository=neoteric-eu/neo-starters -Dsonar.github.oauth=78725005a8853b841aa554e806c7be53a8158420 -Dsonar.analysis.mode=issues -B -e -V"
     } else {
         echo 'Should not be here'
     }
