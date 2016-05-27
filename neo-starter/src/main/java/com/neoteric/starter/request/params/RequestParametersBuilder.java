@@ -34,7 +34,7 @@ public final class RequestParametersBuilder {
     }
 
     public static RequestParameters buildFrom(HttpServletRequest request, ObjectMapper requestMapper) throws ServletRequestBindingException {
-        LOG.debug("Request Query string: {}", request.getQueryString());
+        LOG.trace("Request Query string: {}", request.getQueryString());
         int first = ServletRequestUtils.getIntParameter(request, FIRST_PARAM, 0);
         int pageSize = ServletRequestUtils.getIntParameter(request, PAGE_SIZE_PARAM, 0);
         String filters = ServletRequestUtils.getStringParameter(request, FILTERS_PARAM);

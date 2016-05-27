@@ -1,6 +1,6 @@
 package com.neoteric.starter.exception;
 
-public class ResourceConflictException extends RuntimeException {
+public abstract class ResourceConflictException extends RuntimeException {
 
     public ResourceConflictException(String id, String resourceName) {
         super(resourceName + " '" + id + "' in conflict");

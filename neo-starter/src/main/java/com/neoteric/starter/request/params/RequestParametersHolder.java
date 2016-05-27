@@ -34,9 +34,9 @@ public final class RequestParametersHolder {
     public static RequestParameters current() throws IllegalStateException {
         RequestParameters requestParameters = get();
         if (requestParameters == null) {
-            throw new IllegalStateException("No thread-bound request found: " +
-                    "Are you referring to request attributes outside of an actual web request, " +
-                    "or processing a request outside of the originally receiving thread?");
+            throw new IllegalStateException("No thread-bound com.neoteric.starter.request found: " +
+                    "Are you referring to com.neoteric.starter.request attributes outside of an actual web com.neoteric.starter.request, " +
+                    "or processing a com.neoteric.starter.request outside of the originally receiving thread?");
         }
         return requestParameters;
     }

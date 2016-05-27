@@ -6,10 +6,9 @@ public final class StarterConstants {
         // Prevents instantiation of the class
     }
 
-    public static final String REQUEST_ID = "REQUEST_ID";
+    public static final String REQUEST_ID_HEADER = "REQUEST_ID";
     public static final String UTC = "UTC";
-    public static final String SWAGGER_PACKAGE = "io.swagger.jaxrs.listing";
-    public static final String LOG_PREFIX = "[NeoStarter] ";
+    public static final String LOG_PREFIX = "[NeoStarterMVC] ";
 
     public static final class ConfigBeans {
 
@@ -17,6 +16,6 @@ public final class StarterConstants {
             // Prevents instantiation of the class
         }
 
-        public static final String JACKSON_JSR310_DATE_FORMAT = "jackson-jsr310-dateFormat";
+        public static final String JACKSON_JSR310_DATE_FORMAT = "com.neoteric.starter.jackson-jsr310-dateFormat";
     }
 }

@@ -2,6 +2,7 @@ package com.neoteric.starter.request.params;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoteric.starter.request.RequestParameters;
+import com.neoteric.starter.utils.PrefixResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,7 +24,7 @@ public final class RequestParametersFilter extends OncePerRequestFilter {
 
     public RequestParametersFilter(ObjectMapper requestMapper, String applicationPath) {
         this.requestMapper = requestMapper;
-        this.applicationPath = applicationPath;
+        this.applicationPath = applicationPath == null ? "" : PrefixResolver.resolve(applicationPath);
     }
 
     @Override
@@ -42,13 +43,13 @@ public final class RequestParametersFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } finally {
             resetHolder();
-            LOG.debug("Cleared thread-bound request parameters: {}", request);
+            LOG.trace("Cleared thread-bound request parameters: {}", request);
         }
     }
 
     private void initHolder(HttpServletRequest request, RequestParameters requestParameters) {
         RequestParametersHolder.set(requestParameters);
-        LOG.debug("Bound request parameters to thread: {}", request);
+        LOG.trace("Bound request parameters to thread: {}", request);
     }
 
     private void resetHolder() {

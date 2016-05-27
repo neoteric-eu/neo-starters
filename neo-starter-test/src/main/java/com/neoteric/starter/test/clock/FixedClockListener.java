@@ -1,61 +1,72 @@
 package com.neoteric.starter.test.clock;
 
-import com.neoteric.starter.test.StarterTestUtils;
+import com.neoteric.starter.test.utils.TestContextHelper;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
+import java.time.Clock;
 import java.time.Instant;
+import java.util.TimeZone;
 
-import static com.neoteric.starter.test.StarterTestProfiles.FIXED_CLOCK;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 public class FixedClockListener extends AbstractTestExecutionListener {
 
-    private static final ThreadLocal<Instant> INSTANT_HOLDER = new ThreadLocal<>();
-
     @Override
     public void beforeTestClass(TestContext testContext) throws Exception {
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, FIXED_CLOCK)) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        FixedClock classFixedClock = contextHelper.getTestClassAnnotation(FixedClock.class);
+        if (classFixedClock == null) {
             return;
         }
-        FixedClock annotation = testContext.getTestClass().getAnnotation(FixedClock.class);
-        if (annotation == null) {
-            throw new IllegalStateException("Test class with 'fixedClock' profile should be annotated with @FixedClock");
-        }
-
-        Instant instant = Instant.parse(annotation.value());
-        INSTANT_HOLDER.set(instant);
-        StaticClock.instant = instant;
+        mockClock(contextHelper, classFixedClock);
     }
 
     @Override
     public void beforeTestMethod(TestContext testContext) throws Exception {
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, FIXED_CLOCK)) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        FixedClock methodFixedClock = contextHelper.getTestMethodAnnotation(FixedClock.class);
+        if (methodFixedClock == null) {
             return;
         }
-        FixedClock annotation = testContext.getTestMethod().getAnnotation(FixedClock.class);
-        if (annotation == null) {
-            return;
-        }
-        StaticClock.instant = Instant.parse(annotation.value());
+        verifyClassAnnotation(contextHelper);
+        mockClock(contextHelper, methodFixedClock);
     }
 
     @Override
     public void afterTestMethod(TestContext testContext) throws Exception {
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, FIXED_CLOCK)) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        FixedClock methodFixedClock = contextHelper.getTestMethodAnnotation(FixedClock.class);
+        if (methodFixedClock == null) {
             return;
         }
-        FixedClock annotation = testContext.getTestMethod().getAnnotation(FixedClock.class);
-        if (annotation == null) {
-            return;
-        }
-        StaticClock.instant = INSTANT_HOLDER.get();
+        verifyClassAnnotation(contextHelper);
+
+        FixedClock classFixedClock = contextHelper.getTestClassAnnotation(FixedClock.class);
+        mockClock(contextHelper, classFixedClock);
     }
 
     @Override
     public void afterTestClass(TestContext testContext) throws Exception {
-        if (StarterTestUtils.doesNotHaveActiveProfile(testContext, FIXED_CLOCK)) {
+        TestContextHelper contextHelper = new TestContextHelper(testContext);
+        FixedClock annotation = contextHelper.getTestClassAnnotation(FixedClock.class);
+        if (annotation == null) {
             return;
         }
-        INSTANT_HOLDER.remove();
+        reset(contextHelper.getBean(Clock.class));
+    }
+
+    private void verifyClassAnnotation(TestContextHelper helper) {
+        FixedClock classAnnotation = helper.getTestClassAnnotation(FixedClock.class);
+        if (classAnnotation == null) {
+            throw new IllegalStateException("@FixedClock class level annotation is missing.");
+        }
+    }
+    private void mockClock(TestContextHelper helper, FixedClock fixedClock) {
+        Instant instant = Instant.parse(fixedClock.value());
+        Clock mockedClock = helper.getBean(Clock.class);
+        when(mockedClock.instant()).thenReturn(instant);
+        when(mockedClock.getZone()).thenReturn(TimeZone.getDefault().toZoneId());
     }
 }
