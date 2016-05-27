@@ -5,13 +5,13 @@ import com.neoteric.starter.mvc.format.StarterDefaultFormattingConversionService
 import com.neoteric.starter.mvc.validation.JsonPropertyAwareValidatorFactoryBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.autoconfigure.web.*;
@@ -88,8 +88,7 @@ public class StarterMvcAutoConfiguration {
     @EnableConfigurationProperties({WebMvcProperties.class, ResourceProperties.class, StarterMvcProperties.class})
     public static class WebMvcAutoConfigurationAdapter extends WebMvcConfigurerAdapter {
 
-        private static final Log logger = LogFactory
-                .getLog(WebMvcConfigurerAdapter.class);
+        private static final Log LOG = LogFactory.getLog(WebMvcConfigurerAdapter.class);
 
         @Autowired
         private ResourceProperties resourceProperties = new ResourceProperties();
@@ -208,7 +207,7 @@ public class StarterMvcAutoConfiguration {
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
             if (!this.resourceProperties.isAddMappings()) {
-                logger.debug("Default resource handling disabled");
+                LOG.debug("Default resource handling disabled");
                 return;
             }
             Integer cachePeriod = this.resourceProperties.getCachePeriod();
@@ -240,7 +239,7 @@ public class StarterMvcAutoConfiguration {
         public void addViewControllers(ViewControllerRegistry registry) {
             Resource page = this.resourceProperties.getWelcomePage();
             if (page != null) {
-                logger.info("Adding welcome page: " + page);
+                LOG.info("Adding welcome page: " + page);
                 registry.addViewController("/").setViewName("forward:index.html");
             }
         }
@@ -252,6 +251,8 @@ public class StarterMvcAutoConfiguration {
      */
     @Configuration
     public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration {
+
+        private static final Logger LOG = LoggerFactory.getLogger(EnableWebMvcConfiguration.class);
 
         @Autowired(required = false)
         private WebMvcProperties mvcProperties;
@@ -265,7 +266,6 @@ public class StarterMvcAutoConfiguration {
         @Autowired
         StarterMvcProperties starterMvcProperties;
 
-        //TODO: Document it (default iso format)
         @Override
         public FormattingConversionService mvcConversionService() {
             FormattingConversionService conversionService = new StarterDefaultFormattingConversionService();
@@ -335,6 +335,7 @@ public class StarterMvcAutoConfiguration {
             try {
                 return this.beanFactory.getBean(ConfigurableWebBindingInitializer.class);
             } catch (NoSuchBeanDefinitionException ex) {
+                LOG.debug("No such bean", ex);
                 return super.getConfigurableWebBindingInitializer();
             }
         }
@@ -351,8 +352,8 @@ public class StarterMvcAutoConfiguration {
 
     }
 
+    @FunctionalInterface
     interface ResourceHandlerRegistrationCustomizer {
-
         void customize(ResourceHandlerRegistration registration);
 
     }

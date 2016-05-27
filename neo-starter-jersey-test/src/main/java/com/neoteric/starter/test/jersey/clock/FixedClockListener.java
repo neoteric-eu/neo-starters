@@ -7,6 +7,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 import java.time.Instant;
 
+@SuppressWarnings("all")
 public class FixedClockListener extends AbstractTestExecutionListener {
 
     private static final ThreadLocal<Instant> INSTANT_HOLDER = new ThreadLocal<>();

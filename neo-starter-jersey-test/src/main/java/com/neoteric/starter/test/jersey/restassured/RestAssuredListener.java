@@ -9,6 +9,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
+@SuppressWarnings("all")
 public class RestAssuredListener extends AbstractTestExecutionListener {
 
     @Override

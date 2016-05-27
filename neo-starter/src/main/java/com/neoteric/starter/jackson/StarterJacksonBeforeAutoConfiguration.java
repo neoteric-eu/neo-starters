@@ -8,6 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import com.neoteric.starter.StarterConstants;
 import com.xebia.jacksonlombok.JacksonLombokAnnotationIntrospector;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -60,6 +62,8 @@ public class StarterJacksonBeforeAutoConfiguration {
     @Configuration
     @ConditionalOnClass(ZonedDateTimeSerializer.class)
     static class ZonedDateTimeJacksonConfiguration {
+
+        private static final Logger LOG = LoggerFactory.getLogger(ZonedDateTimeJacksonConfiguration.class);
 
         @Bean(name = JACKSON_JSR310_DATE_FORMAT)
         @ConditionalOnMissingBean(name = JACKSON_JSR310_DATE_FORMAT)
@@ -123,6 +127,7 @@ public class StarterJacksonBeforeAutoConfiguration {
                 builder.dateFormat(
                         (DateFormat) BeanUtils.instantiateClass(dateFormatClass));
             } catch (ClassNotFoundException ex) {
+                LOG.error("Class not found", ex);
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
                 // Since Jackson 2.6.3 we always need to set a TimeZone (see gh-4170)
                 // If none in our properties fallback to the Jackson's default
@@ -148,6 +153,7 @@ public class StarterJacksonBeforeAutoConfiguration {
                 configurePropertyNamingStrategyClass(builder,
                         ClassUtils.forName(strategy, null));
             } catch (ClassNotFoundException ex) {
+                LOG.error("Class not found exception", ex);
                 configurePropertyNamingStrategyField(builder, strategy);
             }
         }
@@ -160,6 +166,7 @@ public class StarterJacksonBeforeAutoConfiguration {
                 .instantiateClass(propertyNamingStrategyClass));
     }
 
+    @SuppressWarnings("squid:S2221")
     private void configurePropertyNamingStrategyField(
             Jackson2ObjectMapperBuilder builder, String fieldName) {
         // Find the field (this way we automatically support new constants

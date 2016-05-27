@@ -36,7 +36,7 @@ public class ZonedDateTimeConverterProvider implements ParamConverterProvider {
             try {
                 return ZonedDateTime.parse(value);
             } catch (DateTimeParseException ex) {
-                throw new ExtractorException("Parameter '" + value + "' cannot be parsed to ZonedDateTime");
+                throw new ExtractorException("Parameter '" + value + "' cannot be parsed to ZonedDateTime", ex);
             }
         }
 
@@ -45,7 +45,6 @@ public class ZonedDateTimeConverterProvider implements ParamConverterProvider {
             if (value == null) {
                 return null;
             }
-            //TODO: Use injected formatter
             return value.format(DateTimeFormatter.ISO_INSTANT);
         }
     }
