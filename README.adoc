@@ -2,4 +2,5 @@
 
 Spring Boot Neo Starters are a set of starters which further reduce boilerplate code we were used to write when developing applications. It's even more opinionated view how to write REST services, based on Neoteric's conventions and best practices. 
 
+
 For detail usage and information go to the https://github.com/neoteric-eu/neo-starters/wiki[Wiki pages].
