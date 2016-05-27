@@ -1,4 +1,4 @@
-# neo-starters
+# neo-starters image:http://jenkins2.neoteric.eu/buildStatus/icon?job=neo-starters/neo-starters-build/development[Build Status]
 
 Spring Boot Neo Starters are a set of starters which further reduce boilerplate code we were used to write when developing applications. It's even more opinionated view how to write REST services, based on Neoteric's conventions and best practices. 
 
