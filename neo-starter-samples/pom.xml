@@ -32,6 +32,6 @@
     </issueManagement>
 
     <modules>
-        <module>neo-starter-sample-springmvc</module>
+        <module>neo-starter-sample</module>
     </modules>
 </project>

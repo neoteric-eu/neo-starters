@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Forces to use Tomcat embedded container to use in Integration Tests. Due to Wiremock and its transitive Jetty
+ * Forces to use Tomcat embedded container to use in Integration Tests. Due to WireMock and its transitive Jetty
  * dependency, the latter was used.
  */
 @Configuration

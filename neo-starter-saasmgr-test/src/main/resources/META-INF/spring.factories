@@ -1,2 +1,2 @@
 org.springframework.test.context.TestExecutionListener = \
-    com.neoteric.starter.test.saasmgr.embedded.FixedSaasMgrPrincipalListener
+    com.neoteric.starter.test.jersey.saasmgr.embedded.FixedSaasMgrPrincipalListener

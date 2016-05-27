@@ -1,4 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
-    com.neoteric.starter.test.mongo.NeotericEmbeddedMongoAutoConfiguration
+    com.neoteric.starter.test.jersey.mongo.NeotericEmbeddedMongoAutoConfiguration
 org.springframework.test.context.TestExecutionListener = \
-	com.neoteric.starter.test.mongo.MongoCleanUpListener
+	com.neoteric.starter.test.jersey.mongo.MongoCleanUpListener

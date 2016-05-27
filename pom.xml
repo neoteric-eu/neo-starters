@@ -60,8 +60,6 @@
         <!-- Actual starters -->
         <module>neo-starter</module>
         <module>neo-starter-test</module>
-        <module>neo-starter-springmvc</module>
-        <module>neo-starter-springmvc-test</module>
         <module>neo-starter-mongo</module>
         <module>neo-starter-mongo-test</module>
         <module>neo-starter-rabbitmq</module>
@@ -71,6 +69,8 @@
         <module>neo-starter-parent-neoteric</module>
         <module>neo-starter-saasmgr</module>
         <module>neo-starter-saasmgr-test</module>
+        <module>neo-starter-jersey</module>
+        <module>neo-starter-jersey-test</module>
     </modules>
 
     <build>
