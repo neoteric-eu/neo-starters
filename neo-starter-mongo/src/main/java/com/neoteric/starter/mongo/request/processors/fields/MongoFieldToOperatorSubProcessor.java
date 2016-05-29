@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.neoteric.starter.mongo.request.Mappings.OPERATORS;
 
+@Slf4j
 public class MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<RequestOperator> {
 
     private final DateTimeFormatter dateTimeFormatter;
@@ -51,7 +52,6 @@ public class MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<
         Object parse(Object operatorValue);
     }
 
-    @Slf4j
     class ZonedDateTimeValueParser implements OperatorValueParser {
 
         @Override
