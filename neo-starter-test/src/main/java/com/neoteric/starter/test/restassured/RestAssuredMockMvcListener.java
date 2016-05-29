@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 public class RestAssuredMockMvcListener extends AbstractTestExecutionListener {
 
     @Override
+    @SuppressWarnings("squid:S2696")
     public void beforeTestClass(TestContext testContext) throws Exception {
         TestContextHelper contextHelper = new TestContextHelper(testContext);
         SpringBootMockMvcTest annotation = contextHelper.getTestClassAnnotation(SpringBootMockMvcTest.class);

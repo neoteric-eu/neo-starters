@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @AutoConfigureAfter(ExceptionHandlersRegistryAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "neostarter.mvc.restErrorHandling", value = "enabled", havingValue = "true", matchIfMissing = true)
 @Import(ScannedExceptionHandlersAutoConfiguration.ScannedExceptionHandlersRegistrar.class)
+@SuppressWarnings("squid:S1118")
 public class ScannedExceptionHandlersAutoConfiguration {
 
     @Slf4j
@@ -66,11 +67,12 @@ public class ScannedExceptionHandlersAutoConfiguration {
             try {
                 return AutoConfigurationPackages.get(beanFactory).get(0);
             } catch (IllegalStateException ex) {
-                ScannedExceptionHandlersRegistrar.LOG.warn("AutoConfiguration is not enabled. Exception handlers scanning is off.");
+                LOG.warn("AutoConfiguration is not enabled. Exception handlers scanning is off.", ex);
                 return "";
             }
         }
 
+        @SuppressWarnings("squid:S00112")
         private Class<? extends RestExceptionHandler<? extends Exception>> getExceptionClass(AnnotatedBeanDefinition beanDefinition) {
             try {
                 return (Class<? extends RestExceptionHandler<?extends Exception>>)

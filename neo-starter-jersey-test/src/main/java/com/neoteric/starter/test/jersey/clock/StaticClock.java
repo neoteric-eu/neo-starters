@@ -9,6 +9,7 @@ import java.time.ZoneId;
 
 @ToString
 @EqualsAndHashCode(callSuper = true)
+@SuppressWarnings("all")
 public class StaticClock extends Clock {
 
     public static Instant instant;

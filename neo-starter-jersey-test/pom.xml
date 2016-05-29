@@ -31,6 +31,9 @@
         <url>https://github.com/neoteric-eu/neo-starters/issues</url>
     </issueManagement>
 
+    <properties>
+        <sonar.skip>true</sonar.skip>
+    </properties>
 
     <dependencies>
         <dependency>

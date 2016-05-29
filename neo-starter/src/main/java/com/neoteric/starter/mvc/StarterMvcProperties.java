@@ -6,8 +6,6 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.Map;
-
 @ConfigurationProperties(prefix = "neostarter.mvc")
 @Getter
 @Setter

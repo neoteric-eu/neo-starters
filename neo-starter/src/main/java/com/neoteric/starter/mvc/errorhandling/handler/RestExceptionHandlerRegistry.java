@@ -10,7 +10,7 @@ import java.util.Set;
 @Getter
 public class RestExceptionHandlerRegistry {
 
-    public static String BEAN_NAME = "restExceptionHandlerRegistry";
+    public static final String BEAN_NAME = "restExceptionHandlerRegistry";
 
     private final Set<ExceptionHandlerBinding> exceptionHandlerBindings;
 

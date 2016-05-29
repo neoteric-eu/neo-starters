@@ -16,6 +16,7 @@ import static com.neoteric.starter.test.StarterTestConstants.LOCAL_SERVER_PORT;
 public class RestAssuredEmbeddedListener extends AbstractTestExecutionListener {
 
     @Override
+    @SuppressWarnings("squid:S2696")
     public void beforeTestClass(TestContext testContext) throws Exception {
         TestContextHelper contextHelper = new TestContextHelper(testContext);
         if (contextHelper.testClassAnnotationNotPresent(SpringBootEmbeddedTest.class)) {

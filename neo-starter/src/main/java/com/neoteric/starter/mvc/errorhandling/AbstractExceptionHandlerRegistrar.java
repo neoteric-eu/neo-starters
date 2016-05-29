@@ -39,7 +39,7 @@ public abstract class AbstractExceptionHandlerRegistrar implements ImportBeanDef
         try {
             registryBeanDefinition = registry.getBeanDefinition(RestExceptionHandlerRegistry.BEAN_NAME);
         } catch (NoSuchBeanDefinitionException e) {
-            throw new IllegalStateException("No RestExceptionHandlerRegistry bean found.");
+            throw new IllegalStateException("No RestExceptionHandlerRegistry bean found.", e);
         }
 
         ConstructorArgumentValues.ValueHolder constructorArgument = registryBeanDefinition
@@ -50,6 +50,7 @@ public abstract class AbstractExceptionHandlerRegistrar implements ImportBeanDef
         constructorArgument.setValue(bindings);
     }
 
+    @SuppressWarnings("squid:S2175")
     private String handlerPrefix(Class<? extends RestExceptionHandler<? extends Exception>> exceptionHandlerClass) {
         return DEFAULT_HANDLERS.contains(exceptionHandlerClass) ? DEFAULT : CUSTOM;
     }
