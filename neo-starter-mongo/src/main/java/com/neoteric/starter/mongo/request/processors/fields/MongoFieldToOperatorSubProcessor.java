@@ -5,6 +5,7 @@ import com.neoteric.starter.mongo.request.FieldMapper;
 import com.neoteric.starter.request.RequestField;
 import com.neoteric.starter.request.RequestObjectType;
 import com.neoteric.starter.request.RequestOperator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.time.ZonedDateTime;
@@ -50,6 +51,7 @@ public class MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<
         Object parse(Object operatorValue);
     }
 
+    @Slf4j
     class ZonedDateTimeValueParser implements OperatorValueParser {
 
         @Override
@@ -57,8 +59,8 @@ public class MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<
             try {
                 dateTimeFormatter.parse(operatorValue.toString());
                 return true;
-
             } catch (DateTimeParseException ex) {
+                LOG.error("Unable to parse DateTime", ex);
                 return false;
             }
         }

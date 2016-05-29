@@ -23,7 +23,7 @@ public class TimeZoneAutoConfiguration {
         TimeZone.setDefault(TimeZone.getTimeZone(UTC_ZONE));
     }
 
-    private Clock clock = Clock.systemDefaultZone();
+    private final Clock clock = Clock.systemDefaultZone();
 
     @Bean
     public Clock clock() {

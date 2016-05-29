@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
     <artifactId>neo-starter-rabbitmq</artifactId>
 
-    <name>Neoteric Spring Boot Apache Rabbit MQ Starter</name>
+    <name>Neoteric Spring Boot Rabbit MQ Starter</name>
     <description>Neo Starter for RabbitMQ</description>
     <url>http://github.com/neoteric-eu/neo-starters</url>
     <organization>
