@@ -1,4 +1,4 @@
-# Neo Starters image:http://jenkins2.neoteric.eu/buildStatus/icon?job=neo-starters/neo-starters-build/development[Build Status] https://gitter.im/neoteric-eu/neo-starters[image:https://img.shields.io/gitter/room/neoteric-eu/neo-starters.svg?maxAge=2592000[Gitter]] https://waffle.io/neoteric-eu/neo-starters[image:https://img.shields.io/waffle/label/neoteric-eu/neo-starters/in%20progress.svg?maxAge=2592000[Waffle.io]]
+# Neo Starters image:http://jenkins2.neoteric.eu/buildStatus/icon?job=neo-starters/neo-starters-build/development[Build Status] https://gitter.im/neoteric-eu/neo-starters[image:https://img.shields.io/gitter/room/neoteric-eu/neo-starters.svg?maxAge=2592000[Gitter]] https://waffle.io/neoteric-eu/neo-starters[image:https://img.shields.io/waffle/label/neoteric-eu/neo-starters/in%20progress.svg[Waffle.io]]
 
 :neo-starter-version: 0.2.0
 
