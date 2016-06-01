@@ -23,6 +23,7 @@ public class ExceptionHandlerBinding {
     private final Class<? extends Exception> exceptionClass;
     private final Logger logger;
     private final Level logLevel;
+    private final String applicationCode;
     private final HttpStatus httpStatus;
     private final boolean suppressStacktrace;
     private final boolean suppressException;
@@ -37,6 +38,7 @@ public class ExceptionHandlerBinding {
                 .exceptionClass(getExceptionClass(exceptionHandlerClass))
                 .exceptionHandlerBeanName(getHandlerBeanName(exceptionHandlerClass))
                 .httpStatus(annotation.httpStatus())
+                .applicationCode(annotation.applicationCode())
                 .logLevel(annotation.logLevel())
                 .suppressStacktrace(annotation.suppressStackTrace())
                 .suppressException(annotation.suppressException())
