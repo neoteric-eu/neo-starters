@@ -50,7 +50,7 @@ public class ClassNameAwareRequestMappingHandlerMapping extends RequestMappingHa
     private RequestMappingInfo prefixMappingInfo(Class<?> handlerType) {
         StringBuilder completePrefix = new StringBuilder();
 
-        String apiPath = PrefixResolver.resolve(apiProps.getPath());
+        String apiPath = apiProps.getPath();
         if (StringUtils.hasLength(apiPath)) {
             completePrefix.append(apiPath);
         }
