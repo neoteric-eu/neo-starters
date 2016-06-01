@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({TimeZoneAutoConfiguration.class,
         StarterJacksonBeforeAutoConfiguration.class,
-        StarterJacksonAfterAutoConfiguration.class,
-        JacksonAutoConfiguration.class})
+        JacksonAutoConfiguration.class,
+        StarterJacksonAfterAutoConfiguration.class})
 public class TestJacksonConfiguration {
 }
