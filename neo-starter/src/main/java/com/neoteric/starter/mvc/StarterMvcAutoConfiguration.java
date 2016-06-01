@@ -331,11 +331,11 @@ public class StarterMvcAutoConfiguration {
         }
 
         @Override
+        @SuppressWarnings("squid:S1166")
         protected ConfigurableWebBindingInitializer getConfigurableWebBindingInitializer() {
             try {
                 return this.beanFactory.getBean(ConfigurableWebBindingInitializer.class);
             } catch (NoSuchBeanDefinitionException ex) {
-                LOG.debug("No such bean", ex);
                 return super.getConfigurableWebBindingInitializer();
             }
         }
