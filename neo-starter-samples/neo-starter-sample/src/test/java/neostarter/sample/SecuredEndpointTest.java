@@ -1,7 +1,7 @@
 package neostarter.sample;
 
 import com.neoteric.starter.test.SpringBootMockMvcTest;
-import com.neoteric.starter.test.jersey.saasmgr.mockmvc.WithSaasMgrPrincipal;
+import com.neoteric.starter.test.saasmgr.mockmvc.WithSaasMgrPrincipal;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

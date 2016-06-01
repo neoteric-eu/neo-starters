@@ -1,4 +1,4 @@
-package com.neoteric.starter.test.jersey.saasmgr.mockmvc;
+package com.neoteric.starter.test.saasmgr.mockmvc;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationToken;
 import com.neoteric.starter.saasmgr.model.SubscriptionConstraint;
