@@ -5,10 +5,11 @@ import java.lang.annotation.*;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface DropCollections {
+public @interface ClearCollections {
 
     /**
-     * Drop collections after each test
+     * Clear collections after each test
      */
     String[] value();
+    boolean drop() default false;
 }
