@@ -32,7 +32,7 @@ public class MongoCleanUpListener extends AbstractTestExecutionListener {
             return;
         }
 
-        Consumer<String> consumer = annotation.drop() ? DropConsumer.of(mongoTemplate) : ClearConsumer.of(mongoTemplate);
+        Consumer<String> consumer = annotation.drop() ? new DropConsumer(mongoTemplate) : new ClearConsumer(mongoTemplate);
         Arrays.stream(annotation.value()).forEach(consumer);
     }
 
@@ -40,38 +40,31 @@ public class MongoCleanUpListener extends AbstractTestExecutionListener {
     public int getOrder() {
         return HIGHEST_PRECEDENCE;
     }
-}
 
-class DropConsumer implements Consumer<String> {
-    private final MongoTemplate mongoTemplate;
 
-    static Consumer of(MongoTemplate mongoTemplate) {
-        return new DropConsumer(mongoTemplate);
+    private final class DropConsumer implements Consumer<String> {
+        private final MongoTemplate mongoTemplate;
+
+        DropConsumer(MongoTemplate mongoTemplate) {
+            this.mongoTemplate = mongoTemplate;
+        }
+
+        @Override
+        public void accept(String collection) {
+            mongoTemplate.getCollection(collection).drop();
+        }
     }
 
-    private DropConsumer(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+    private final class ClearConsumer implements Consumer<String> {
+        private final MongoTemplate mongoTemplate;
 
-    @Override
-    public void accept(String collection) {
-        mongoTemplate.getCollection(collection).drop();
-    }
-}
+        ClearConsumer(MongoTemplate mongoTemplate) {
+            this.mongoTemplate = mongoTemplate;
+        }
 
-class ClearConsumer implements Consumer<String> {
-    private final MongoTemplate mongoTemplate;
-
-    static Consumer of(MongoTemplate mongoTemplate) {
-        return new ClearConsumer(mongoTemplate);
-    }
-
-    private ClearConsumer(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
-
-    @Override
-    public void accept(String collection) {
-        mongoTemplate.getCollection(collection).remove(new BasicDBObject());
+        @Override
+        public void accept(String collection) {
+            mongoTemplate.getCollection(collection).remove(new BasicDBObject());
+        }
     }
 }
