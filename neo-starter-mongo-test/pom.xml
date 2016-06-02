@@ -49,6 +49,11 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.neoteric.starter</groupId>
+            <artifactId>neo-starter-mongo</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     
 </project>
