@@ -46,6 +46,7 @@ public class ErrorDataBuilderTest {
     private static final boolean STACKTRACE_POPULATED = true;
     private static final MockHttpServletRequest REQUEST = new MockHttpServletRequest(null, REQUEST_URI);
     private static final MockHttpServletRequest REQUEST_TRACE_PARAM = new MockHttpServletRequest(null, REQUEST_URI);
+    public static final String BAD_CODE = "BAD_CODE";
 
     static {
         STACKTRACE_ALWAYS.setIncludeStacktrace(ErrorProperties.IncludeStacktrace.ALWAYS);
@@ -86,6 +87,7 @@ public class ErrorDataBuilderTest {
         assertThat(errorData.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorData.getError()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
         assertThat(errorData.getException()).isEqualTo(IllegalArgumentException.class.getName());
+        assertThat(errorData.getApplicationCode()).isEqualTo(BAD_CODE);
         assertThat(errorData.getTimestamp()).isEqualTo(ZonedDateTime.now(FIXED_CLOCK));
         assertThat(errorData.getRequestId()).isEqualTo(REQUEST_ID);
         assertThat(errorData.getStackTrace()).isNotEmpty();
@@ -108,6 +110,7 @@ public class ErrorDataBuilderTest {
         when(serverProperties.getError()).thenReturn(STACKTRACE_ALWAYS);
         when(binding.getExceptionClass()).thenAnswer(x -> IllegalArgumentException.class);
         when(binding.getHttpStatus()).thenReturn(HttpStatus.BAD_REQUEST);
+        when(binding.getApplicationCode()).thenReturn(BAD_CODE);
         when(binding.isSuppressException()).thenReturn(false);
         when(binding.isSuppressStacktrace()).thenReturn(false);
     }

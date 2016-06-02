@@ -31,7 +31,7 @@ public class RequestIdFilter extends OncePerRequestFilter {
     public RequestIdFilter(RequestIdGenerator idGenerator, List<RequestIdListener> requestIdListeners, String applicationPath) {
         this.idGenerator = idGenerator;
         this.requestIdListeners = requestIdListeners;
-        this.applicationPath = applicationPath == null ? "" : PrefixResolver.resolve(applicationPath);
+        this.applicationPath = applicationPath == null ? "" : applicationPath;
     }
 
     @Override

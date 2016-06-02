@@ -1,6 +1,7 @@
 package com.neoteric.starter.mvc;
 
 import com.google.common.base.CaseFormat;
+import com.neoteric.starter.utils.PrefixResolver;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,13 +17,20 @@ public class StarterMvcProperties {
     @NestedConfigurationProperty
     private final ApiProperties api = new ApiProperties();
 
-    @Getter
     @Setter
     public static class ApiProperties {
         private String path;
 
         @NestedConfigurationProperty
         private final ResourceProperties resources = new ResourceProperties();
+
+        public String getPath() {
+            return PrefixResolver.resolve(path);
+        }
+
+        public ResourceProperties getResources() {
+            return resources;
+        }
     }
 
 

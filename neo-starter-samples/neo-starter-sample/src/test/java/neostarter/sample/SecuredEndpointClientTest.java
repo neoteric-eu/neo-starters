@@ -1,7 +1,7 @@
 package neostarter.sample;
 
 import com.neoteric.starter.test.SpringBootEmbeddedTest;
-import com.neoteric.starter.test.jersey.saasmgr.embedded.FixedSaasMgr;
+import com.neoteric.starter.test.saasmgr.embedded.FixedSaasMgr;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

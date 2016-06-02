@@ -7,6 +7,7 @@ import org.apache.log4j.MDC;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.PrintWriter;
@@ -42,6 +43,10 @@ public final class ErrorDataBuilder {
                 .message(handler.errorMessage(ex, request))
                 .additionalInfo(handler.additionalInfo(ex, request))
                 .path(request.getRequestURI());
+
+        if (StringUtils.hasLength(binding.getApplicationCode())) {
+            builder.applicationCode(binding.getApplicationCode());
+        }
 
         if (!binding.isSuppressException()) {
             builder.exception(ex.getClass().getName());

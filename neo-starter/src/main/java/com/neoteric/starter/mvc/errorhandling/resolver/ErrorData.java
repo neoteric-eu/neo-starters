@@ -24,6 +24,7 @@ public class ErrorData {
     Integer status;
     String error;
     String exception;
+    String applicationCode;
     @JsonIgnore
     Map<String, Object> additionalInfo;
     Object message;

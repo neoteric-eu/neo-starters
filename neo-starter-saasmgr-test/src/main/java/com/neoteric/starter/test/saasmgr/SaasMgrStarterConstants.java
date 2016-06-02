@@ -1,4 +1,4 @@
-package com.neoteric.starter.test.jersey.saasmgr;
+package com.neoteric.starter.test.saasmgr;
 
 public final class SaasMgrStarterConstants {
 

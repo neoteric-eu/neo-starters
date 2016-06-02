@@ -21,7 +21,7 @@ public class SaasMgrAuthenticationMatcher implements RequestMatcher {
         return new NegatedRequestMatcher(
                 new AndRequestMatcher(
                         ContainsSaasMgrHeadersMatcher.INSTANCE,
-                        new AntPathRequestMatcher(PrefixResolver.resolve(applicationPath) + "/**")))
+                        new AntPathRequestMatcher(applicationPath + "/**")))
                 .matches(request);
     }
 

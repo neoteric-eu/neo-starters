@@ -15,6 +15,7 @@ public @interface RestExceptionHandlerProvider {
 
     HttpStatus httpStatus() default HttpStatus.INTERNAL_SERVER_ERROR;
     Level logLevel() default Level.ERROR;
+    String applicationCode() default "";
     boolean suppressStackTrace() default false;
     boolean suppressException() default false;
 

@@ -1,4 +1,4 @@
-package com.neoteric.starter.test.jersey.saasmgr.embedded;
+package com.neoteric.starter.test.saasmgr.embedded;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;

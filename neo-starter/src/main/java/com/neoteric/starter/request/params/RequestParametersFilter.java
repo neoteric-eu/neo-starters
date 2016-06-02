@@ -2,7 +2,6 @@ package com.neoteric.starter.request.params;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoteric.starter.request.RequestParameters;
-import com.neoteric.starter.utils.PrefixResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,7 +23,7 @@ public final class RequestParametersFilter extends OncePerRequestFilter {
 
     public RequestParametersFilter(ObjectMapper requestMapper, String applicationPath) {
         this.requestMapper = requestMapper;
-        this.applicationPath = applicationPath == null ? "" : PrefixResolver.resolve(applicationPath);
+        this.applicationPath = applicationPath == null ? "" : applicationPath;
     }
 
     @Override

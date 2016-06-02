@@ -19,12 +19,14 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.backoff.ExponentialBackOffPolicy;
 import org.springframework.retry.policy.NeverRetryPolicy;
@@ -41,15 +43,13 @@ import static com.neoteric.starter.rabbit.StarterRabbitConstants.REQUEST_ID;
 @Slf4j
 @Configuration
 @ConditionalOnClass({RabbitTemplate.class, Channel.class})
-@AutoConfigureAfter(RabbitAutoConfiguration.class)
-@EnableConfigurationProperties(StarterRabbitProperties.class)
+@AutoConfigureBefore(RabbitAutoConfiguration.class)
+@PropertySource("classpath:rabbit-defaults.properties")
+@EnableConfigurationProperties({StarterRabbitProperties.class, RabbitProperties.class})
 public class StarterRabbitAutoConfiguration {
 
     @Autowired
-    StarterRabbitProperties rabbitProperties;
-
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+    StarterRabbitProperties starterRabbitProperties;
 
     @Autowired
     @Qualifier("rabbitListenerContainerFactory")
@@ -61,9 +61,12 @@ public class StarterRabbitAutoConfiguration {
     @Autowired
     AmqpAdmin amqpAdmin;
 
+    @Autowired
+    RabbitTemplate rabbitTemplate;
+
     @Bean
     public RabbitEntityTypeMapper rabbitEntityTypeMapper() {
-        return new RabbitEntityTypeMapper(rabbitProperties);
+        return new RabbitEntityTypeMapper(starterRabbitProperties);
     }
 
     @Bean
@@ -91,8 +94,8 @@ public class StarterRabbitAutoConfiguration {
     private Advice retryOperations() {
         return RetryInterceptorBuilder.stateless()
                 .retryOperations(defaultRetryTemplate())
-                .recoverer(new RetryMessageRecoverer(rabbitTemplate, amqpAdmin, rabbitProperties.getDleExchange(),
-                        rabbitProperties.getRetryMessageTTL()))
+                .recoverer(new RetryMessageRecoverer(rabbitTemplate, amqpAdmin, starterRabbitProperties.getDleExchange(),
+                        starterRabbitProperties.getRetryMessageTTL()))
                 .build();
     }
 
@@ -137,6 +140,12 @@ public class StarterRabbitAutoConfiguration {
         return methodInterceptor;
     }
 
+    @Bean
+    public RabbitTemplate tracedRabbitTemplate(ConnectionFactory connectionFactory,
+                                                     ContentTypeDelegatingMessageConverter messageConverter) {
+        return new TracedRabbitTemplate(connectionFactory, messageConverter);
+    }
+
     public static void setRequestIdOnMdc(Message message) {
         String requestId = String.valueOf(message.getMessageProperties().getHeaders().get(REQUEST_ID));
         if (StringUtils.isEmpty(requestId)) {
@@ -149,8 +158,4 @@ public class StarterRabbitAutoConfiguration {
         MDC.put(REQUEST_ID, requestId);
     }
 
-    @Bean
-    public TracedRabbitTemplate tracedRabbitTemplate(ConnectionFactory connectionFactor, ContentTypeDelegatingMessageConverter messageConverter) {
-        return new TracedRabbitTemplate(connectionFactor, messageConverter);
-    }
 }
