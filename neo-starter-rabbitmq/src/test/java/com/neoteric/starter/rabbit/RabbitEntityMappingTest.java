@@ -14,9 +14,9 @@ import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class RabbitEntityMappingTest {
 
@@ -50,6 +50,7 @@ public class RabbitEntityMappingTest {
 
         TracedRabbitTemplate tracedRabbitTemplate = context.getBean(TracedRabbitTemplate.class);
         TracedRabbitTemplate spyTracedRabbitTemplate = spy(tracedRabbitTemplate);
+        doNothing().when(spyTracedRabbitTemplate).send(any(), any(),any(),any());
         MDC.put(StarterRabbitConstants.REQUEST_ID, "request1");
 
         spyTracedRabbitTemplate.sendJson(new FooEntity("test1"));
@@ -58,10 +59,9 @@ public class RabbitEntityMappingTest {
         verify(spyTracedRabbitTemplate).send(eq(""), eq(""), messageArgumentCaptor.capture(), eq(null));
 
         Message message = messageArgumentCaptor.getValue();
-        assertThat(message.getMessageProperties().getHeaders().size()).isEqualTo(3);
+        assertThat(message.getMessageProperties().getHeaders().size()).isEqualTo(2);
         assertThat(message.getMessageProperties().getHeaders().get("__EntityId__")).isEqualTo("fooEntity");
         assertThat(message.getMessageProperties().getHeaders().get("__TypeId__")).isEqualTo("com.neoteric.starter.rabbit.RabbitEntityMappingTest$FooEntity");
-        assertThat(message.getMessageProperties().getHeaders().get(StarterRabbitConstants.REQUEST_ID)).isEqualTo("request1");
         assertThat(message.getMessageProperties().getContentType()).isEqualTo("application/json");
     }
 
@@ -72,6 +72,7 @@ public class RabbitEntityMappingTest {
 
         TracedRabbitTemplate tracedRabbitTemplate = context.getBean(TracedRabbitTemplate.class);
         TracedRabbitTemplate spyTracedRabbitTemplate = spy(tracedRabbitTemplate);
+        doNothing().when(spyTracedRabbitTemplate).send(any(), any(),any(),any());
 
         spyTracedRabbitTemplate.sendJson(new FooEntity("test1"));
 
