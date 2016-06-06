@@ -2,7 +2,9 @@ package com.neoteric.starter.test.wiremock;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.neoteric.starter.test.utils.TestContextHelper;
+import com.netflix.loadbalancer.AbstractLoadBalancer;
 import com.netflix.loadbalancer.ILoadBalancer;
+import com.netflix.loadbalancer.LoadBalancerStats;
 import com.netflix.loadbalancer.Server;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.test.context.TestContext;
@@ -10,6 +12,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.Arrays;
 
 import static com.neoteric.starter.test.StarterTestConstants.LOG_PREFIX;
 import static org.mockito.Matchers.any;
@@ -33,8 +36,9 @@ public class WireMockListener extends AbstractTestExecutionListener {
         server = new WireMockServer(port);
 
 
-        ILoadBalancer mockedBalancer = contextHelper.getBean(ILoadBalancer.class);
+        AbstractLoadBalancer mockedBalancer = contextHelper.getBean(AbstractLoadBalancer.class);
         when(mockedBalancer.chooseServer(any())).thenReturn(new Server("localhost", port));
+        when(mockedBalancer.getLoadBalancerStats()).thenReturn(new LoadBalancerStats("test-load-balancer"));
         LOG.info("{}WireMock started on port {}\n", LOG_PREFIX, port);
     }
 
@@ -65,7 +69,7 @@ public class WireMockListener extends AbstractTestExecutionListener {
             return;
         }
         server.stop();
-        ILoadBalancer mockedBalancer = contextHelper.getBean(ILoadBalancer.class);
+        AbstractLoadBalancer mockedBalancer = contextHelper.getBean(AbstractLoadBalancer.class);
         reset(mockedBalancer);
     }
 
