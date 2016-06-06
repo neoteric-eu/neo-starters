@@ -1,7 +1,6 @@
 package com.neoteric.starter.test.wiremock;
 
 import com.netflix.loadbalancer.AbstractLoadBalancer;
-import com.netflix.loadbalancer.ILoadBalancer;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockReset;
 
