@@ -37,7 +37,7 @@ public class RabbitEntityMappingTest {
 
     @Test
     public void tracedRabbitTemplateExists() throws Exception {
-        context.register(ObjectMapper.class, Jackson2JsonMessageConverter.class, RabbitAutoConfiguration.class, StarterRabbitAutoConfiguration.class);
+        context.register(ObjectMapper.class, Jackson2JsonMessageConverter.class, RabbitAutoConfiguration.class, TracedRabbitTemplateAutoConfiguration.class);
         context.refresh();
 
         assertThat(this.context.getBeanNamesForType(TracedRabbitTemplate.class).length).isEqualTo(1);
@@ -45,7 +45,7 @@ public class RabbitEntityMappingTest {
 
     @Test
     public void shouldSetMessageHeadersProperly() throws Exception {
-        context.register(ObjectMapper.class, Jackson2JsonMessageConverter.class, RabbitAutoConfiguration.class, StarterRabbitAutoConfiguration.class);
+        context.register(ObjectMapper.class, Jackson2JsonMessageConverter.class, RabbitAutoConfiguration.class, TracedRabbitTemplateAutoConfiguration.class);
         context.refresh();
 
         TracedRabbitTemplate tracedRabbitTemplate = context.getBean(TracedRabbitTemplate.class);
@@ -67,7 +67,7 @@ public class RabbitEntityMappingTest {
 
     @Test
     public void shouldSerializeAndDeserializeMessageProperly() throws Exception {
-        context.register(ObjectMapper.class, Jackson2JsonMessageConverter.class, RabbitAutoConfiguration.class, StarterRabbitAutoConfiguration.class);
+        context.register(ObjectMapper.class, Jackson2JsonMessageConverter.class, RabbitAutoConfiguration.class, TracedRabbitTemplateAutoConfiguration.class);
         context.refresh();
 
         TracedRabbitTemplate tracedRabbitTemplate = context.getBean(TracedRabbitTemplate.class);

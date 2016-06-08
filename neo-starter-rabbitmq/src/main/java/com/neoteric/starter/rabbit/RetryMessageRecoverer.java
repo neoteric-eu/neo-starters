@@ -36,12 +36,12 @@ public class RetryMessageRecoverer implements MessageRecoverer {
     private final String predefinedDleExchange;
     private final int retryMessageTTL;
 
-    public RetryMessageRecoverer(AmqpTemplate errorTemplate, AmqpAdmin amqpAdmin, String predefinedDleExchange, int retryMessageTTL) {
+    public RetryMessageRecoverer(AmqpTemplate errorTemplate, AmqpAdmin amqpAdmin, StarterRabbitProperties starterRabbitProperties) {
         this.amqpAdmin = amqpAdmin;
         Assert.notNull(errorTemplate, "'errorTemplate' cannot be null");
         this.errorTemplate = errorTemplate;
-        this.predefinedDleExchange = predefinedDleExchange;
-        this.retryMessageTTL = retryMessageTTL;
+        this.predefinedDleExchange = starterRabbitProperties.getDleExchange();
+        this.retryMessageTTL = starterRabbitProperties.getRetryMessageTTL();
     }
 
     @Override
