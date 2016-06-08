@@ -5,7 +5,7 @@ import com.neoteric.starter.test.clock.FixedClock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.context.web.LocalServerPort;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -35,7 +35,6 @@ public class FixedClockTest3 {
                 .then()
                 .log().all()
                 .statusCode(200);
-
     }
 
     @Test
