@@ -31,6 +31,7 @@ public class MessageRecovererTest {
     AmqpAdmin amqpAdmin;
 
     MessageProperties messageProperties;
+    StarterRabbitProperties starterRabbitProperties;
     Message message;
 
     @Before
@@ -44,11 +45,14 @@ public class MessageRecovererTest {
         messageProperties.setConsumerQueue("testConsumer");
         messageProperties.setReceivedRoutingKey("test-key");
         message = new Message(null, messageProperties);
+
+        starterRabbitProperties = new StarterRabbitProperties();
+        starterRabbitProperties.setRetryMessageTTL(100);
     }
 
     @Test
     public void shouldResendMessage() {
-        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, null, 100);
+        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, starterRabbitProperties);
 
         retryMessageRecoverer.recover(message, new Exception("Blank ex"));
 
@@ -57,7 +61,7 @@ public class MessageRecovererTest {
 
     @Test
     public void shouldCreateQueueAndBindingForResend() {
-        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, null, 100);
+        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, starterRabbitProperties);
 
         retryMessageRecoverer.recover(message, new Exception("Blank ex"));
 
@@ -80,7 +84,7 @@ public class MessageRecovererTest {
 
     @Test
     public void shouldDeclareDleExchangeForResend() {
-        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, null, 100);
+        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, starterRabbitProperties);
 
         retryMessageRecoverer.recover(message, new Exception("Blank ex"));
 
@@ -94,7 +98,7 @@ public class MessageRecovererTest {
 
     @Test
     public void shouldPutMessageInDleExchangeWithDleKeyAfter3Attemps() {
-        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, null, 100);
+        RetryMessageRecoverer retryMessageRecoverer = new RetryMessageRecoverer(errorTemplate, amqpAdmin, starterRabbitProperties);
         messageProperties.getHeaders().put(X_DEATH, Lists.newArrayList(ImmutableMap.of(DEATH_COUNT, 3l)));
 
         retryMessageRecoverer.recover(message, new Exception("Blank ex"));

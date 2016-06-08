@@ -19,7 +19,7 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -39,11 +39,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.neoteric.starter.rabbit.StarterRabbitConstants.REQUEST_ID;
+import static org.reflections.util.ConfigurationBuilder.build;
 
 @Slf4j
 @Configuration
 @ConditionalOnClass({RabbitTemplate.class, Channel.class})
-@AutoConfigureBefore(RabbitAutoConfiguration.class)
+@AutoConfigureAfter(RabbitAutoConfiguration.class)
 @PropertySource("classpath:rabbit-defaults.properties")
 @EnableConfigurationProperties({StarterRabbitProperties.class, RabbitProperties.class})
 public class StarterRabbitAutoConfiguration {
@@ -56,13 +57,13 @@ public class StarterRabbitAutoConfiguration {
     SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory;
 
     @Autowired
-    MessageConverter messageConverter;
+    ContentTypeDelegatingMessageConverter messageConverter;
 
     @Autowired
     AmqpAdmin amqpAdmin;
 
     @Autowired
-    RabbitTemplate rabbitTemplate;
+    ConnectionFactory connectionFactory;
 
     @Bean
     public RabbitEntityTypeMapper rabbitEntityTypeMapper() {
@@ -78,10 +79,15 @@ public class StarterRabbitAutoConfiguration {
     }
 
     @Bean
-    public ContentTypeDelegatingMessageConverter messageConverter(Jackson2JsonMessageConverter jacksonMessageConverter) {
+    public MessageConverter messageConverter(Jackson2JsonMessageConverter jacksonMessageConverter) {
         ContentTypeDelegatingMessageConverter messageConverter = new ContentTypeDelegatingMessageConverter();
         messageConverter.addDelegate(MessageProperties.CONTENT_TYPE_JSON, jacksonMessageConverter);
         return messageConverter;
+    }
+
+    @Bean
+    public TracedRabbitTemplate tracedRabbitTemplate() {
+        return new TracedRabbitTemplate(connectionFactory, messageConverter);
     }
 
     @PostConstruct
@@ -94,8 +100,7 @@ public class StarterRabbitAutoConfiguration {
     private Advice retryOperations() {
         return RetryInterceptorBuilder.stateless()
                 .retryOperations(defaultRetryTemplate())
-                .recoverer(new RetryMessageRecoverer(rabbitTemplate, amqpAdmin, starterRabbitProperties.getDleExchange(),
-                        starterRabbitProperties.getRetryMessageTTL()))
+                .recoverer(new RetryMessageRecoverer(tracedRabbitTemplate(), amqpAdmin, starterRabbitProperties))
                 .build();
     }
 
@@ -140,13 +145,7 @@ public class StarterRabbitAutoConfiguration {
         return methodInterceptor;
     }
 
-    @Bean
-    public RabbitTemplate tracedRabbitTemplate(ConnectionFactory connectionFactory,
-                                                     ContentTypeDelegatingMessageConverter messageConverter) {
-        return new TracedRabbitTemplate(connectionFactory, messageConverter);
-    }
-
-    public static void setRequestIdOnMdc(Message message) {
+    private static void setRequestIdOnMdc(Message message) {
         String requestId = String.valueOf(message.getMessageProperties().getHeaders().get(REQUEST_ID));
         if (StringUtils.isEmpty(requestId)) {
             LOG.warn("No Request ID found in Message");
