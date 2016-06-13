@@ -39,7 +39,7 @@
         <paranamer.version>2.8</paranamer.version>
         <commons-io.version>2.4</commons-io.version>
         <ical4j.version>1.0.2</ical4j.version>
-        <springfox-swagger2.version>2.4.0</springfox-swagger2.version>
+        <springfox-swagger2.version>2.5.0</springfox-swagger2.version>
 
         <!-- Netflix Libraries -->
         <feign.version>8.16.2</feign.version>
