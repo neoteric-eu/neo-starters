@@ -18,7 +18,7 @@ public final class AuthenticationTokenHelper {
 
     public static Authentication anonymousToken() {
         return new AnonymousAuthenticationToken(
-                "anonymousUser", "anonymousUser", Lists.newArrayList(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));;
+                "anonymousUser", "anonymousUser", Lists.newArrayList(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
     }
 
     public static List<SubscriptionConstraint> getConstraints(String... constraints) {
