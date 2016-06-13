@@ -8,7 +8,10 @@ import com.neoteric.starter.saasmgr.principal.DefaultSaasMgrPrincipal;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 import com.neoteric.starter.test.utils.TestContextHelper;
 import org.assertj.core.util.Lists;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
@@ -77,6 +80,26 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
     }
 
     private void mockProviderManager(TestContextHelper helper, FixedSaasMgr fixedSaasMgr) {
+
+        Authentication token;
+
+        if (fixedSaasMgr.noAuth()) {
+            token = mockAnonymous();
+        } else {
+            token = mockSaasManagerToken(fixedSaasMgr);
+        }
+
+        SaasMgrAuthenticationProvider authenticationProvider = helper.getBean(SaasMgrAuthenticationProvider.class);
+        when(authenticationProvider.authenticate(any())).thenReturn(token);
+        when(authenticationProvider.supports(any())).thenReturn(true);
+    }
+
+    private Authentication mockAnonymous() {
+        return new AnonymousAuthenticationToken(
+                "anonymousUser", "anonymousUser", Lists.newArrayList(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
+    }
+
+    private Authentication mockSaasManagerToken(FixedSaasMgr fixedSaasMgr) {
         SaasMgrPrincipal principal = DefaultSaasMgrPrincipal.builder()
                 .customerId(fixedSaasMgr.customerId())
                 .customerName(fixedSaasMgr.customerName())
@@ -87,10 +110,7 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
                 .constraints(getConstraints(fixedSaasMgr.constraints()))
                 .build();
 
-        Authentication token = new SaasMgrAuthenticationToken(principal, "fixed Credentials", principal.getAuthorities());
-        SaasMgrAuthenticationProvider authenticationProvider = helper.getBean(SaasMgrAuthenticationProvider.class);
-        when(authenticationProvider.authenticate(any())).thenReturn(token);
-        when(authenticationProvider.supports(any())).thenReturn(true);
+        return new SaasMgrAuthenticationToken(principal, "fixed Credentials", principal.getAuthorities());
     }
 
     private List<SubscriptionConstraint> getConstraints(String[] constraints) {

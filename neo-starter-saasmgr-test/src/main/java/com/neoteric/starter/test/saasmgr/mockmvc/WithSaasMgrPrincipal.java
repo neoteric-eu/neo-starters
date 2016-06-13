@@ -12,6 +12,7 @@ import java.lang.annotation.*;
 @WithSecurityContext(factory = WithSaasMgrPrincipalContextFactory.class)
 public @interface WithSaasMgrPrincipal {
 
+    boolean noAuth() default false;
     String customerId() default "customerId";
     String customerName() default "customerName";
     String email() default "email";

@@ -16,6 +16,7 @@ import java.lang.annotation.*;
 @MockBean(value = SaasMgrAuthenticationProvider.class, reset = MockReset.NONE)
 public @interface FixedSaasMgr {
 
+    boolean noAuth() default false;
     String customerId() default "customerId";
     String customerName() default "customerName";
     String email() default "email";
