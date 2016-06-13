@@ -3,21 +3,13 @@ package com.neoteric.starter.test.saasmgr.embedded;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationToken;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;
-import com.neoteric.starter.saasmgr.model.SubscriptionConstraint;
 import com.neoteric.starter.saasmgr.principal.DefaultSaasMgrPrincipal;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
-import com.neoteric.starter.test.saasmgr.AuthenticationTokenHelper;
 import com.neoteric.starter.test.utils.TestContextHelper;
 import org.assertj.core.util.Lists;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.neoteric.starter.test.saasmgr.AuthenticationTokenHelper.anonymousToken;
 import static com.neoteric.starter.test.saasmgr.AuthenticationTokenHelper.getConstraints;

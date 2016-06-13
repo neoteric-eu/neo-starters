@@ -27,44 +27,44 @@ import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_CACH
 @EnableCaching
 public class SaasMgrCacheAutoConfiguration {
 
-	@Configuration
-	@ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", havingValue = "false")
-	static class SaasMgrNoCacheConfig extends CachingConfigurerSupport {
+    @Configuration
+    @ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", havingValue = "false")
+    static class SaasMgrNoCacheConfig extends CachingConfigurerSupport {
 
-		@Bean(name = SAAS_MGR_CACHE_MANAGER)
-		@Override
-		public CacheManager cacheManager() {
-			LOG.debug("{}Using NoOpCacheManager", SaasMgrStarterConstants.LOG_PREFIX);
-			return new NoOpCacheManager();
-		}
-	}
+        @Bean(name = SAAS_MGR_CACHE_MANAGER)
+        @Override
+        public CacheManager cacheManager() {
+            LOG.debug("{}Using NoOpCacheManager", SaasMgrStarterConstants.LOG_PREFIX);
+            return new NoOpCacheManager();
+        }
+    }
 
-	@Configuration
-	@ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", matchIfMissing = true)
-	static class SaasMgrCachingConfig extends CachingConfigurerSupport {
+    @Configuration
+    @ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", matchIfMissing = true)
+    static class SaasMgrCachingConfig extends CachingConfigurerSupport {
 
         private static final int MAX_ENTRIES_LOCAL_HEAP = 1000;
 
         @Autowired
-		SaasMgrProperties saasMgrProperties;
+        SaasMgrProperties saasMgrProperties;
 
-		@Bean(destroyMethod = "shutdown")
-		public net.sf.ehcache.CacheManager ehCacheManager() {
-			CacheConfiguration cacheConfiguration = new CacheConfiguration(
-					SAAS_MGR_AUTH_CACHE, MAX_ENTRIES_LOCAL_HEAP).timeToLiveSeconds(saasMgrProperties
-					.getCache().getTimeToLiveSeconds());
+        @Bean(destroyMethod = "shutdown")
+        public net.sf.ehcache.CacheManager ehCacheManager() {
+            CacheConfiguration cacheConfiguration = new CacheConfiguration(
+                    SAAS_MGR_AUTH_CACHE, MAX_ENTRIES_LOCAL_HEAP).timeToLiveSeconds(saasMgrProperties
+                    .getCache().getTimeToLiveSeconds());
 
-			net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
-			config.addCache(cacheConfiguration);
+            net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
+            config.addCache(cacheConfiguration);
 
-			return net.sf.ehcache.CacheManager.newInstance(config);
-		}
+            return net.sf.ehcache.CacheManager.newInstance(config);
+        }
 
-		@Bean(name = SAAS_MGR_CACHE_MANAGER)
-		@Override
-		public CacheManager cacheManager() {
-			LOG.debug("{}Using EhCacheCacheManager", SaasMgrStarterConstants.LOG_PREFIX);
-			return new EhCacheCacheManager(ehCacheManager());
-		}
-	}
+        @Bean(name = SAAS_MGR_CACHE_MANAGER)
+        @Override
+        public CacheManager cacheManager() {
+            LOG.debug("{}Using EhCacheCacheManager", SaasMgrStarterConstants.LOG_PREFIX);
+            return new EhCacheCacheManager(ehCacheManager());
+        }
+    }
 }
