@@ -43,13 +43,15 @@ public class SaasMgrCacheAutoConfiguration {
 	@ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", matchIfMissing = true)
 	static class SaasMgrCachingConfig extends CachingConfigurerSupport {
 
-		@Autowired
+        private static final int MAX_ENTRIES_LOCAL_HEAP = 1000;
+
+        @Autowired
 		SaasMgrProperties saasMgrProperties;
 
 		@Bean(destroyMethod = "shutdown")
 		public net.sf.ehcache.CacheManager ehCacheManager() {
 			CacheConfiguration cacheConfiguration = new CacheConfiguration(
-					SAAS_MGR_AUTH_CACHE, 1000).timeToLiveSeconds(saasMgrProperties
+					SAAS_MGR_AUTH_CACHE, MAX_ENTRIES_LOCAL_HEAP).timeToLiveSeconds(saasMgrProperties
 					.getCache().getTimeToLiveSeconds());
 
 			net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();

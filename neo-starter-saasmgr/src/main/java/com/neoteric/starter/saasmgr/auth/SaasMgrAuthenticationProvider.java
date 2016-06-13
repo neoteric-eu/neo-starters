@@ -1,6 +1,5 @@
 package com.neoteric.starter.saasmgr.auth;
 
-import com.neoteric.starter.saasmgr.SaasMgrStarterConstants;
 import com.neoteric.starter.saasmgr.client.SaasMgrClient;
 import com.neoteric.starter.saasmgr.model.Customer;
 import com.neoteric.starter.saasmgr.model.LoginData;
@@ -15,7 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
-import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.*;
+import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.LOG_PREFIX;
 
 @Slf4j
 @AllArgsConstructor

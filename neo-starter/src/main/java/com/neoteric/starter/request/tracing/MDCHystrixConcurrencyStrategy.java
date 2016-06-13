@@ -39,8 +39,7 @@ public class MDCHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
 			plugins.registerEventNotifier(eventNotifier);
 			plugins.registerMetricsPublisher(metricsPublisher);
 			plugins.registerPropertiesStrategy(propertiesStrategy);
-		}
-		catch (IllegalStateException e) {
+		} catch (IllegalStateException e) {
 			LOG.error("Failed to register MDC Hystrix Concurrency Strategy", e);
 		}
 	}
@@ -79,8 +78,7 @@ public class MDCHystrixConcurrencyStrategy extends HystrixConcurrencyStrategy {
 					MDC.setContextMap(parentMdcContextMap);
 				}
 				return actual.call();
-			}
-			finally {
+			} finally {
 				if (existingContextMap != null) {
 					MDC.setContextMap(existingContextMap);
 				}
