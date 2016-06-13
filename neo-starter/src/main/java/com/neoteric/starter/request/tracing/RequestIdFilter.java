@@ -1,7 +1,6 @@
 package com.neoteric.starter.request.tracing;
 
 import com.neoteric.starter.StarterConstants;
-import com.neoteric.starter.utils.PrefixResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.logging.MDC;
 import org.springframework.util.StringUtils;

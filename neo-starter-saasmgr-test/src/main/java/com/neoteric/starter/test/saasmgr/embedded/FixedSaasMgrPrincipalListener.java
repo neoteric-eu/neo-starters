@@ -6,6 +6,7 @@ import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;
 import com.neoteric.starter.saasmgr.model.SubscriptionConstraint;
 import com.neoteric.starter.saasmgr.principal.DefaultSaasMgrPrincipal;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
+import com.neoteric.starter.test.saasmgr.AuthenticationTokenHelper;
 import com.neoteric.starter.test.utils.TestContextHelper;
 import org.assertj.core.util.Lists;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -18,6 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.neoteric.starter.test.saasmgr.AuthenticationTokenHelper.anonymousToken;
+import static com.neoteric.starter.test.saasmgr.AuthenticationTokenHelper.getConstraints;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -83,7 +86,7 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
         Authentication token;
 
         if (fixedSaasMgr.noAuth()) {
-            token = mockAnonymous();
+            token = anonymousToken();
         } else {
             token = mockSaasManagerToken(fixedSaasMgr);
         }
@@ -91,11 +94,6 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
         SaasMgrAuthenticationProvider authenticationProvider = helper.getBean(SaasMgrAuthenticationProvider.class);
         when(authenticationProvider.authenticate(any())).thenReturn(token);
         when(authenticationProvider.supports(any())).thenReturn(true);
-    }
-
-    private Authentication mockAnonymous() {
-        return new AnonymousAuthenticationToken(
-                "anonymousUser", "anonymousUser", Lists.newArrayList(new SimpleGrantedAuthority("ROLE_ANONYMOUS")));
     }
 
     private Authentication mockSaasManagerToken(FixedSaasMgr fixedSaasMgr) {
@@ -112,12 +110,4 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
         return new SaasMgrAuthenticationToken(principal, "fixed Credentials", principal.getAuthorities());
     }
 
-    private List<SubscriptionConstraint> getConstraints(String[] constraints) {
-        return Arrays.stream(constraints)
-                .map(con -> {
-                    String[] splitted = con.split(";");
-                    return new SubscriptionConstraint(splitted[0], Double.valueOf(splitted[1]), Double.valueOf(splitted[2]));
-                })
-                .collect(Collectors.toList());
-    }
 }

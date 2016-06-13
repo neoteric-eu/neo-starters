@@ -252,8 +252,6 @@ public class StarterMvcAutoConfiguration {
     @Configuration
     public static class EnableWebMvcConfiguration extends DelegatingWebMvcConfiguration {
 
-        private static final Logger LOG = LoggerFactory.getLogger(EnableWebMvcConfiguration.class);
-
         @Autowired(required = false)
         private WebMvcProperties mvcProperties;
 
