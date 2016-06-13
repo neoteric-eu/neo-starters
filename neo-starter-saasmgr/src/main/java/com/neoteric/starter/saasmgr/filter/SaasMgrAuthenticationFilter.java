@@ -20,7 +20,7 @@ public class SaasMgrAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return authenticationMatcher.matches(request);
+        return !authenticationMatcher.matches(request);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
         }
 
         SaasMgrAuthenticationMatcher saasMatcher = contextHelper.getBean(SaasMgrAuthenticationMatcher.class);
-        when(saasMatcher.matches(any())).thenReturn(false);
+        when(saasMatcher.matches(any())).thenReturn(true);
         mockProviderManager(contextHelper, classFixedSaasMgr);
     }
 

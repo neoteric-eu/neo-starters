@@ -22,7 +22,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @ConditionalOnClass(RabbitTemplate.class)
 @AutoConfigureAfter({RabbitAutoConfiguration.class, JacksonAutoConfiguration.class})
-@PropertySource("classpath:rabbit-defaults.properties")
 @EnableConfigurationProperties({StarterRabbitProperties.class, RabbitProperties.class})
 public class TracedRabbitTemplateAutoConfiguration {
 
