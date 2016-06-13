@@ -35,6 +35,9 @@ import static com.neoteric.starter.rabbit.StarterRabbitConstants.REQUEST_ID;
 @AutoConfigureAfter(TracedRabbitTemplateAutoConfiguration.class)
 public class TracedRabbitListenerAutoConfiguration {
 
+    private static final int INITIAL_INTERVAL_MS = 10000;
+    private static final int MULTIPLIER = 1;
+    private static final int MAX_INTERVAL_MS = 500000;
     private final StarterRabbitProperties starterRabbitProperties;
     private final SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory;
     private final AmqpAdmin amqpAdmin;
@@ -43,10 +46,10 @@ public class TracedRabbitListenerAutoConfiguration {
 
     @Autowired
     public TracedRabbitListenerAutoConfiguration(StarterRabbitProperties starterRabbitProperties,
-                                                 @Qualifier("rabbitListenerContainerFactory") SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory,
-                                                 AmqpAdmin amqpAdmin,
-                                                 TracedRabbitTemplate tracedRabbitTemplate,
-                                                 MessageConverter messageConverter) {
+                 @Qualifier("rabbitListenerContainerFactory") SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory,
+                 AmqpAdmin amqpAdmin,
+                 TracedRabbitTemplate tracedRabbitTemplate,
+                 MessageConverter messageConverter) {
         this.starterRabbitProperties = starterRabbitProperties;
         this.rabbitListenerContainerFactory = rabbitListenerContainerFactory;
         this.amqpAdmin = amqpAdmin;
@@ -89,9 +92,9 @@ public class TracedRabbitListenerAutoConfiguration {
 
     private ExponentialBackOffPolicy defaultBackOffPolicy() {
         ExponentialBackOffPolicy policy = new ExponentialBackOffPolicy();
-        policy.setInitialInterval(10000);
-        policy.setMultiplier(1);
-        policy.setMaxInterval(500000);
+        policy.setInitialInterval(INITIAL_INTERVAL_MS);
+        policy.setMultiplier(MULTIPLIER);
+        policy.setMaxInterval(MAX_INTERVAL_MS);
         return policy;
     }
 
