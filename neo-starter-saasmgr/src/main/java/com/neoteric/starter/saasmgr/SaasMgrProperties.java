@@ -1,5 +1,6 @@
 package com.neoteric.starter.saasmgr;
 
+import com.neoteric.starter.utils.PrefixResolver;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.web.ResourceProperties;
@@ -22,10 +23,13 @@ public class SaasMgrProperties {
     @NestedConfigurationProperty
     private final ApiSaasProperties api = new ApiSaasProperties();
 
-    @Getter
     @Setter
     public static class ApiSaasProperties {
         private String path;
+
+        public String getPath() {
+            return PrefixResolver.resolve(path);
+        }
     }
 
     @Getter

@@ -6,6 +6,7 @@ import com.neoteric.starter.saasmgr.model.LoginData;
 import com.neoteric.starter.saasmgr.principal.DefaultSaasMgrPrincipal;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -13,6 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
+import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.LOG_PREFIX;
+
+@Slf4j
 @AllArgsConstructor
 public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
 
@@ -49,6 +53,7 @@ public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
                 .findFirst();
 
         Customer foundedCustomer = customer.orElseThrow(() -> new UsernameNotFoundException("No customer data found in SaasMgr response"));
+        LOG.info("{}Credentials: [email:{}, userId: {}, customerId: {}]", LOG_PREFIX, email, userId, foundedCustomer.getCustomerId());
         return DefaultSaasMgrPrincipal.builder()
                 .userId(userId)
                 .email(email)

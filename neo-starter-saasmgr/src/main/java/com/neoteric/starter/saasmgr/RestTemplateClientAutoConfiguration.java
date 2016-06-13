@@ -12,7 +12,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Configuration
-@AutoConfigureBefore(SaasMgrAutoConfiguration.class)
+@AutoConfigureBefore(SaasMgrCacheAutoConfiguration.class)
 @ConditionalOnMissingBean(SaasMgrClient.class)
 @EnableConfigurationProperties(SaasMgrProperties.class)
 public class RestTemplateClientAutoConfiguration {
