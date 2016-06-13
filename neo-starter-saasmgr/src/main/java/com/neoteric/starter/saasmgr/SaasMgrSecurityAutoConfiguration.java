@@ -31,8 +31,8 @@ import java.util.Set;
 @AutoConfigureBefore(SecurityAutoConfiguration.class)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
-@Import({ SaasMgrSecurityAutoConfiguration.ApiSecurityConfiguration.class,
-        SaasMgrSecurityAutoConfiguration.ManagementSecurityConfiguration.class })
+@Import({SaasMgrSecurityAutoConfiguration.ApiSecurityConfiguration.class,
+        SaasMgrSecurityAutoConfiguration.ManagementSecurityConfiguration.class})
 public class SaasMgrSecurityAutoConfiguration {
 
     private final SaasMgrClient saasMgrClient;
@@ -55,7 +55,7 @@ public class SaasMgrSecurityAutoConfiguration {
 
         Set<String> roles = Sets.newLinkedHashSet(user.getRole());
         auth.authenticationProvider(saasAuthenticationProvider())
-            .inMemoryAuthentication()
+                .inMemoryAuthentication()
                 .withUser(user.getName())
                 .password(user.getPassword())
                 .roles(roles.toArray(new String[roles.size()]));
@@ -77,8 +77,10 @@ public class SaasMgrSecurityAutoConfiguration {
         protected void configure(HttpSecurity http) throws Exception {
             SaasMgrAuthenticationFilter filter = new SaasMgrAuthenticationFilter(
                     saasMgrAuthenticationMatcher());
-            http.antMatcher(PrefixResolver.resolve(apiPath) + "/**").addFilterBefore(
-                    filter, BasicAuthenticationFilter.class);
+            http
+                    .antMatcher(PrefixResolver.resolve(apiPath) + "/**")
+                    .addFilterBefore(filter, BasicAuthenticationFilter.class)
+                    .csrf().disable();
         }
     }
 
@@ -99,6 +101,7 @@ public class SaasMgrSecurityAutoConfiguration {
                                 + StringUtils.defaultString(request.getPathInfo());
                         return !url.startsWith(PrefixResolver.resolve(apiPath) + "/");
                     })
+                    .csrf().disable()
                     .authorizeRequests()
                     .anyRequest()
                     .authenticated()
