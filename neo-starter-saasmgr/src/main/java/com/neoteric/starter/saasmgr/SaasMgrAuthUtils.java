@@ -1,11 +1,15 @@
 package com.neoteric.starter.saasmgr;
 
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationToken;
+import com.neoteric.starter.saasmgr.principal.Feature;
 import com.neoteric.starter.saasmgr.principal.SaasMgrPrincipal;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.Collection;
+
+@Slf4j
 public final class SaasMgrAuthUtils {
 
     private SaasMgrAuthUtils() {
@@ -18,13 +22,29 @@ public final class SaasMgrAuthUtils {
         return (SaasMgrPrincipal)saasToken.getPrincipal();
     }
 
-    public static boolean isAnonymous() {
+    public static boolean isNotAuthenticated() {
+        return !isAuthenticated();
+    }
+
+    public static boolean isAuthenticated() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication instanceof AnonymousAuthenticationToken;
+        if (!(authentication instanceof SaasMgrAuthenticationToken)) {
+            return false;
+        }
+        SaasMgrAuthenticationToken saasToken = (SaasMgrAuthenticationToken)authentication;
+        return saasToken.isAuthenticated();
     }
 
-    public static boolean isAuthorized() {
-        return !isAnonymous();
+    @SuppressWarnings("unchecked")
+    public static boolean isAuthorizedForFeature(String feature) {
+        SaasMgrPrincipal principal = getPrincipal();
+        Collection<Feature> authorities = (Collection<Feature>) principal.getAuthorities();
+        boolean authorisedForFeature = authorities.stream().
+                map(Feature::getAuthority)
+                .filter(f -> f.equals(feature))
+                .findAny().isPresent();
+        LOG.debug("User [userId:{}, customerId:{}] authorised for feature: {}",
+                principal.getUserId(), principal.getCustomerId(), feature);
+        return authorisedForFeature;
     }
-
 }
