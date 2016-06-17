@@ -7,7 +7,7 @@ import org.springframework.security.core.AuthenticationException;
 
 import javax.servlet.http.HttpServletRequest;
 
-@RestExceptionHandlerProvider(httpStatus = HttpStatus.FORBIDDEN, suppressException = true)
+@RestExceptionHandlerProvider(httpStatus = HttpStatus.UNAUTHORIZED, suppressException = true)
 public class AuthenticationExceptionHandler implements RestExceptionHandler<AuthenticationException> {
 
     @Override
