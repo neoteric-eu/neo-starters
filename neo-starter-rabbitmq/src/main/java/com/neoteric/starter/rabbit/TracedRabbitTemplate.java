@@ -11,7 +11,7 @@ import org.springframework.amqp.core.MessagePropertiesBuilder;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.CorrelationData;
-import org.springframework.amqp.support.converter.ContentTypeDelegatingMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,9 +28,9 @@ public class TracedRabbitTemplate extends RabbitTemplate {
         message.getMessageProperties().setHeader(REQUEST_ID, MDC.get(REQUEST_ID));
         return message;
     };
-    private final ContentTypeDelegatingMessageConverter messageConverter;
+    private final MessageConverter messageConverter;
 
-    public TracedRabbitTemplate(ConnectionFactory connectionFactory, ContentTypeDelegatingMessageConverter messageConverter) {
+    public TracedRabbitTemplate(ConnectionFactory connectionFactory, MessageConverter messageConverter) {
         super(connectionFactory);
         this.messageConverter = messageConverter;
         setBeforePublishPostProcessors(SET_REQUEST_ID_TO_MESSAGE);

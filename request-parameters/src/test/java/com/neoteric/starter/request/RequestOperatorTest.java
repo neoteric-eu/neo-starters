@@ -34,7 +34,6 @@ public class RequestOperatorTest {
     public void testEqualsAndHashCode() {
         EqualsVerifier
                 .forClass(RequestOperator.class)
-                .allFieldsShouldBeUsed()
                 .verify();
     }
 }

@@ -30,6 +30,7 @@ import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import com.neoteric.starter.metrics.report.elastic.percolation.Notifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,128 +44,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.codahale.metrics.MetricRegistry.name;
 import static com.neoteric.starter.metrics.report.elastic.JsonMetrics.*;
 
+@SuppressWarnings({"squid:S00103", // Lines should not be too long
+                    "squid:S1943", // Classes and methods that rely on the default system encoding should not be used
+                    "squid:MethodCyclomaticComplexity",
+                    "squid:S134", // Control flow statements "if", "for", "while", "switch" and "try" should not be nested too deeply
+                    "squid:S00107",
+                    "squid:S1141", // Try-catch blocks should not be nested
+                    "squid:S1226", // Method parameters, caught exceptions and foreach variables should not be reassigned
+                    "squid:S00112",
+                    "squid:S1155", // Collection.isEmpty() should be used to test for emptiness
+                    "squid:S1067", // Expressions should not be too complex
+                    "squid:S1200", // Classes should not be coupled to too many other classes (Single Responsibility Principle)
+                    "squid:S1943"
+})
 public class ElasticsearchReporter extends ScheduledReporter {
 
-    public static Builder forRegistry(MetricRegistry registry) {
-        return new Builder(registry);
-    }
-
-    public static class Builder {
-        private final MetricRegistry registry;
-        private Clock clock;
-        private String prefix;
-        private TimeUnit rateUnit;
-        private TimeUnit durationUnit;
-        private MetricFilter filter;
-        private String[] hosts = new String[]{"localhost:9200"};
-        private String index = "metrics";
-        private String indexDateFormat = "yyyy-MM";
-        private int bulkSize = 2500;
-        private Notifier percolationNotifier;
-        private MetricFilter percolationFilter;
-        private int timeout = 1000;
-        private String timestampFieldname = "@timestamp";
-        private Map<String, Object> additionalFields;
-
-        private Builder(MetricRegistry registry) {
-            this.registry = registry;
-            this.clock = Clock.defaultClock();
-            this.prefix = null;
-            this.rateUnit = TimeUnit.SECONDS;
-            this.durationUnit = TimeUnit.MILLISECONDS;
-            this.filter = MetricFilter.ALL;
-        }
-
-        public Builder withClock(Clock clock) {
-            this.clock = clock;
-            return this;
-        }
-
-        public Builder prefixedWith(String prefix) {
-            this.prefix = prefix;
-            return this;
-        }
-
-        public Builder convertRatesTo(TimeUnit rateUnit) {
-            this.rateUnit = rateUnit;
-            return this;
-        }
-
-        public Builder convertDurationsTo(TimeUnit durationUnit) {
-            this.durationUnit = durationUnit;
-            return this;
-        }
-
-        public Builder filter(MetricFilter filter) {
-            this.filter = filter;
-            return this;
-        }
-
-        public Builder hosts(String... hosts) {
-            this.hosts = hosts;
-            return this;
-        }
-
-        public Builder timeout(int timeout) {
-            this.timeout = timeout;
-            return this;
-        }
-
-        public Builder index(String index) {
-            this.index = index;
-            return this;
-        }
-
-        public Builder indexDateFormat(String indexDateFormat) {
-            this.indexDateFormat = indexDateFormat;
-            return this;
-        }
-
-        public Builder bulkSize(int bulkSize) {
-            this.bulkSize = bulkSize;
-            return this;
-        }
-
-        public Builder percolationFilter(MetricFilter percolationFilter) {
-            this.percolationFilter = percolationFilter;
-            return this;
-        }
-
-        public Builder percolationNotifier(Notifier notifier) {
-            this.percolationNotifier = notifier;
-            return this;
-        }
-
-        public Builder timestampFieldname(String fieldName) {
-            this.timestampFieldname = fieldName;
-            return this;
-        }
-
-        public Builder additionalFields(Map<String, Object> additionalFields) {
-            this.additionalFields = additionalFields;
-            return this;
-        }
-
-        public ElasticsearchReporter build() {
-            return new ElasticsearchReporter(registry,
-                    hosts,
-                    timeout,
-                    index,
-                    indexDateFormat,
-                    bulkSize,
-                    clock,
-                    prefix,
-                    rateUnit,
-                    durationUnit,
-                    filter,
-                    percolationFilter,
-                    percolationNotifier,
-                    timestampFieldname,
-                    additionalFields);
-        }
-    }
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchReporter.class);
+    private static final int DEFAULT_BULK_SIZE = 2500;
+    private static final int DEFAULT_TIMEOUT = 1000;
 
     private final String[] hosts;
     private final Clock clock;
@@ -177,8 +74,8 @@ public class ElasticsearchReporter extends ScheduledReporter {
     private MetricFilter percolationFilter;
     private Notifier notifier;
     private String currentIndexName;
-    private SimpleDateFormat indexDateFormat = null;
-    private boolean checkedForIndexTemplate = false;
+    private SimpleDateFormat indexDateFormat;
+    private boolean checkedForIndexTemplate;
 
     public ElasticsearchReporter(MetricRegistry registry, String[] hosts, int timeout,
                                  String index, String indexDateFormat, int bulkSize, Clock clock, String prefix, TimeUnit rateUnit, TimeUnit durationUnit,
@@ -211,6 +108,10 @@ public class ElasticsearchReporter extends ScheduledReporter {
         objectMapper.registerModule(new MetricsElasticsearchModule(rateUnit, durationUnit, timestampFieldname, additionalFields));
         writer = objectMapper.writer();
         checkForIndexTemplate();
+    }
+
+    public static Builder forRegistry(MetricRegistry registry) {
+        return new Builder(registry);
     }
 
     @Override
@@ -313,7 +214,7 @@ public class ElasticsearchReporter extends ScheduledReporter {
         objectMapper.writeValue(connection.getOutputStream(), data);
         closeConnection(connection);
 
-        if (connection.getResponseCode() != 200) {
+        if (connection.getResponseCode() != HttpStatus.OK.value()) {
             throw new RuntimeException("Error percolating " + jsonMetric);
         }
 
@@ -350,7 +251,7 @@ public class ElasticsearchReporter extends ScheduledReporter {
 
         // we have to call this, otherwise out HTTP data does not get send, even though close()/disconnect was called
         // Ceterum censeo HttpUrlConnection esse delendam
-        if (connection.getResponseCode() != 200) {
+        if (connection.getResponseCode() != HttpStatus.OK.value()) {
             LOGGER.error("Reporting returned code {} {}: {}", connection.getResponseCode(), connection.getResponseMessage());
         }
     }
@@ -381,7 +282,7 @@ public class ElasticsearchReporter extends ScheduledReporter {
                 connection.setRequestMethod(method);
                 connection.setConnectTimeout(timeout);
                 connection.setUseCaches(false);
-                if (method.equalsIgnoreCase("POST") || method.equalsIgnoreCase("PUT")) {
+                if ("POST".equalsIgnoreCase(method) || "PUT".equalsIgnoreCase(method)) {
                     connection.setDoOutput(true);
                 }
                 connection.connect();
@@ -426,13 +327,128 @@ public class ElasticsearchReporter extends ScheduledReporter {
                 json.flush();
 
                 putTemplateConnection.disconnect();
-                if (putTemplateConnection.getResponseCode() != 200) {
+                if (putTemplateConnection.getResponseCode() != HttpStatus.OK.value()) {
                     LOGGER.error("Error adding metrics template to elasticsearch: {}/{}" + putTemplateConnection.getResponseCode(), putTemplateConnection.getResponseMessage());
                 }
             }
             checkedForIndexTemplate = true;
         } catch (IOException e) {
             LOGGER.error("Error when checking/adding metrics template to elasticsearch", e);
+        }
+    }
+
+    public static final class Builder {
+        private final MetricRegistry registry;
+        private Clock clock;
+        private String prefix;
+        private TimeUnit rateUnit;
+        private TimeUnit durationUnit;
+        private MetricFilter filter;
+        private String[] hosts = new String[]{"localhost:9200"};
+        private String index = "metrics";
+        private String indexDateFormat = "yyyy-MM";
+        private int bulkSize = DEFAULT_BULK_SIZE;
+        private Notifier percolationNotifier;
+        private MetricFilter percolationFilter;
+        private int timeout = DEFAULT_TIMEOUT;
+        private String timestampFieldname = "@timestamp";
+        private Map<String, Object> additionalFields;
+
+        private Builder(MetricRegistry registry) {
+            this.registry = registry;
+            this.clock = Clock.defaultClock();
+            this.prefix = null;
+            this.rateUnit = TimeUnit.SECONDS;
+            this.durationUnit = TimeUnit.MILLISECONDS;
+            this.filter = MetricFilter.ALL;
+        }
+
+        public Builder withClock(Clock clock) {
+            this.clock = clock;
+            return this;
+        }
+
+        public Builder prefixedWith(String prefix) {
+            this.prefix = prefix;
+            return this;
+        }
+
+        public Builder convertRatesTo(TimeUnit rateUnit) {
+            this.rateUnit = rateUnit;
+            return this;
+        }
+
+        public Builder convertDurationsTo(TimeUnit durationUnit) {
+            this.durationUnit = durationUnit;
+            return this;
+        }
+
+        public Builder filter(MetricFilter filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        public Builder hosts(String... hosts) {
+            this.hosts = hosts;
+            return this;
+        }
+
+        public Builder timeout(int timeout) {
+            this.timeout = timeout;
+            return this;
+        }
+
+        public Builder index(String index) {
+            this.index = index;
+            return this;
+        }
+
+        public Builder indexDateFormat(String indexDateFormat) {
+            this.indexDateFormat = indexDateFormat;
+            return this;
+        }
+
+        public Builder bulkSize(int bulkSize) {
+            this.bulkSize = bulkSize;
+            return this;
+        }
+
+        public Builder percolationFilter(MetricFilter percolationFilter) {
+            this.percolationFilter = percolationFilter;
+            return this;
+        }
+
+        public Builder percolationNotifier(Notifier notifier) {
+            this.percolationNotifier = notifier;
+            return this;
+        }
+
+        public Builder timestampFieldname(String fieldName) {
+            this.timestampFieldname = fieldName;
+            return this;
+        }
+
+        public Builder additionalFields(Map<String, Object> additionalFields) {
+            this.additionalFields = additionalFields;
+            return this;
+        }
+
+        public ElasticsearchReporter build() {
+            return new ElasticsearchReporter(registry,
+                    hosts,
+                    timeout,
+                    index,
+                    indexDateFormat,
+                    bulkSize,
+                    clock,
+                    prefix,
+                    rateUnit,
+                    durationUnit,
+                    filter,
+                    percolationFilter,
+                    percolationNotifier,
+                    timestampFieldname,
+                    additionalFields);
         }
     }
 }

@@ -8,24 +8,26 @@ import com.neoteric.starter.mongo.MongoCriteriaBuilderAutoConfiguration;
 import com.neoteric.starter.mongo.model.FooModel;
 import com.neoteric.starter.mongo.model.FooModelMother;
 import com.neoteric.starter.mongo.sort.RequestParamsSortBuilder;
-import com.neoteric.starter.test.mongo.DropCollections;
-import com.neoteric.starter.test.mongo.NeotericEmbeddedMongoAutoConfiguration;
 import com.neoteric.starter.request.FiltersParser;
 import com.neoteric.starter.request.RequestObject;
 import com.neoteric.starter.request.sort.RequestSort;
 import com.neoteric.starter.request.sort.SortParser;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,10 +40,10 @@ import java.util.TimeZone;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@DropCollections("FooModel")
+@RunWith(SpringRunner.class)
+@TestPropertySource(properties = "spring.data.mongodb.port=0")
 @ContextConfiguration(classes = {MongoConvertersAutoConfiguration.class,
-        NeotericEmbeddedMongoAutoConfiguration.class,
+        EmbeddedMongoAutoConfiguration.class,
         MongoAutoConfiguration.class,
         MongoDataAutoConfiguration.class,
         MongoCriteriaBuilderAutoConfiguration.class,
@@ -54,9 +56,14 @@ public class MongoCriteriaIntegrationTest {
     @Autowired
     private RequestParamsCriteriaBuilder requestParamsCriteriaBuilder;
 
-    @Before
-    public void initCriteriaTest() {
+    @BeforeClass
+    public static void initCriteriaTest() {
         TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("UTC")));
+    }
+
+    @After
+    public void resetDB() {
+        mongoTemplate.dropCollection("FooModel");
     }
 
     @Test

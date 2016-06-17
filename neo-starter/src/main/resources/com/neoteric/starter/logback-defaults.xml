@@ -36,7 +36,8 @@
     <logger name="org.quartz" level="INFO"/>
     <logger name="org.apache.activemq" level="DEBUG"/>
     <logger name="org.apache.activemq.transport" level="INFO"/>
-    <logger name="io.swagger" level="INFO"/>
+    <logger name="springfox.documentation" level="INFO"/>
+    <logger name="com.neoteric.starter.mvc.ClassNameAwareRequestMappingHandlerMapping" level = "INFO"/>
 
     <!-- Spring Boot -->
     <logger name="jndi" level="INFO"/>

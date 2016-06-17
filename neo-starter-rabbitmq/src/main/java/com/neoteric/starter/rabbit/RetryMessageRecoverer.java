@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.retry.MessageRecoverer;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -25,6 +24,7 @@ public class RetryMessageRecoverer implements MessageRecoverer {
     public static final String X_DEAD_LETTER_EXCHANGE = "x-dead-letter-exchange";
     public static final String X_DEAD_LETTER_ROUTING_KEY = "x-dead-letter-routing-key";
     public static final String X_MESSAGE_TTL = "x-message-ttl";
+    public static final int MSG_COUNT_LIMIT = 3;
 
     private final AmqpTemplate errorTemplate;
     private volatile String retryRoutingKeyPrefix = "retry.";
@@ -36,12 +36,12 @@ public class RetryMessageRecoverer implements MessageRecoverer {
     private final String predefinedDleExchange;
     private final int retryMessageTTL;
 
-    public RetryMessageRecoverer(AmqpTemplate errorTemplate, AmqpAdmin amqpAdmin, String predefinedDleExchange, int retryMessageTTL) {
+    public RetryMessageRecoverer(AmqpTemplate errorTemplate, AmqpAdmin amqpAdmin, StarterRabbitProperties starterRabbitProperties) {
         this.amqpAdmin = amqpAdmin;
         Assert.notNull(errorTemplate, "'errorTemplate' cannot be null");
         this.errorTemplate = errorTemplate;
-        this.predefinedDleExchange = predefinedDleExchange;
-        this.retryMessageTTL = retryMessageTTL;
+        this.predefinedDleExchange = starterRabbitProperties.getDleExchange();
+        this.retryMessageTTL = starterRabbitProperties.getRetryMessageTTL();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RetryMessageRecoverer implements MessageRecoverer {
 
         String targetExchange = declareDleExchange(originalExchange);
         String targetRoutingKey;
-        if (messageCount < 3) {
+        if (messageCount < MSG_COUNT_LIMIT) {
             targetRoutingKey = retryRoutingKey(originalRoutingKey);
             createAdditionalBindedQueue(retryQueue(originalQueueName), targetRoutingKey, targetExchange, ImmutableMap.of(
                     X_DEAD_LETTER_EXCHANGE, originalExchange,
@@ -122,9 +122,10 @@ public class RetryMessageRecoverer implements MessageRecoverer {
     }
 
     private String dleExchange(String originalExchange) {
-        return Strings.isNullOrEmpty(predefinedDleExchange) ? dleExchangePrefix + originalExchange : predefinedDleExchange;
+        return Strings.isNullOrEmpty(predefinedDleExchange) ? (dleExchangePrefix + originalExchange) : predefinedDleExchange;
     }
 
+    @SuppressWarnings("squid:S1148")
     private String getStackTraceAsString(Throwable cause) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter, true);

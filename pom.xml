@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.neoteric.starter</groupId>
     <artifactId>neo-starter-build</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -47,28 +48,29 @@
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
         <maven.build.timestamp.format>yyMMddHHmmss</maven.build.timestamp.format>
         <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+        <sonar-maven-plugin.version>3.0.1</sonar-maven-plugin.version>
     </properties>
 
     <modules>
         <!-- Setup -->
         <module>neo-starter-dependencies</module>
+        <module>neo-starter-utils</module>
         <module>request-parameters</module>
 
         <!-- Actual starters -->
         <module>neo-starter</module>
-        <module>neo-starter-springmvc</module>
         <module>neo-starter-test</module>
         <module>neo-starter-mongo</module>
         <module>neo-starter-mongo-test</module>
         <module>neo-starter-rabbitmq</module>
         <module>neo-starter-metrics</module>
-
         <module>neo-starter-samples</module>
-
         <module>neo-starter-parent</module>
         <module>neo-starter-parent-neoteric</module>
         <module>neo-starter-saasmgr</module>
         <module>neo-starter-saasmgr-test</module>
+        <module>neo-starter-jersey</module>
+        <module>neo-starter-jersey-test</module>
     </modules>
 
     <build>
@@ -104,92 +106,11 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>${maven-release-plugin.version}</version>
-                <configuration>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <developmentVersion>0.1.0-SNAPSHOT</developmentVersion>
-                    <releaseVersion>0.1.0.${maven.build.timestamp}</releaseVersion>
-                    <tagNameFormat>0.1.0.${maven.build.timestamp}</tagNameFormat>
-                </configuration>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>releaseStack</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <version>${maven-antrun-plugin.version}</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>ant-contrib</groupId>
-                                <artifactId>ant-contrib</artifactId>
-                                <version>1.0b3</version>
-                                <exclusions>
-                                    <exclusion>
-                                        <groupId>ant</groupId>
-                                        <artifactId>ant</artifactId>
-                                    </exclusion>
-                                </exclusions>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.apache.ant</groupId>
-                                <artifactId>ant-nodeps</artifactId>
-                                <version>1.8.1</version>
-                            </dependency>
-                            <dependency>
-                                <groupId>org.tigris.antelope</groupId>
-                                <artifactId>antelopetasks</artifactId>
-                                <version>3.2.10</version>
-                            </dependency>
-                        </dependencies>
-                        <executions>
-                            <execution>
-                                <id>fixup-dependencies-pom</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>false</inherited>
-                                <configuration>
-                                    <target>
-                                        <property name="sourceFile" value="neo-starter-dependencies/pom.xml" />
-                                        <xslt in="${sourceFile}" out="${sourceFile}.new" force="true">
-                                            <style>
-                                                <string><![CDATA[
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:m="http://maven.apache.org/POM/4.0.0" exclude-result-prefixes="m">
-
-	<xsl:template match="node()|@*">
-		<xsl:copy>
-			<xsl:apply-templates select="node()|@*" />
-		</xsl:copy>
-	</xsl:template>
-
-	<xsl:template match="m:properties/m:neostarters.version/text()">
-		<xsl:value-of select="/m:project/m:version/text()" />
-	</xsl:template>
-</xsl:stylesheet>
-				]]>
-                                                </string>
-                                            </style>
-                                        </xslt>
-                                        <move file="${sourceFile}" tofile="${sourceFile}.old" />
-                                        <move file="${sourceFile}.new" tofile="${sourceFile}" />
-                                        <delete file="${sourceFile}.old" />
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

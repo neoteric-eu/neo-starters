@@ -28,7 +28,6 @@ public class RequestLogicalOperatorTest {
     public void testEqualsAndHashCode() {
         EqualsVerifier
                 .forClass(RequestLogicalOperator.class)
-                .allFieldsShouldBeUsed()
                 .verify();
     }
 }

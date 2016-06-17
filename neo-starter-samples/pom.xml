@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-parent</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.3.0-SNAPSHOT</version>
         <relativePath>../neo-starter-parent</relativePath>
     </parent>
 
@@ -32,6 +32,6 @@
     </issueManagement>
 
     <modules>
-        <module>neo-starter-sample-simple</module>
+        <module>neo-starter-sample</module>
     </modules>
 </project>

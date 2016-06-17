@@ -1,27 +1,22 @@
 package com.neoteric.starter.saasmgr;
 
-import com.neoteric.starter.saasmgr.auth.DefaultSaasMgrAuthenticator;
+import com.google.common.collect.Sets;
 import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticationProvider;
-import com.neoteric.starter.saasmgr.auth.SaasMgrAuthenticator;
+import com.neoteric.starter.saasmgr.client.SaasMgrClient;
 import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationFilter;
+import com.neoteric.starter.saasmgr.filter.SaasMgrAuthenticationMatcher;
+import com.neoteric.starter.utils.PrefixResolver;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.ehcache.config.CacheConfiguration;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.jersey.JerseyProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
-import org.springframework.cache.support.NoOpCacheManager;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -29,82 +24,89 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_AUTH_CACHE;
-import static com.neoteric.starter.saasmgr.SaasMgrStarterConstants.SAAS_MGR_CACHE_MANAGER;
+import java.util.Set;
 
 @Slf4j
 @Configuration
-@ConditionalOnWebApplication
-@EnableConfigurationProperties(SaasMgrCacheProperties.class)
-@AutoConfigureAfter(CacheAutoConfiguration.class)
-@EnableCaching
+@AutoConfigureBefore(SecurityAutoConfiguration.class)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+@AllArgsConstructor
+@Import({SaasMgrSecurityAutoConfiguration.ApiSecurityConfiguration.class,
+        SaasMgrSecurityAutoConfiguration.ManagementSecurityConfiguration.class})
 public class SaasMgrSecurityAutoConfiguration {
 
+    private final SaasMgrClient saasMgrClient;
+    private final SecurityProperties securityProperties;
+
     @Bean
-    SaasMgrAuthenticator saasMgrConnector() {
-        return new DefaultSaasMgrAuthenticator();
+    SaasMgrAuthenticationProvider saasAuthenticationProvider() {
+        return new SaasMgrAuthenticationProvider(saasMgrClient);
     }
 
     @Autowired
-    SaasMgrAuthenticator authenticator;
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        SecurityProperties.User user = securityProperties.getUser();
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(new SaasMgrAuthenticationProvider(authenticator));
+        if (user.isDefaultPassword()) {
+            LOG.info(
+                    String.format("%n%n{}Using default security password: %s%n",
+                            user.getPassword()), SaasMgrStarterConstants.LOG_PREFIX);
+        }
+
+        Set<String> roles = Sets.newLinkedHashSet(user.getRole());
+        auth.authenticationProvider(saasAuthenticationProvider())
+                .inMemoryAuthentication()
+                .withUser(user.getName())
+                .password(user.getPassword())
+                .roles(roles.toArray(new String[roles.size()]));
     }
 
     @Configuration
-    @ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", havingValue = "false")
-    static class SaasMgrNoCacheConfig extends CachingConfigurerSupport {
+    static class ApiSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-        @Bean(name = SAAS_MGR_CACHE_MANAGER)
-        @Override
-        public CacheManager cacheManager() {
-            LOG.debug("{}Using NoOpCacheManager", SaasMgrStarterConstants.LOG_PREFIX);
-            return new NoOpCacheManager();
+
+        @Value("#{environment.getProperty('neostarter.mvc.api.path') ?: environment.getProperty('neostarter.saasmgr.api.path') ?: ''}")
+        String apiPath;
+
+        @Bean
+        SaasMgrAuthenticationMatcher saasMgrAuthenticationMatcher() {
+            return new SaasMgrAuthenticationMatcher();
         }
-    }
-
-    @Configuration
-    @ConditionalOnProperty(prefix = "neostarter.saasmgr.cache", name = "enabled", matchIfMissing = true)
-    static class SaasMgrCachingConfig extends CachingConfigurerSupport {
-
-        @Autowired
-        SaasMgrCacheProperties saasMgrCacheProperties;
-
-        @Bean(destroyMethod = "shutdown")
-        public net.sf.ehcache.CacheManager ehCacheManager() {
-            CacheConfiguration cacheConfiguration = new CacheConfiguration(SAAS_MGR_AUTH_CACHE, 1000)
-                    .timeToLiveSeconds(saasMgrCacheProperties.getTimeToLiveSeconds());
-
-            net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
-            config.addCache(cacheConfiguration);
-
-            return net.sf.ehcache.CacheManager.newInstance(config);
-        }
-
-        @Bean(name = SAAS_MGR_CACHE_MANAGER)
-        @Override
-        public CacheManager cacheManager() {
-            LOG.debug("{}Using EhCacheCacheManager", SaasMgrStarterConstants.LOG_PREFIX);
-            return new EhCacheCacheManager(ehCacheManager());
-        }
-    }
-
-    @Configuration
-    @EnableGlobalMethodSecurity(prePostEnabled = true)
-    @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-    @EnableFeignClients
-    static class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-        @Autowired
-        JerseyProperties jerseyProperties;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            SaasMgrAuthenticationFilter filter = new SaasMgrAuthenticationFilter(jerseyProperties.getApplicationPath());
-            http.addFilterBefore(filter, BasicAuthenticationFilter.class)
+            SaasMgrAuthenticationFilter filter = new SaasMgrAuthenticationFilter(
+                    saasMgrAuthenticationMatcher());
+            http
+                    .antMatcher(PrefixResolver.resolve(apiPath) + "/**")
+                    .addFilterBefore(filter, BasicAuthenticationFilter.class)
                     .csrf().disable();
+        }
+    }
+
+    @Configuration
+    @Order(1)
+    static class ManagementSecurityConfiguration extends
+            WebSecurityConfigurerAdapter {
+
+
+        @Value("#{environment.getProperty('neostarter.mvc.api.path') ?: environment.getProperty('neostarter.saasmgr.api.path') ?: ''}")
+        String apiPath;
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.requestMatcher(
+                    request -> {
+                        final String url = request.getServletPath()
+                                + StringUtils.defaultString(request.getPathInfo());
+                        return !url.startsWith(PrefixResolver.resolve(apiPath) + "/");
+                    })
+                    .csrf().disable()
+                    .authorizeRequests()
+                    .anyRequest()
+                    .authenticated()
+                    .and()
+                    .httpBasic();
         }
     }
 }

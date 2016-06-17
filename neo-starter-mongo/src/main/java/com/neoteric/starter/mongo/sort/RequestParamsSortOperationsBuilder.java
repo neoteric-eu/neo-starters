@@ -17,14 +17,14 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.sort
 
 public class RequestParamsSortOperationsBuilder {
 
-    public static RequestParamsSortOperationsBuilder newBuilder() {
-        return new RequestParamsSortOperationsBuilder();
-    }
-
     private static final Map<SortType, Sort.Direction> SORT_MAPPING = ImmutableMap.of(
             SortType.ASC, Sort.Direction.ASC,
             SortType.DESC, Sort.Direction.DESC
     );
+
+    public static RequestParamsSortOperationsBuilder newBuilder() {
+        return new RequestParamsSortOperationsBuilder();
+    }
 
     public Optional<SortOperation> build(List<RequestSort> requestSortList) {
         return build(requestSortList, FieldMapper.of(Maps.<String, String>newHashMap()));
@@ -36,10 +36,10 @@ public class RequestParamsSortOperationsBuilder {
         if (iterator.hasNext()) {
             RequestSort requestSort = iterator.next();
             sortOperation = sort(SORT_MAPPING.get(requestSort.getType()), fieldMapper.get(requestSort.getFieldName()));
-        }
-        while (iterator.hasNext()) {
-            RequestSort requestSort = iterator.next();
-            sortOperation = sortOperation.and(SORT_MAPPING.get(requestSort.getType()), fieldMapper.get(requestSort.getFieldName()));
+            while (iterator.hasNext()) {
+                RequestSort nextSort = iterator.next();
+                sortOperation = sortOperation.and(SORT_MAPPING.get(nextSort.getType()), fieldMapper.get(nextSort.getFieldName()));
+            }
         }
         return Optional.ofNullable(sortOperation);
     }

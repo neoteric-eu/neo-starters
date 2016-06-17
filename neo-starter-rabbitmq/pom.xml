@@ -5,14 +5,14 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-dependencies</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.3.0-SNAPSHOT</version>
         <relativePath>../neo-starter-dependencies</relativePath>
     </parent>
 
     <packaging>jar</packaging>
     <artifactId>neo-starter-rabbitmq</artifactId>
 
-    <name>Neoteric Spring Boot Apache Rabbit MQ Starter</name>
+    <name>Neoteric Spring Boot Rabbit MQ Starter</name>
     <description>Neo Starter for RabbitMQ</description>
     <url>http://github.com/neoteric-eu/neo-starters</url>
     <organization>
@@ -44,16 +44,10 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj-core.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
