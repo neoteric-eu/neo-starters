@@ -60,7 +60,7 @@ public class MongoFieldToOperatorSubProcessor implements MongoFieldSubProcessor<
                 dateTimeFormatter.parse(operatorValue.toString());
                 return true;
             } catch (DateTimeParseException ex) {
-                LOG.error("Unable to parse DateTime", ex);
+                LOG.trace("Unable to parse DateTime. ZonedDateTimeValueParser won't apply.", ex);
                 return false;
             }
         }
