@@ -8,7 +8,6 @@ import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerRegist
 import com.neoteric.starter.mvc.errorhandling.resolver.ErrorDataBuilder;
 import com.neoteric.starter.mvc.errorhandling.resolver.RestExceptionResolver;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
