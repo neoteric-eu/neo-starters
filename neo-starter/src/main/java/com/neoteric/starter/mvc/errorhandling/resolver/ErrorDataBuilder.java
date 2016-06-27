@@ -1,5 +1,7 @@
 package com.neoteric.starter.mvc.errorhandling.resolver;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.mvc.errorhandling.handler.ExceptionHandlerBinding;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
@@ -25,10 +27,12 @@ public final class ErrorDataBuilder {
 
     private final Clock clock;
     private final ServerProperties serverProperties;
+    private final Map<String, String> causeMapping;
 
-    public ErrorDataBuilder(Clock clock, ServerProperties serverProperties) {
+    public ErrorDataBuilder(Clock clock, ServerProperties serverProperties, Map<String, String> causeMapping) {
         this.clock = clock;
         this.serverProperties = serverProperties;
+        this.causeMapping = causeMapping == null ? Maps.newHashMap() : causeMapping;
     }
 
     public ErrorData build(RestExceptionHandler handler, ExceptionHandlerBinding binding,
@@ -44,8 +48,10 @@ public final class ErrorDataBuilder {
                 .additionalInfo(handler.additionalInfo(ex, request))
                 .path(request.getRequestURI());
 
-        if (StringUtils.hasLength(binding.getApplicationCode())) {
-            builder.applicationCode(binding.getApplicationCode());
+        if (StringUtils.hasLength(binding.getCause())) {
+            builder.cause(binding.getCause());
+        } else if (causeMapping.containsKey(handler.getClass().getName())){
+            builder.cause(causeMapping.get(handler.getClass().getName()));
         }
 
         if (!binding.isSuppressException()) {
