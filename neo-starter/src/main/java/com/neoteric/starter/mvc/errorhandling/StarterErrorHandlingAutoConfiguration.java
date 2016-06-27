@@ -27,10 +27,10 @@ import java.time.Clock;
 @AutoConfigureAfter(StarterJacksonBeforeAutoConfiguration.class)
 public class StarterErrorHandlingAutoConfiguration {
 
-    private ApplicationContext applicationContext;
-    private Clock clock;
-    private ServerProperties serverProperties;
-    private StarterMvcProperties starterMvcProperties;
+    private final ApplicationContext applicationContext;
+    private final Clock clock;
+    private final ServerProperties serverProperties;
+    private final StarterMvcProperties starterMvcProperties;
 
     public StarterErrorHandlingAutoConfiguration(ApplicationContext applicationContext,
                                                  Clock clock,
