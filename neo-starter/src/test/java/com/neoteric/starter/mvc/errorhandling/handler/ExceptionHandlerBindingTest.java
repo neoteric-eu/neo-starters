@@ -84,7 +84,7 @@ public class ExceptionHandlerBindingTest {
         assertThat(binding.getHttpStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThat(binding.getLogLevel()).isEqualTo(Level.ERROR);
         assertThat(binding.getExceptionClass()).isEqualTo(IllegalStateException.class);
-        assertThat(binding.getApplicationCode()).isEmpty();
+        assertThat(binding.getCause()).isEmpty();
         assertThat(binding.getLogger()).isEqualTo(LoggerFactory.getLogger(IllegalStateExceptionExceptionProvider.class));
         assertThat(binding.getExceptionHandlerClass()).isEqualTo(IllegalStateExceptionExceptionProvider.class);
         assertThat(binding.isSuppressException()).isFalse();
@@ -97,7 +97,7 @@ public class ExceptionHandlerBindingTest {
         assertThat(binding.getHttpStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(binding.getLogLevel()).isEqualTo(Level.WARN);
         assertThat(binding.getExceptionClass()).isEqualTo(IllegalStateException.class);
-        assertThat(binding.getApplicationCode()).isEqualTo("123");
+        assertThat(binding.getCause()).isEqualTo("123");
         assertThat(binding.getLogger()).isEqualTo(LoggerFactory.getLogger(IllegalStateExceptionExceptionNonDefaultsProvider.class));
         assertThat(binding.getExceptionHandlerClass()).isEqualTo(IllegalStateExceptionExceptionNonDefaultsProvider.class);
         assertThat(binding.isSuppressException()).isTrue();
