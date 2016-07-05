@@ -1,6 +1,8 @@
 package com.neoteric.starter.mvc.logging;
 
 import com.neoteric.starter.feign.CustomFeignProperties;
+import com.neoteric.starter.jackson.model.JsonApiList;
+import com.neoteric.starter.jackson.model.JsonApiObject;
 import com.neoteric.starter.mvc.ApiController;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -93,6 +95,40 @@ public class ApiLoggingAspectTest {
                 "INFO com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Create.",
                 "DEBUG com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Details: [duty: Duty(name=abc, value=5, cachedHashCode=2987940)].",
                 "INFO com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Create took");
+    }
+
+    @Test
+    public void jsonApiListReturned() throws Throwable {
+        setUp();
+        when(point.getArgs()).thenReturn(new Object[]{});
+        when(methodSignature.getName()).thenReturn("find");
+        when(methodSignature.getParameterNames()).thenReturn(new String[]{});
+        when(methodSignature.getParameterTypes()).thenReturn(new Class[]{});
+        when(point.proceed()).thenReturn(JsonApiList.wrap(Duty.newBuilder().setName("abc").setValue(5).build()).build());
+
+        loggingAspect.around(point, apiController);
+
+        assertLogStatements(
+                "INFO com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Find.",
+                "INFO com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Returning 1 item",
+                "INFO com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Find took");
+    }
+
+    @Test
+    public void jsonApiObjectReturned() throws Throwable {
+        setUp();
+        when(point.getArgs()).thenReturn(new Object[]{});
+        when(methodSignature.getName()).thenReturn("findById");
+        when(methodSignature.getParameterNames()).thenReturn(new String[]{});
+        when(methodSignature.getParameterTypes()).thenReturn(new Class[]{});
+        when(point.proceed()).thenReturn(JsonApiObject.wrap(Duty.newBuilder().setName("abc").setValue(5).build()).build());
+
+        loggingAspect.around(point, apiController);
+
+        assertLogStatements(
+                "INFO com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Find by id.",
+                "DEBUG com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Returning [Duty(",
+                "INFO com.neoteric.starter.feign.CustomFeignProperties - [JobOffer] Find by id took");
     }
 
     @Test

@@ -14,6 +14,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
+
 import static humanize.Humanize.capitalize;
 import static humanize.Humanize.decamelize;
 
@@ -36,16 +37,14 @@ public class ApiLoggingAspect {
         StopWatch watch = new StopWatch();
         watch.start();
 
-        Logger log = LoggerFactory.getLogger(point.getTarget().getClass());
-        ApiLogger apiLogger = new ApiLogger(apiLoggingProperties, apiController.resourceName(), log);
+        ApiLogger apiLogger = new ApiLogger(apiLoggingProperties, apiController.resourceName(),
+                LoggerFactory.getLogger(point.getTarget().getClass()));
 
         MethodSignature signature = (MethodSignature) point.getSignature();
 
         Object[] args = point.getArgs();
-        String resourceName = apiController.resourceName();
         String[] parameterNames = signature.getParameterNames();
         Class[] parameterTypes = signature.getParameterTypes();
-
         String normalizedMethodName = capitalize(decamelize(signature.getName()));
 
         List<Integer> complexTypeIndexes = Lists.newArrayList();
@@ -59,38 +58,36 @@ public class ApiLoggingAspect {
                 }
             }
         }
-        apiLogger.logEntryPoint(normalizedMethodName, parametersJoiner.toString());
+        apiLogger.logEntryPoint(normalizedMethodName, evaluateParamJoiner(parametersJoiner));
 
         if (complexTypeIndexes.size() > 0) {
             StringJoiner complexParamsJoiner = new StringJoiner(", ", "[", "]");
             complexTypeIndexes.stream().forEach(index -> {
                 complexParamsJoiner.add(String.join(": ", parameterNames[index], String.valueOf(args[index])));
             });
-            apiLogger.logCustomObjectDetails(complexParamsJoiner.toString());
+            apiLogger.logCustomObjectDetails(evaluateParamJoiner(complexParamsJoiner));
         }
 
         try {
-            Object proceed = point.proceed();
-            if (proceed instanceof JsonApiList) {
-                JsonApiList<?> list = (JsonApiList) proceed;
-                list.getData().size();
-                log.debug("{}Returning {} items.", resourceName, list.getData().size());
-            } else if (proceed instanceof JsonApiObject) {
-                log.info("{}Returning: [{}].", resourceName, String.valueOf(((JsonApiObject) proceed).getData()));
-            }
-            return proceed;
+            return evaluateResponse(apiLogger, point.proceed());
         } finally {
             watch.stop();
-
-            apiLogger.logExitPoint(normalizedMethodName, parametersJoiner.toString(), watch.getTotalTimeSeconds());
-            if (parametersJoiner.length() > 2) {
-                log.info("{} {} took {} seconds.", normalizedMethodName, parametersJoiner.toString(), watch.getTotalTimeSeconds());
-            } else {
-                log.info("{} took {} seconds.", normalizedMethodName, watch.getTotalTimeSeconds());
-            }
+            apiLogger.logExitPoint(normalizedMethodName, evaluateParamJoiner(parametersJoiner), watch.getTotalTimeSeconds());
         }
     }
 
+    private Object evaluateResponse(ApiLogger apiLogger, Object proceed) {
+        if (proceed instanceof JsonApiList) {
+            JsonApiList<?> apiList = (JsonApiList) proceed;
+            apiLogger.logReturnedJsonApiListSize(apiList.getData().size());
+        } else if (proceed instanceof JsonApiObject) {
+            JsonApiObject<?> apiObject = (JsonApiObject)proceed;
+            apiLogger.logReturnedJsonApiObjectDetails(String.valueOf(apiObject.getData()));
+        }
+        return proceed;
+    }
+
+    private String evaluateParamJoiner(StringJoiner paramJoiner) {
+        return paramJoiner.length() > 2 ? paramJoiner.toString() : "";
+    }
 }
-
-

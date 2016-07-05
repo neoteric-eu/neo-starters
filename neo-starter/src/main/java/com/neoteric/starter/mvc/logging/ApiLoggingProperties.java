@@ -14,5 +14,6 @@ public class ApiLoggingProperties {
     private Level entryPointLevel = Level.INFO;
     private Level exitPointLevel = Level.INFO;
     private Level customParamsLevel = Level.DEBUG;
+    private Level jsonApiListSizeLevel = Level.INFO;
     private Level jsonApiObjectLevel = Level.DEBUG;
 }
