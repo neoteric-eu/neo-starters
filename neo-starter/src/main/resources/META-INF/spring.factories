@@ -12,4 +12,4 @@ com.neoteric.starter.mvc.errorhandling.ScannedExceptionHandlersAutoConfiguration
 com.neoteric.starter.swagger.SwaggerAutoConfiguration,\
 com.neoteric.starter.jackson.StarterJacksonBeforeAutoConfiguration,\
 com.neoteric.starter.jackson.StarterJacksonAfterAutoConfiguration,\
-com.neoteric.starter.aop.StarterAopAutoConfiguration
+com.neoteric.starter.mvc.logging.ApiLoggingAutoConfiguration
