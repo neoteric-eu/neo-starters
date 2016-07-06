@@ -17,7 +17,6 @@ import org.slf4j.event.Level;
 
 import java.time.ZonedDateTime;
 
-import static ch.qos.logback.classic.Level.DEBUG;
 import static ch.qos.logback.classic.Level.INFO;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +46,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void singleStringParam() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{"asd"});
         when(methodSignature.getName()).thenReturn("findById");
         when(methodSignature.getParameterNames()).thenReturn(new String[]{"id"});
@@ -61,7 +60,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void singleStringParamWithoutResource() throws Throwable {
-        setUp();
+        prepareTest();
         when(apiController.resourceName()).thenReturn("");
         when(point.getArgs()).thenReturn(new Object[]{"asd"});
         when(methodSignature.getName()).thenReturn("findById");
@@ -77,7 +76,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void multipleStandardJavaParams() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{ZonedDateTime.parse("2010-01-10T10:00Z"), Integer.valueOf(2010)});
         when(methodSignature.getName()).thenReturn("searchWithParams");
         when(methodSignature.getParameterNames()).thenReturn(new String[]{"dateTime", "number"});
@@ -89,7 +88,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void mixedParams() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{Duty.newBuilder().setName("abc").setValue(5).build(), Integer.valueOf(2010)});
         when(methodSignature.getName()).thenReturn("searchWithParams");
         when(methodSignature.getParameterNames()).thenReturn(new String[]{"duty", "number"});
@@ -103,7 +102,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void jsonApiListReturnedSingleElement() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{});
         when(methodSignature.getName()).thenReturn("find");
         when(methodSignature.getParameterNames()).thenReturn(new String[]{});
@@ -119,7 +118,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void jsonApiListReturnedMultipleElements() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{});
         when(methodSignature.getName()).thenReturn("find");
         when(methodSignature.getParameterNames()).thenReturn(new String[]{});
@@ -137,7 +136,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void jsonApiObjectReturned() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{});
         when(methodSignature.getName()).thenReturn("findById");
         when(methodSignature.getParameterNames()).thenReturn(new String[]{});
@@ -153,7 +152,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void singleCustomParam() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{Duty.newBuilder().setName("abc").setValue(5).build()});
         when(methodSignature.getName()).thenReturn("create");
         when(methodSignature.getParameterNames()).thenReturn(new String[]{"duty"});
@@ -168,7 +167,7 @@ public class ApiLoggingAspectTest {
 
     @Test
     public void multipleCustomParam() throws Throwable {
-        setUp();
+        prepareTest();
         when(point.getArgs()).thenReturn(new Object[]{Duty.newBuilder().setName("abc").setValue(5).build(),
                 Duty.newBuilder().setName("xxx").setValue(10).build()});
         when(methodSignature.getName()).thenReturn("doIt");
@@ -182,7 +181,7 @@ public class ApiLoggingAspectTest {
         loggingAspect.around(point, apiController);
     }
 
-    private void setUp() {
+    private void prepareTest() {
         when(apiController.resourceName()).thenReturn("JobOffer");
         CustomFeignProperties loggerClass = new CustomFeignProperties();
         when(point.getTarget()).thenReturn(loggerClass);

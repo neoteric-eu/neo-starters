@@ -24,6 +24,7 @@ import java.util.StringJoiner;
 @AllArgsConstructor
 public class ApiLoggingAspect {
 
+    private static final int INITIAL_JOINER_LENGTH = 2;
     private final ApiLoggingProperties apiLoggingProperties;
 
     @Pointcut("execution(public * *(..))")
@@ -86,6 +87,6 @@ public class ApiLoggingAspect {
     }
 
     private String evaluateParamJoiner(StringJoiner paramJoiner) {
-        return paramJoiner.length() > 2 ? paramJoiner.toString() : "";
+        return paramJoiner.length() > INITIAL_JOINER_LENGTH ? paramJoiner.toString() : "";
     }
 }

@@ -71,9 +71,9 @@ class ApiLogger {
         LOGGERS.get(logProps.getJsonApiObjectLevel()).log(logger, payload);
     }
 
-    private static class LogPayload {
+    private final static class LogPayload {
         private String message;
-        private List<Object> args;
+        private final List<Object> args;
 
         private LogPayload(String message, List<Object> args) {
             this.message = message;

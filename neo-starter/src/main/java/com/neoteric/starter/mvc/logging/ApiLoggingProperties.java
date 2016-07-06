@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "neostarter.mvc.logging")
 @Getter
 @Setter
+@SuppressWarnings("pmd:ImmutableField")
 public class ApiLoggingProperties {
 
     private boolean enabled = true;
