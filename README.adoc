@@ -1,6 +1,6 @@
 # Neo Starters image:http://jenkins2.neoteric.eu/buildStatus/icon?job=neo-starters/neo-starters-build/development[Build Status] https://gitter.im/neoteric-eu/neo-starters[image:https://img.shields.io/gitter/room/neoteric-eu/neo-starters.svg?maxAge=2592000[Gitter]] https://waffle.io/neoteric-eu/neo-starters[image:https://img.shields.io/waffle/label/neoteric-eu/neo-starters/in%20progress.svg[Waffle.io]]
 
-:neo-starter-version: 0.2.6
+:neo-starter-version: 0.3.1
 
 Neo Starters are a set of Spring Boot starters which gives even more opinionated view on developing REST services.
 It is based on conventions and best practices, we have established in Neoteric. With Neo Starters we decrease boilerplate code we were used to write when developing our services.
