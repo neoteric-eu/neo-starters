@@ -11,10 +11,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
-
 import static humanize.Humanize.capitalize;
 import static humanize.Humanize.decamelize;
 
@@ -30,6 +28,7 @@ public class ApiLoggingAspect {
 
     @Pointcut("execution(public * *(..))")
     public void publicMethod() {
+        // Pointcut definition
     }
 
     @Around("publicMethod() && @within(apiController)")
@@ -60,11 +59,10 @@ public class ApiLoggingAspect {
         }
         apiLogger.logEntryPoint(normalizedMethodName, evaluateParamJoiner(parametersJoiner));
 
-        if (complexTypeIndexes.size() > 0) {
+        if (!complexTypeIndexes.isEmpty()) {
             StringJoiner complexParamsJoiner = new StringJoiner(", ", "[", "]");
-            complexTypeIndexes.stream().forEach(index -> {
-                complexParamsJoiner.add(String.join(": ", parameterNames[index], String.valueOf(args[index])));
-            });
+            complexTypeIndexes.stream()
+                    .forEach(index -> complexParamsJoiner.add(String.join(": ", parameterNames[index], String.valueOf(args[index]))));
             apiLogger.logCustomObjectDetails(evaluateParamJoiner(complexParamsJoiner));
         }
 

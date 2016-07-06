@@ -2,29 +2,29 @@ package com.neoteric.starter.mvc.logging;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.neoteric.starter.jackson.model.JsonApiObject;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 import org.springframework.util.StringUtils;
+import static humanize.Humanize.pluralize;
 
 import java.util.List;
 import java.util.StringJoiner;
 
-public class ApiLogger {
+class ApiLogger {
 
     private static final ImmutableMap<Level, ApiLoggingFunction> LOGGERS = ImmutableMap.<Level, ApiLoggingFunction>builder()
-            .put(Level.ERROR, (logger, payload) -> logger.error(payload.getMessage(), payload.getArgs()))
-            .put(Level.WARN, (logger, payload) -> logger.warn(payload.getMessage(), payload.getArgs()))
-            .put(Level.INFO, (logger, payload) -> logger.info(payload.getMessage(), payload.getArgs()))
-            .put(Level.DEBUG, (logger, payload) -> logger.debug(payload.getMessage(), payload.getArgs()))
-            .put(Level.TRACE, (logger, payload) -> logger.trace(payload.getMessage(), payload.getArgs()))
+            .put(Level.ERROR, (log, payload) -> log.error(payload.getMessage(), payload.getArgs()))
+            .put(Level.WARN, (log, payload) -> log.warn(payload.getMessage(), payload.getArgs()))
+            .put(Level.INFO, (log, payload) -> log.info(payload.getMessage(), payload.getArgs()))
+            .put(Level.DEBUG, (log, payload) -> log.debug(payload.getMessage(), payload.getArgs()))
+            .put(Level.TRACE, (log, payload) -> log.trace(payload.getMessage(), payload.getArgs()))
             .build();
 
     private final ApiLoggingProperties logProps;
     private final String resourceName;
     private final Logger logger;
 
-    public ApiLogger(ApiLoggingProperties logProps, String resourceName, Logger logger) {
+    ApiLogger(ApiLoggingProperties logProps, String resourceName, Logger logger) {
         this.logProps = logProps;
         this.resourceName = wrapResourceName(resourceName);
         this.logger = logger;
@@ -38,20 +38,20 @@ public class ApiLogger {
         return joiner.add(resourceName).toString();
     }
 
-    public void logEntryPoint(String methodName, String methodParams) {
+    void logEntryPoint(String methodName, String methodParams) {
         LogPayload payload = LogPayload.of("{}", methodName)
                 .prepend(resourceName)
                 .append(methodParams);
         LOGGERS.get(logProps.getEntryPointLevel()).log(logger, payload);
     }
 
-    public void logCustomObjectDetails(String complexMethodParams) {
+    void logCustomObjectDetails(String complexMethodParams) {
         LogPayload payload = LogPayload.of("Details: {}", complexMethodParams)
                 .prepend(resourceName);
         LOGGERS.get(logProps.getCustomParamsLevel()).log(logger, payload);
     }
 
-    public void logExitPoint(String methodName, String methodParams, double totalTimeSeconds) {
+    void logExitPoint(String methodName, String methodParams, double totalTimeSeconds) {
         LogPayload payload = LogPayload.of("took {} seconds", totalTimeSeconds)
                 .prepend(methodParams)
                 .prepend(methodName)
@@ -59,13 +59,13 @@ public class ApiLogger {
         LOGGERS.get(logProps.getExitPointLevel()).log(logger, payload);
     }
 
-    public void logReturnedJsonApiListSize(int size) {
-        LogPayload payload = LogPayload.of("Returning {} items", size)
+    void logReturnedJsonApiListSize(int size) {
+        LogPayload payload = LogPayload.of("Returning {} {}", Lists.newArrayList(size, pluralize("item", "items", "items", size)))
                 .prepend(resourceName);
         LOGGERS.get(logProps.getJsonApiListSizeLevel()).log(logger, payload);
     }
 
-    public void logReturnedJsonApiObjectDetails(String jsonApiDetails) {
+    void logReturnedJsonApiObjectDetails(String jsonApiDetails) {
         LogPayload payload = LogPayload.of("Returning [{}]", jsonApiDetails)
                 .prepend(resourceName);
         LOGGERS.get(logProps.getJsonApiObjectLevel()).log(logger, payload);
@@ -75,6 +75,11 @@ public class ApiLogger {
         private String message;
         private List<Object> args;
 
+        private LogPayload(String message, List<Object> args) {
+            this.message = message;
+            this.args = args;
+        }
+
         public static LogPayload of(String message, List<Object> args) {
             return new LogPayload(message, args);
         }
@@ -83,13 +88,8 @@ public class ApiLogger {
             return of(message, Lists.newArrayList(arg));
         }
 
-        private LogPayload(String message, List<Object> args) {
-            this.message = message;
-            this.args = args;
-        }
 
-
-        public LogPayload prepend(String value) {
+        LogPayload prepend(String value) {
             if (StringUtils.hasLength(value)) {
                 message = String.join("", "{} ", message);
                 args.add(0, value);
@@ -97,15 +97,15 @@ public class ApiLogger {
             return this;
         }
 
-        public String getMessage() {
+        String getMessage() {
             return String.join("", message, ".");
         }
 
-        public Object[] getArgs() {
+        Object[] getArgs() {
             return args.toArray();
         }
 
-        public LogPayload append(String value) {
+        LogPayload append(String value) {
             if (StringUtils.hasLength(value)) {
                 message = String.join("", message, " {}");
                 args.add(args.size(), value);

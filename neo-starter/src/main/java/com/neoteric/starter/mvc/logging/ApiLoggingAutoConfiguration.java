@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
-@ConditionalOnProperty(prefix = "neostarter.mvc.logging", name = "enabled", havingValue = "true")
-@EnableAspectJAutoProxy
 @EnableConfigurationProperties(ApiLoggingProperties.class)
+@ConditionalOnProperty(prefix = "neostarter.mvc.logging", name = "enabled",  havingValue = "true", matchIfMissing = true)
+@EnableAspectJAutoProxy
 public class ApiLoggingAutoConfiguration {
 
     @Bean
