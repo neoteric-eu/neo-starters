@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-parent</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.4.0-SNAPSHOT</version>
         <relativePath>../neo-starter-parent</relativePath>
     </parent>
 
@@ -35,9 +35,10 @@
         <docker.repository.host>docker.neoteric.eu</docker.repository.host>
         <docker.repository.url>https://docker.neoteric.eu</docker.repository.url>
         <docker.repository.serverId>docker-repository</docker.repository.serverId>
-        <docker.image.initialPrefix>neoteric/</docker.image.initialPrefix>
+        <docker.image.prefix>neoteric/</docker.image.prefix>
 
-        <distributionManagement.repository>http://naga.neoteric.eu:8081/nexus/content/repositories/releases/
+        <distributionManagement.repository>
+            http://naga.neoteric.eu:8081/nexus/content/repositories/releases/
         </distributionManagement.repository>
         <distributionManagement.repository.snapshots>
             http://naga.neoteric.eu:8081/nexus/content/repositories/snapshots/
@@ -55,15 +56,15 @@
                 <directory>${basedir}/src/main/resources</directory>
                 <filtering>true</filtering>
                 <includes>
-                    <include>**/application.yml</include>
-                    <include>**/application.properties</include>
+                    <include>**/application*</include>
+                    <include>**/bootstrap*</include>
                 </includes>
             </resource>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
                 <excludes>
-                    <exclude>**/application.yml</exclude>
-                    <exclude>**/application.properties</exclude>
+                    <exclude>**/application*</exclude>
+                    <exclude>**/bootstrap*</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -132,62 +133,36 @@
                         </requiresUnpack>
                     </configuration>
                 </plugin>
+
                 <plugin>
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <configuration>
                         <serverId>${docker.repository.serverId}</serverId>
                         <registryUrl>${docker.repository.url}</registryUrl>
+                        <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
+                        <imageName>
+                            ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${project.version}
+                        </imageName>
+                        <pushImage>true</pushImage>
+                        <resources>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}</directory>
+                                <include>${project.build.finalName}-exec.jar</include>
+                            </resource>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}/classes</directory>
+                                <include>*.yml</include>
+                            </resource>
+                            <resource>
+                                <targetPath>/</targetPath>
+                                <directory>${project.build.directory}/classes</directory>
+                                <include>*.xml</include>
+                            </resource>
+                        </resources>
                     </configuration>
-                    <executions>
-                        <execution>
-                            <id>buildDocker</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>build</goal>
-                            </goals>
-                            <configuration>
-                                <pushImage>true</pushImage>
-                                <imageName>
-                                    ${docker.repository.host}/${docker.image.initialPrefix}${project.artifactId}:${project.version}
-                                </imageName>
-                                <dockerDirectory>${project.build.directory}/docker</dockerDirectory>
-                                <resources>
-                                    <resource>
-                                        <targetPath>/</targetPath>
-                                        <directory>${project.build.directory}</directory>
-                                        <include>${project.build.finalName}-exec.jar</include>
-                                    </resource>
-                                    <resource>
-                                        <targetPath>/</targetPath>
-                                        <directory>${project.build.directory}/classes</directory>
-                                        <include>*.yml</include>
-                                    </resource>
-                                    <resource>
-                                        <targetPath>/</targetPath>
-                                        <directory>${project.build.directory}/classes</directory>
-                                        <include>*.xml</include>
-                                    </resource>
-                                </resources>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>tagLatest</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>tag</goal>
-                            </goals>
-                            <configuration>
-                                <pushImage>true</pushImage>
-                                <image>
-                                    ${docker.repository.host}/${docker.image.initialPrefix}${project.artifactId}:${project.version}
-                                </image>
-                                <newName>${docker.repository.host}/${docker.image.initialPrefix}${project.artifactId}:latest
-                                </newName>
-                                <forceTags>true</forceTags>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>external.atlassian.jgitflow</groupId>
@@ -243,7 +218,7 @@
                             <configuration>
                                 <basedir>./</basedir>
                                 <includes>CHANGELOG.md, changelog.html</includes>
-                                <message>Add changelog</message>
+                                <message>Add Changelog files</message>
                                 <pushChanges>true</pushChanges>
                             </configuration>
                         </execution>
@@ -283,6 +258,22 @@
 
     <profiles>
         <profile>
+            <id>releaseStarters</id>
+            <distributionManagement>
+                <repository>
+                    <id>neoteric-os-releases</id>
+                    <name>Neoteric OpenSource releases</name>
+                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>neoteric-os-snapshots</id>
+                    <name>Neoteric OpenSource snapshots</name>
+                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+
+        <profile>
             <id>release</id>
             <build>
                 <plugins>
@@ -304,25 +295,108 @@
                     <plugin>
                         <groupId>com.spotify</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>buildDocker</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>tagLatest</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <forceTags>true</forceTags>
+                                    <image>
+                                        ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${project.version}
+                                    </image>
+                                    <newName>
+                                        ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:latest
+                                    </newName>
+                                </configuration>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>
         </profile>
+
         <profile>
-            <id>releaseStarters</id>
-            <distributionManagement>
-                <repository>
-                    <id>neoteric-os-releases</id>
-                    <name>Neoteric OpenSource releases</name>
-                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-releases/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>neoteric-os-snapshots</id>
-                    <name>Neoteric OpenSource snapshots</name>
-                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
+            <id>snapshot</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>buildDocker</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>candidate</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>parse-version</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>parse-version</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.spotify</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>buildDocker</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                                <configuration>
+                                    <pushImage>false</pushImage>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>tagLatest</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>tag</goal>
+                                </goals>
+                                <configuration>
+                                    <forceTags>true</forceTags>
+                                    <image>
+                                        ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${project.version}
+                                    </image>
+                                    <newName>
+                                        ${docker.repository.host}/${docker.image.prefix}${project.artifactId}:${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.RC
+                                    </newName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
-
 </project>

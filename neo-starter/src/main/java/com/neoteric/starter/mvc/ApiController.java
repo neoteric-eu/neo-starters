@@ -13,4 +13,10 @@ import java.lang.annotation.Target;
 public @interface ApiController {
 
     String prefix() default "";
+
+    /**
+     * Resource name use in logging aspect
+     * @return resource name
+     */
+    String resourceName() default "";
 }

@@ -77,7 +77,6 @@ public class StarterErrorHandlingAutoConfigurationTest {
                 .andExpect(jsonPath("$.path").value("/hello"))
                 .andExpect(jsonPath("$.message").value(FallbackExceptionHandler.FALLBACK_ERROR_MSG))
                 .andExpect(jsonPath("$.status").value(HttpStatus.INTERNAL_SERVER_ERROR.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.INTERNAL_SERVER_ERROR.value()))
                 .andExpect(jsonPath("$.error").value(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())).andReturn();
 
         System.out.println(mvcResult.getResponse().getContentAsString());
@@ -93,7 +92,7 @@ public class StarterErrorHandlingAutoConfigurationTest {
     }
 
     @Test
-    public void WithDefaultHandlersIShouldBeAbleToOverrideByAScannedOne() throws Exception {
+    public void WithDefaultHandlers_ShouldBeAbleToOverrideByAScannedOne() throws Exception {
         this.wac = (ConfigurableWebApplicationContext) new SpringApplicationBuilder(SwaggerConfiguration.class).run();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
         MvcResult mvcResult = this.mockMvc.perform(get("/hello")).andReturn();

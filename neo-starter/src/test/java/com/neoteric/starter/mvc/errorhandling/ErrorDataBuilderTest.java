@@ -1,6 +1,7 @@
 package com.neoteric.starter.mvc.errorhandling;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.neoteric.starter.StarterConstants;
 import com.neoteric.starter.mvc.errorhandling.handler.ExceptionHandlerBinding;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandler;
@@ -62,12 +63,13 @@ public class ErrorDataBuilderTest {
 
     private ErrorDataBuilder builder;
     private RestExceptionHandler handler;
+    private Map<String, String> causeMapping = Maps.newHashMap();
 
 
     @Before
     public void initMocks() {
         MockitoAnnotations.initMocks(this);
-        builder = new ErrorDataBuilder(FIXED_CLOCK, serverProperties);
+        builder = new ErrorDataBuilder(FIXED_CLOCK, serverProperties, causeMapping);
         handler = new IllegalArgumentExceptionHandler();
         MDC.put(StarterConstants.REQUEST_ID_HEADER, REQUEST_ID);
     }
@@ -75,11 +77,13 @@ public class ErrorDataBuilderTest {
     @After
     public void resetMDC() {
         MDC.remove(StarterConstants.REQUEST_ID_HEADER);
+        causeMapping.clear();
     }
 
     @Test
     public void shouldBuildCompleteData() throws Exception {
         mockDefaultIllegalArgumentException();
+        when(binding.getCause()).thenReturn(BAD_CODE);
         ErrorData errorData = builder.build(handler, binding, REQUEST, new IllegalArgumentException(MESSAGE));
 
         assertThat(errorData.getMessage()).isEqualTo(MESSAGE);
@@ -87,7 +91,7 @@ public class ErrorDataBuilderTest {
         assertThat(errorData.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(errorData.getError()).isEqualTo(HttpStatus.BAD_REQUEST.getReasonPhrase());
         assertThat(errorData.getException()).isEqualTo(IllegalArgumentException.class.getName());
-        assertThat(errorData.getApplicationCode()).isEqualTo(BAD_CODE);
+        assertThat(errorData.getCause()).isEqualTo(BAD_CODE);
         assertThat(errorData.getTimestamp()).isEqualTo(ZonedDateTime.now(FIXED_CLOCK));
         assertThat(errorData.getRequestId()).isEqualTo(REQUEST_ID);
         assertThat(errorData.getStackTrace()).isNotEmpty();
@@ -98,8 +102,24 @@ public class ErrorDataBuilderTest {
     }
 
     @Test
+    public void shouldProvideNoCauseIfNoCauseProvided() throws Exception {
+        mockDefaultIllegalArgumentException();
+        ErrorData errorData = builder.build(handler, binding, REQUEST, new IllegalArgumentException(MESSAGE));
+        assertThat(errorData.getCause()).isNull();
+    }
+
+    @Test
+    public void shouldProvideNoCauseIfCauseMappingProvided() throws Exception {
+        mockDefaultIllegalArgumentException();
+        causeMapping.put(IllegalArgumentExceptionHandler.class.getName(), "SOME_CAUSE");
+        ErrorData errorData = builder.build(handler, binding, REQUEST, new IllegalArgumentException(MESSAGE));
+        assertThat(errorData.getCause()).isEqualTo("SOME_CAUSE");
+    }
+
+    @Test
     public void shouldNotPopulateException() throws Exception {
         mockDefaultIllegalArgumentException();
+        when(binding.getCause()).thenReturn(BAD_CODE);
         when(binding.isSuppressException()).thenReturn(true);
 
         ErrorData errorData = builder.build(handler, binding, REQUEST, new IllegalArgumentException(MESSAGE));
@@ -110,7 +130,6 @@ public class ErrorDataBuilderTest {
         when(serverProperties.getError()).thenReturn(STACKTRACE_ALWAYS);
         when(binding.getExceptionClass()).thenAnswer(x -> IllegalArgumentException.class);
         when(binding.getHttpStatus()).thenReturn(HttpStatus.BAD_REQUEST);
-        when(binding.getApplicationCode()).thenReturn(BAD_CODE);
         when(binding.isSuppressException()).thenReturn(false);
         when(binding.isSuppressStacktrace()).thenReturn(false);
     }
