@@ -16,6 +16,8 @@ public @interface WithSaasMgrPrincipal {
     String customerId() default "customerId";
     String customerName() default "customerName";
     String email() default "email";
+    String firstName() default "firstName";
+    String lastName() default "lastName";
     String userId() default "userId";
     AccountStatus accountStatus() default AccountStatus.ACTIVE;
     String[] features() default {};

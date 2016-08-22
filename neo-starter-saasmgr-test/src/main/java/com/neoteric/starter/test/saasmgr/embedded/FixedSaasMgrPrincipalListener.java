@@ -94,6 +94,8 @@ public class FixedSaasMgrPrincipalListener extends AbstractTestExecutionListener
                 .customerName(fixedSaasMgr.customerName())
                 .userId(fixedSaasMgr.userId())
                 .email(fixedSaasMgr.email())
+                .firstName(fixedSaasMgr.firstName())
+                .lastName(fixedSaasMgr.lastName())
                 .status(fixedSaasMgr.accountStatus())
                 .features(Lists.newArrayList(fixedSaasMgr.features()))
                 .constraints(getConstraints(fixedSaasMgr.constraints()))

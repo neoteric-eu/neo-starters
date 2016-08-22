@@ -12,6 +12,8 @@ public interface SaasMgrPrincipal {
     String getCustomerId();
     String getCustomerName();
     String getEmail();
+    String getFirstName();
+    String getLastName();
     Collection<? extends GrantedAuthority> getAuthorities();
     List<SubscriptionConstraint> getConstraints();
     AccountStatus getStatus();
