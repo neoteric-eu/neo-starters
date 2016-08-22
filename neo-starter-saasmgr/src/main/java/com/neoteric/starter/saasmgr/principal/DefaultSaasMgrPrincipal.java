@@ -17,6 +17,8 @@ public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
 
     private final String userId;
     private final String email;
+    private final String firstName;
+    private final String lastName;
     private final String customerId;
     private final String customerName;
     private final List<SubscriptionConstraint> constraints;
@@ -24,11 +26,13 @@ public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
     private final List<Feature> features;
     private final AccountStatus status;
 
-    public DefaultSaasMgrPrincipal(String userId, String email, String customerId, String customerName,
+    public DefaultSaasMgrPrincipal(String userId, String email, String firtName, String lastName, String customerId, String customerName,
                                    List<String> features, List<SubscriptionConstraint> constraints, AccountStatus status) {
 
         this.userId = userId;
         this.email = email;
+        this.firstName = firtName;
+        this.lastName = lastName;
         this.customerId = customerId;
         this.customerName = customerName;
         this.constraints = constraints;
@@ -49,6 +53,8 @@ public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
 
         private String userId;
         private String email;
+        private String firstName;
+        private String lastName;
         private String customerId;
         private String customerName;
         private List<SubscriptionConstraint> constraints;
@@ -62,6 +68,16 @@ public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
 
         public Builder email(String email) {
             this.email = email;
+            return this;
+        }
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
             return this;
         }
 
@@ -91,7 +107,7 @@ public class DefaultSaasMgrPrincipal implements SaasMgrPrincipal {
         }
 
         public DefaultSaasMgrPrincipal build() {
-            return new DefaultSaasMgrPrincipal(userId, email, customerId, customerName, features, constraints, status);
+            return new DefaultSaasMgrPrincipal(userId, email, firstName, lastName, customerId, customerName, features, constraints, status);
         }
 
     }

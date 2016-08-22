@@ -10,5 +10,7 @@ import java.util.List;
 public class User {
     private final String id;
     private final String email;
+    private final String firstName;
+    private final String lastName;
     private final List<Customer> customers;
 }

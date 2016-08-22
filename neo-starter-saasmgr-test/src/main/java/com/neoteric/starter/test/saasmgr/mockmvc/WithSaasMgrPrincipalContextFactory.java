@@ -27,6 +27,8 @@ public class WithSaasMgrPrincipalContextFactory implements
                     .customerName(annotation.customerName())
                     .userId(annotation.userId())
                     .email(annotation.email())
+                    .firstName(annotation.firstName())
+                    .lastName(annotation.lastName())
                     .status(annotation.accountStatus())
                     .features(Lists.newArrayList(annotation.features()))
                     .constraints(getConstraints(annotation.constraints()))

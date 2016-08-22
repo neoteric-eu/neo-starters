@@ -47,6 +47,8 @@ public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
 
         String userId = loginData.getUser().getId();
         String email = loginData.getUser().getEmail();
+        String firstName = loginData.getUser().getFirstName();
+        String lastName = loginData.getUser().getLastName();
 
         Optional<Customer> customer = loginData.getUser().getCustomers().stream()
                 .filter(customerInfo -> customerId.equals(customerInfo.getCustomerId()))
@@ -57,6 +59,8 @@ public class SaasMgrAuthenticationProvider implements AuthenticationProvider {
         return DefaultSaasMgrPrincipal.builder()
                 .userId(userId)
                 .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
                 .constraints(foundedCustomer.getConstraints())
                 .customerId(foundedCustomer.getCustomerId())
                 .customerName(foundedCustomer.getCustomerName())
