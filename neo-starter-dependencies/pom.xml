@@ -30,12 +30,10 @@
 
         <!-- Libraries -->
         <guava.version>19.0</guava.version>
-        <swagger-jersey2-jaxrs.version>1.5.6</swagger-jersey2-jaxrs.version>
         <junit.version>4.11</junit.version>
         <assertj-core.version>3.2.0</assertj-core.version>
         <equalsverifier.version>2.0.2</equalsverifier.version>
         <junit-dataprovider.version>1.10.2</junit-dataprovider.version>
-        <jersey2-version>2.22.1</jersey2-version>
         <paranamer.version>2.8</paranamer.version>
         <commons-io.version>2.4</commons-io.version>
         <ical4j.version>1.0.2</ical4j.version>
@@ -68,17 +66,6 @@
         <junitParams.version>1.0.4</junitParams.version>
         <jackson-lombok.version>1.1</jackson-lombok.version>
     </properties>
-    <scm>
-        <url>http://github.com/neoteric-eu/neo-starters</url>
-        <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-
-    <issueManagement>
-        <system>Github</system>
-        <url>https://github.com/neoteric-eu/neo-starters/issues</url>
-    </issueManagement>
 
     <dependencyManagement>
         <dependencies>
@@ -133,26 +120,6 @@
             </dependency>
             <dependency>
                 <groupId>com.neoteric.starter</groupId>
-                <artifactId>neo-starter-jersey</artifactId>
-                <version>0.4.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.neoteric.starter</groupId>
-                <artifactId>neo-starter-jersey-test</artifactId>
-                <version>0.4.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.neoteric.starter</groupId>
-                <artifactId>neo-starter-saasmgr</artifactId>
-                <version>0.4.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.neoteric.starter</groupId>
-                <artifactId>neo-starter-saasmgr-test</artifactId>
-                <version>0.4.0-SNAPSHOT</version>
-            </dependency>
-            <dependency>
-                <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-metrics</artifactId>
                 <version>0.4.0-SNAPSHOT</version>
             </dependency>
@@ -170,28 +137,6 @@
                 <groupId>com.neoteric.starter</groupId>
                 <artifactId>neo-starter-rabbitmq</artifactId>
                 <version>0.4.0-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.glassfish.jersey.media</groupId>
-                <artifactId>jersey-media-multipart</artifactId>
-                <version>${jersey2-version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.swagger</groupId>
-                <artifactId>swagger-jersey2-jaxrs</artifactId>
-                <version>${swagger-jersey2-jaxrs.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.glassfish.jersey.media</groupId>
-                        <artifactId>jersey-media-multipart</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.glassfish.jersey.containers</groupId>
-                        <artifactId>jersey-container-servlet-core</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>

@@ -43,11 +43,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
-        <maven.build.timestamp.format>yyMMddHHmmss</maven.build.timestamp.format>
-        <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
         <sonar-maven-plugin.version>3.0.1</sonar-maven-plugin.version>
     </properties>
 
@@ -67,10 +64,6 @@
         <module>neo-starter-samples</module>
         <module>neo-starter-parent</module>
         <module>neo-starter-parent-neoteric</module>
-        <module>neo-starter-saasmgr</module>
-        <module>neo-starter-saasmgr-test</module>
-        <module>neo-starter-jersey</module>
-        <module>neo-starter-jersey-test</module>
     </modules>
 
     <build>
