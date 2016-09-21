@@ -17,9 +17,9 @@
     </organization>
 
     <properties>
-        <spring-boot.version>1.4.0.M3</spring-boot.version>
-        <spring-cloud.version>Brixton.RELEASE</spring-cloud.version>
-        <spring-cloud-netflix-dependencies.version>1.1.0.RELEASE</spring-cloud-netflix-dependencies.version>
+        <spring-boot.version>1.4.1.RELEASE</spring-boot.version>
+        <spring-cloud.version>Camden.RC1</spring-cloud.version>
+        <spring-cloud-netflix-dependencies.version>1.2.0.RC1</spring-cloud-netflix-dependencies.version>
 
         <main.basedir>..</main.basedir>
         <java.version>1.8</java.version>
@@ -40,11 +40,11 @@
         <springfox-swagger2.version>2.5.0</springfox-swagger2.version>
 
         <!-- Netflix Libraries -->
-        <feign.version>8.16.2</feign.version>
+        <feign.version>9.3.1</feign.version>
 
         <!-- Test Libraries -->
         <assertj.version>3.3.0</assertj.version>
-        <wiremock.version>2.0.6-beta</wiremock.version>
+        <wiremock.version>2.1.12</wiremock.version>
         <rest-assured.version>2.9.0</rest-assured.version>
 
         <!-- Plugin versions -->
@@ -145,13 +145,8 @@
                 <version>${paranamer.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.netflix.feign</groupId>
-                <artifactId>feign-jackson</artifactId>
-                <version>${feign.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.feign</groupId>
-                <artifactId>feign-jaxrs</artifactId>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-core</artifactId>
                 <version>${feign.version}</version>
             </dependency>
 
