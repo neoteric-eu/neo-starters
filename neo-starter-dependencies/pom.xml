@@ -38,6 +38,8 @@
         <commons-io.version>2.4</commons-io.version>
         <ical4j.version>1.0.2</ical4j.version>
         <springfox-swagger2.version>2.5.0</springfox-swagger2.version>
+        <quartz.version>2.2.3</quartz.version>
+        <quartz-mongod.version>2.0.0</quartz-mongod.version>
 
         <!-- Netflix Libraries -->
         <feign.version>9.3.1</feign.version>
@@ -138,6 +140,11 @@
                 <artifactId>neo-starter-rabbitmq</artifactId>
                 <version>0.5.0-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>com.neoteric.starter</groupId>
+                <artifactId>neo-starter-quartz</artifactId>
+                <version>0.5.0-SNAPSHOT</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.thoughtworks.paranamer</groupId>
@@ -209,6 +216,16 @@
                 <groupId>pl.pragmatists</groupId>
                 <artifactId>JUnitParams</artifactId>
                 <version>${junitParams.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.novemberain</groupId>
+                <artifactId>quartz-mongodb</artifactId>
+                <version>${quartz-mongod.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -301,6 +318,10 @@
     </build>
 
     <repositories>
+        <repository>
+            <id>michaelklishin</id>
+            <url>https://dl.bintray.com/michaelklishin/maven/</url>
+        </repository>
         <repository>
             <id>spring-milestones</id>
             <name>Spring Milestones</name>
