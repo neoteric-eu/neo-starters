@@ -1,5 +1,6 @@
 package com.neoteric.starter.quartz;
 
+import com.google.common.collect.Maps;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.autoconfigure.mongo.MongoProperties;
@@ -27,8 +28,8 @@ public class QuartzProperties {
         private String collectionPrefix;
 
 
-        public Properties buildFromMongoProperties(MongoProperties mongoProps) {
-            Properties props = new Properties();
+        public Map<String,String> buildFromMongoProperties(MongoProperties mongoProps) {
+            Map<String, String> props = Maps.newHashMap();
             props.put("org.quartz.jobStore.class", "com.novemberain.quartz.mongodb.MongoDBJobStore");
             props.put("org.quartz.threadPool.threadCount", "1");
             props.put("org.quartz.jobStore.dbName", mongoProps.getDatabase());

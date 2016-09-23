@@ -1,10 +1,11 @@
 package com.neoteric.starter.quartz;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import com.novemberain.quartz.mongodb.MongoDBJobStore;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
-import org.quartz.listeners.TriggerListenerSupport;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -18,15 +19,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import static com.neoteric.starter.quartz.StarterQuartzConstants.LOG_PREFIX;
-import static org.springframework.boot.Banner.Mode.LOG;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
 
 @Slf4j
 @Configuration
@@ -39,6 +42,12 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
     private final List<SchedulerFactoryBeanCustomizer> schedulerFactoryBeanCustomizers;
     private ApplicationContext applicationContext;
 
+    @PostConstruct
+    public void showSummary() throws SchedulerException {
+        Scheduler scheduler = this.applicationContext.getBean(Scheduler.class);
+        LOG.info("{}Scheduler summary: {}", LOG_PREFIX, scheduler.getMetaData().getSummary());
+    }
+
     @Bean
     @ConditionalOnProperty(prefix = "neostarter.quartz", name = "enabled", havingValue = "false")
     public SchedulerFactoryBean noOpschedulerFactoryBean() {
@@ -48,19 +57,6 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
         return bean;
     }
 
-    private static class VetoAllListener extends TriggerListenerSupport {
-
-        @Override
-        public boolean vetoJobExecution(Trigger trigger, JobExecutionContext context) {
-            return true;
-        }
-
-        @Override
-        public String getName() {
-            return "vetoAll";
-        }
-    }
-
     @Bean
     @ConditionalOnProperty(prefix = "neostarter.quartz", name = "enabled", havingValue = "true", matchIfMissing = true)
     @ConditionalOnMissingBean
@@ -68,9 +64,17 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
         schedulerFactoryBean.setJobFactory(
                 new AutowiringSpringBeanJobFactory(this.applicationContext.getAutowireCapableBeanFactory()));
+
+        Map<String,String> mergedProperties = Maps.newHashMap();
+
         schedulerFactoryBeanCustomizers.stream()
                 .sorted(AnnotationAwareOrderComparator.INSTANCE)
+                .peek(customizer -> mergedProperties.putAll(customizer.quartzProperties()))
                 .forEach(customizer -> customizer.customize(schedulerFactoryBean));
+
+        Properties properties = new Properties();
+        properties.putAll(mergedProperties);
+        schedulerFactoryBean.setQuartzProperties(properties);
         return schedulerFactoryBean;
     }
 
@@ -79,7 +83,6 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
         this.applicationContext = applicationContext;
     }
 
-    @Slf4j
     @Configuration
     static class DefaultFactoryBeanConfiguration {
 
@@ -95,8 +98,10 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
         }
 
 
+        @Slf4j
         @AllArgsConstructor
-        private static final class DefaultQuartzCustomizer implements SchedulerFactoryBeanCustomizer, Ordered {
+        @Order(0)
+        private static final class DefaultQuartzCustomizer implements SchedulerFactoryBeanCustomizer {
 
             private final QuartzProperties quartzProperties;
             private final JobDetail[] jobDetails;
@@ -105,7 +110,7 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
 
             @Override
             public void customize(SchedulerFactoryBean bean) {
-                DefaultFactoryBeanConfiguration.LOG.info("{}Registering Quartz defaults", LOG_PREFIX);
+                LOG.info("{}Registering Quartz defaults", LOG_PREFIX);
 
                 if (jobDetails != null) {
                     bean.setJobDetails(jobDetails);
@@ -116,21 +121,15 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
                 if (calendars != null) {
                     bean.setCalendars(calendars);
                 }
-                if (quartzProperties.getProperties() != null) {
-                    Properties properties = new Properties();
-                    properties.putAll(quartzProperties.getProperties());
-                    bean.setQuartzProperties(properties);
-                }
             }
 
             @Override
-            public int getOrder() {
-                return 0;
+            public Map<String, String> quartzProperties() {
+                return quartzProperties.getProperties();
             }
         }
     }
 
-    @Slf4j
     @Configuration
     @ConditionalOnProperty(prefix = "neostarter.quartz", name = "forceRamJobStore", havingValue = "true")
     protected static class QuartzRamJobConfiguration {
@@ -140,54 +139,48 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
             return new QuartzDatasourceCustomizer();
         }
 
-        private static final class QuartzDatasourceCustomizer implements SchedulerFactoryBeanCustomizer, Ordered {
+        @Slf4j
+        @Order(LOWEST_PRECEDENCE)
+        private static final class QuartzDatasourceCustomizer implements SchedulerFactoryBeanCustomizer {
 
             @Override
             public void customize(SchedulerFactoryBean bean) {
-                QuartzDataSourceConfiguration.LOG.info("{}Forcing RAM Job", LOG_PREFIX);
-                Properties props = new Properties();
-                props.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
-                bean.setQuartzProperties(props);
+                LOG.info("{}Forcing RAM Job", LOG_PREFIX);
             }
 
             @Override
-            public int getOrder() {
-                return LOWEST_PRECEDENCE;
+            public Map<String, String> quartzProperties() {
+                return ImmutableMap.of("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
             }
         }
     }
 
-    @Slf4j
     @Configuration
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnMissingClass("com.novemberain.quartz.mongodb.MongoDBJobStore")
     @ConditionalOnProperty(prefix = "neostarter.quartz", name = "forceRamJobStore", havingValue = "false")
-    protected static class QuartzDataSourceConfiguration {
+    static class QuartzDataSourceConfiguration {
 
         @Bean
         public SchedulerFactoryBeanCustomizer dataSourceCustomizer(DataSource dataSource) {
             return new QuartzDatasourceCustomizer(dataSource);
         }
 
+        @Slf4j
         @AllArgsConstructor
-        private static final class QuartzDatasourceCustomizer implements SchedulerFactoryBeanCustomizer, Ordered {
+        @Order(1)
+        private static final class QuartzDatasourceCustomizer implements SchedulerFactoryBeanCustomizer {
 
             private final DataSource dataSource;
 
             @Override
             public void customize(SchedulerFactoryBean bean) {
-                QuartzDataSourceConfiguration.LOG.info("{}Registering Quartz datasource", LOG_PREFIX);
+                LOG.info("{}Registering Quartz datasource", LOG_PREFIX);
                 bean.setDataSource(dataSource);
-            }
-
-            @Override
-            public int getOrder() {
-                return 1;
             }
         }
     }
 
-    @Slf4j
     @Configuration
     @ConditionalOnClass(MongoDBJobStore.class)
     @EnableConfigurationProperties(MongoProperties.class)
@@ -200,22 +193,22 @@ public class QuartzAutoConfiguration implements ApplicationContextAware {
             return new QuartzMongoDbCustomizer(quartzProperties, mongoProperties);
         }
 
+        @Slf4j
         @AllArgsConstructor
-        private static final class QuartzMongoDbCustomizer implements SchedulerFactoryBeanCustomizer, Ordered {
+        @Order(1)
+        private static final class QuartzMongoDbCustomizer implements SchedulerFactoryBeanCustomizer {
 
             private final QuartzProperties quartzProperties;
             private final MongoProperties mongoProperties;
 
             @Override
             public void customize(SchedulerFactoryBean bean) {
-                QuartzMongoDbConfiguration.LOG.info("{}Registering Quartz MongoDB defaults", LOG_PREFIX);
-                Properties props = quartzProperties.getMongo().buildFromMongoProperties(mongoProperties);
-                bean.setQuartzProperties(props);
+                LOG.info("{}Registering Quartz MongoDB defaults", LOG_PREFIX);
             }
 
             @Override
-            public int getOrder() {
-                return 1;
+            public Map<String, String> quartzProperties() {
+                return quartzProperties.getMongo().buildFromMongoProperties(mongoProperties);
             }
         }
     }
