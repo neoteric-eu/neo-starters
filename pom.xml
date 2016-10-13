@@ -65,7 +65,6 @@
         <module>neo-starter-parent</module>
         <module>neo-starter-parent-neoteric</module>
         <module>neo-starter-quartz</module>
-        <module>neo-starter-quartz-test</module>
     </modules>
 
     <build>
