@@ -1,2 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.neoteric.starter.quartz.QuartzAutoConfiguration
+com.neoteric.starter.quartz.QuartzAutoConfiguration,\
+  com.neoteric.starter.quartz.QuartzRamJobConfiguration,\
+  com.neoteric.starter.quartz.QuartzDataSourceConfiguration,\
+  com.neoteric.starter.quartz.QuartzMongoDbConfiguration,\
+com.neoteric.starter.quartz.DefaultFactoryBeanConfiguration

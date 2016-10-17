@@ -1,4 +1,4 @@
-package com.neoteric.starter.quartz;
+package com.neoteric.starter.quartz.db;
 
 import org.springframework.boot.jdbc.DatabaseDriver;
 import org.springframework.core.io.ResourceLoader;

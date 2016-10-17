@@ -1,5 +1,6 @@
-package com.neoteric.starter.quartz;
+package com.neoteric.starter.quartz.db;
 
+import com.neoteric.starter.quartz.QuartzProperties;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.Assert;
 
