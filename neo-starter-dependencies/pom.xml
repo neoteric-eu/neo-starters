@@ -48,6 +48,8 @@
         <assertj.version>3.3.0</assertj.version>
         <wiremock.version>2.1.12</wiremock.version>
         <rest-assured.version>2.9.0</rest-assured.version>
+        <awaitility.version>2.0.0</awaitility.version>
+        <junitParams.version>1.0.4</junitParams.version>
 
         <!-- Plugin versions -->
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
@@ -65,7 +67,6 @@
         <build-helper-maven-plugin.version>1.10</build-helper-maven-plugin.version>
         <assertj-assertions-generator-maven-plugin.version>1.6.0</assertj-assertions-generator-maven-plugin.version>
         <maven-scm-plugin.version>1.9.4</maven-scm-plugin.version>
-        <junitParams.version>1.0.4</junitParams.version>
         <jackson-lombok.version>1.1</jackson-lombok.version>
     </properties>
 
@@ -181,6 +182,11 @@
                 <groupId>nl.jqno.equalsverifier</groupId>
                 <artifactId>equalsverifier</artifactId>
                 <version>${equalsverifier.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.awaitility</groupId>
+                <artifactId>awaitility</artifactId>
+                <version>${awaitility.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
