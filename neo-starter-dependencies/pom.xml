@@ -19,7 +19,7 @@
     <properties>
         <spring-boot.version>1.4.1.RELEASE</spring-boot.version>
         <spring-cloud.version>Camden.RELEASE</spring-cloud.version>
-        <spring-cloud-netflix-dependencies.version>1.2.0.RC1</spring-cloud-netflix-dependencies.version>
+        <spring-cloud-netflix-dependencies.version>1.2.0.RELEASE</spring-cloud-netflix-dependencies.version>
 
         <main.basedir>..</main.basedir>
         <java.version>1.8</java.version>
