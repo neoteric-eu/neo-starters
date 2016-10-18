@@ -3,10 +3,12 @@ package com.neoteric.starter.quartz;
 import com.neoteric.starter.quartz.db.QuartzDatabaseInitializer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -19,6 +21,7 @@ import static com.neoteric.starter.quartz.StarterQuartzConstants.LOG_PREFIX;
 
 @Configuration
 @ConditionalOnBean(DataSource.class)
+@AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @ConditionalOnMissingClass("com.novemberain.quartz.mongodb.MongoDBJobStore")
 @ConditionalOnProperty(prefix = "neostarter.quartz", name = "forceRamJobStore", matchIfMissing = true, havingValue = "false")
 class QuartzDataSourceConfiguration {

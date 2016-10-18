@@ -7,6 +7,8 @@ import org.quartz.*;
 import org.quartz.impl.calendar.MonthlyCalendar;
 import org.quartz.impl.calendar.WeeklyCalendar;
 import org.quartz.simpl.RAMJobStore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.EmbeddedDataSourceConfiguration;
@@ -14,11 +16,14 @@ import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 @RunWith(FilteredClassPathRunner.class)
 @ClassPathExclusions("quartz-mongodb-*.jar")
@@ -28,7 +33,7 @@ public class QuartzAutoConfigurationTest {
 
     @Test
     public void shouldUseRamStoreWithDefaultConfiguration() throws Exception {
-        registerAndRefresh(QuartzAutoConfiguration.class);
+        registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getMetaData().getJobStoreClass()).isAssignableFrom(RAMJobStore.class);
@@ -36,8 +41,7 @@ public class QuartzAutoConfigurationTest {
 
     @Test
     public void shouldUseDatabaseWhenDatasourceAvailable() throws Exception {
-        registerAndRefresh(EmbeddedDataSourceConfiguration.class,
-                QuartzAutoConfiguration.class);
+        registerAndRefresh(EmbeddedDataSourceConfiguration.class);
         Scheduler scheduler = this.context.getBean(Scheduler.class);
 
         assertThat(scheduler).isNotNull();
@@ -49,8 +53,7 @@ public class QuartzAutoConfigurationTest {
         EnvironmentTestUtils.addEnvironment(this.context,
                 "neostarter.quartz.forceRamJobStore=true");
         registerAndRefresh(EmbeddedDataSourceConfiguration.class,
-                DataSourceTransactionManagerAutoConfiguration.class,
-                QuartzAutoConfiguration.class);
+                DataSourceTransactionManagerAutoConfiguration.class);
         Scheduler scheduler = this.context.getBean(Scheduler.class);
 
         assertThat(scheduler).isNotNull();
@@ -60,7 +63,7 @@ public class QuartzAutoConfigurationTest {
     @Test
     public void shouldUseProperties() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context, "neostarter.quartz.properties.org.quartz.threadPool.threadCount=1");
-        registerAndRefresh(QuartzAutoConfiguration.class);
+        registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getMetaData().getThreadPoolSize()).isEqualTo(1);
@@ -69,8 +72,7 @@ public class QuartzAutoConfigurationTest {
     @Test
     public void withConfiguredCalendars() throws Exception {
         registerAndRefresh(EmbeddedDataSourceConfiguration.class,
-                QuartzCalendarsConfiguration.class,
-                QuartzAutoConfiguration.class);
+                QuartzCalendarsConfiguration.class);
         Scheduler scheduler = this.context.getBean(Scheduler.class);
 
         assertThat(scheduler.getCalendar("weekly")).isNotNull();
@@ -79,19 +81,18 @@ public class QuartzAutoConfigurationTest {
 
     @Test
     public void withConfiguredJobAndTrigger() throws Exception {
-        EnvironmentTestUtils.addEnvironment(this.context,
-                "test-name=withConfiguredJobAndTrigger");
-        registerAndRefresh(EmbeddedDataSourceConfiguration.class,
-                QuartzAutoConfiguration.class, QuartzJobConfiguration.class);
+        registerAndRefresh(EmbeddedDataSourceConfiguration.class, QuartzJobConfiguration.class);
         Scheduler scheduler = this.context.getBean(Scheduler.class);
 
         assertThat(scheduler.getJobDetail(JobKey.jobKey("fooJob"))).isNotNull();
         assertThat(scheduler.getTrigger(TriggerKey.triggerKey("fooTrigger"))).isNotNull();
+        ConfigurableEnvironment environment = context.getEnvironment();
+        await().atMost(2, TimeUnit.SECONDS).until(() -> "hi".equals(environment.getProperty("testVar")));
     }
 
     @Test
     public void withCustomizer() throws Exception {
-        registerAndRefresh(QuartzAutoConfiguration.class, QuartzCustomConfig.class);
+        registerAndRefresh(QuartzCustomConfig.class);
         Scheduler scheduler = this.context.getBean(Scheduler.class);
 
         assertThat(scheduler).isNotNull();
@@ -105,9 +106,18 @@ public class QuartzAutoConfigurationTest {
         }
     }
 
+    private void registerAndRefresh() {
+        this.context.register(QuartzAutoConfiguration.class);
+        this.context.register(DefaultFactoryBeanConfiguration.class);
+        this.context.register(QuartzDataSourceConfiguration.class);
+        this.context.register(QuartzRamJobConfiguration.class);
+        this.context.refresh();
+    }
+
+
     private void registerAndRefresh(Class<?>... annotatedClasses) {
         this.context.register(annotatedClasses);
-        this.context.refresh();
+        registerAndRefresh();
     }
 
     @Configuration
@@ -125,7 +135,7 @@ public class QuartzAutoConfigurationTest {
         @Bean
         public Trigger fooTrigger() {
             SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
-                    .withIntervalInMilliseconds(1000)
+                    .withIntervalInMilliseconds(500)
                     .repeatForever();
 
             return TriggerBuilder.newTrigger()
@@ -157,18 +167,16 @@ public class QuartzAutoConfigurationTest {
         public SchedulerFactoryBeanCustomizer customizer() {
             return schedulerFactoryBean -> schedulerFactoryBean.setSchedulerName("fooScheduler");
         }
-
     }
 
     public static class FooJob extends QuartzJobBean {
 
         @Autowired
-        private Environment env;
+        private ConfigurableEnvironment env;
 
         @Override
         protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-            System.out.println(this.env.getProperty("test-name", "unknown"));
+            EnvironmentTestUtils.addEnvironment(env, "testVar=hi");
         }
-
     }
 }

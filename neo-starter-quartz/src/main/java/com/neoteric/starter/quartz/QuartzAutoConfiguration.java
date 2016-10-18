@@ -27,8 +27,7 @@ import static com.neoteric.starter.quartz.StarterQuartzConstants.LOG_PREFIX;
 @Slf4j
 @Configuration
 @ConditionalOnClass({Scheduler.class, SchedulerFactoryBean.class})
-@AutoConfigureAfter({DataSourceAutoConfiguration.class,
-        DefaultFactoryBeanConfiguration.class,
+@AutoConfigureAfter({DefaultFactoryBeanConfiguration.class,
         QuartzDataSourceConfiguration.class,
         QuartzRamJobConfiguration.class,
         QuartzMongoDbConfiguration.class})

@@ -20,7 +20,7 @@ public class QuartzMongoAutoConfigurationTest {
 
     @Test
     public void shouldUseMongoIfQuartzMongoOnClassPath() throws Exception {
-        registerAndRefresh(QuartzAutoConfiguration.class);
+        registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getMetaData().getJobStoreClass()).isAssignableFrom(MongoDBJobStore.class);
@@ -30,7 +30,7 @@ public class QuartzMongoAutoConfigurationTest {
     public void shouldAddCollectionPrefixIfPropertySet() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context,
                 "neostarter.quartz.mongo.collectionPrefix=pref");
-        registerAndRefresh(QuartzAutoConfiguration.class);
+        registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getMetaData().getJobStoreClass()).isAssignableFrom(MongoDBJobStore.class);
@@ -41,7 +41,7 @@ public class QuartzMongoAutoConfigurationTest {
     public void shouldUseGenericQuartzProperties() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context,
                 "neostarter.quartz.properties.org.quartz.scheduler.instanceId=SomeId");
-        registerAndRefresh(QuartzAutoConfiguration.class);
+        registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getMetaData().getJobStoreClass()).isAssignableFrom(MongoDBJobStore.class);
@@ -52,7 +52,7 @@ public class QuartzMongoAutoConfigurationTest {
     public void shouldUseRamJobIfForced() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context,
                 "neostarter.quartz.forceRamJobStore=true");
-        registerAndRefresh(QuartzAutoConfiguration.class);
+        registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getMetaData().getJobStoreClass()).isAssignableFrom(RAMJobStore.class);
@@ -62,7 +62,7 @@ public class QuartzMongoAutoConfigurationTest {
     public void shouldDisableScheduler() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context,
                 "neostarter.quartz.enabled=false");
-        registerAndRefresh(QuartzAutoConfiguration.class);
+        registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getListenerManager().getTriggerListeners())
@@ -77,8 +77,12 @@ public class QuartzMongoAutoConfigurationTest {
         }
     }
 
-    private void registerAndRefresh(Class<?>... annotatedClasses) {
-        this.context.register(annotatedClasses);
+    private void registerAndRefresh() {
+        this.context.register(QuartzAutoConfiguration.class);
+        this.context.register(DefaultFactoryBeanConfiguration.class);
+        this.context.register(QuartzMongoDbConfiguration.class);
+        this.context.register(QuartzRamJobConfiguration.class);
+        this.context.register(QuartzDataSourceConfiguration.class);
         this.context.refresh();
     }
 }

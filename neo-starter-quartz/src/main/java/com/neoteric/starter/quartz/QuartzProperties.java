@@ -18,8 +18,19 @@ import java.util.Optional;
 @Setter
 public class QuartzProperties {
 
+    /**
+     *  If disabled, all triggers are going to be vetoed.
+     */
     private boolean enabled = true;
+
+    /**
+     * If enabled Quartz will always use RAMJobStore.
+     */
     private boolean forceRamJobStore = false;
+
+    /**
+     * Additional properties to add to Quartz.
+     */
     private Map<String, String> properties = new HashMap<>();
     private QuartzMongo mongo = new QuartzMongo();
     private QuartzJdbc jdbc = new QuartzJdbc();
@@ -27,17 +38,31 @@ public class QuartzProperties {
     @Getter
     @Setter
     public static class QuartzJdbc {
+
+        /**
+         * Quartz DDL SQL file location.
+         */
         private String schema = "classpath:db/schema-quartz.sql";
+
+        /**
+         * Should Quartz DDL SQL file be run at startup.
+         */
         private boolean initialize = true;
     }
 
     @Getter
     @Setter
     public static class QuartzMongo {
+
+        /**
+         * If provided,  will be used as prefix for all Quartz collections.
+         */
         private String collectionPrefix;
+
+        /**
+         * If provided, will be used for Quartz Mongo connection. If not spring.data.mongodb.uri will be used instead.
+         */
         private String uri;
-        private String username;
-        private char[] password;
 
         public Map<String, String> buildFromMongoProperties(MongoProperties mongoProps) {
             Map<String, String> props = Maps.newHashMap();
@@ -51,19 +76,9 @@ public class QuartzProperties {
             Assert.notNull(database);
             props.put("org.quartz.jobStore.dbName", database);
 
-            if (username == null) {
-                username = mongoProps.getUsername();
-                password = mongoProps.getPassword();
-            }
 
             if (!StringUtils.isEmpty(collectionPrefix)) {
                 props.put("org.quartz.jobStore.collectionPrefix", collectionPrefix);
-            }
-
-            if (!StringUtils.isEmpty(username)) {
-                props.put("org.quartz.jobStore.username", username);
-                props.put("org.quartz.jobStore.password", String.valueOf(password));
-
             }
             props.put("org.quartz.jobStore.mongoUri", uri);
             return props;
