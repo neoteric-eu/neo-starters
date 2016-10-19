@@ -6,20 +6,20 @@ import org.junit.After;
 import org.junit.Test;
 import org.quartz.Scheduler;
 import org.quartz.simpl.RAMJobStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-public class QuartzMongoAutoConfigurationTest {
+public class QuartzMongoAutoConfigurationTest extends AbstractMongoDBTest {
 
     private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 
     @Test
     public void shouldUseMongoIfQuartzMongoOnClassPath() throws Exception {
+        EnvironmentTestUtils.addEnvironment(this.context,
+                mongoUri());
         registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
         assertThat(scheduler).isNotNull();
@@ -29,6 +29,7 @@ public class QuartzMongoAutoConfigurationTest {
     @Test
     public void shouldAddCollectionPrefixIfPropertySet() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context,
+                mongoUri(),
                 "neostarter.quartz.mongo.collectionPrefix=pref");
         registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
@@ -40,6 +41,7 @@ public class QuartzMongoAutoConfigurationTest {
     @Test
     public void shouldUseGenericQuartzProperties() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context,
+                mongoUri(),
                 "neostarter.quartz.properties.org.quartz.scheduler.instanceId=SomeId");
         registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
@@ -51,6 +53,7 @@ public class QuartzMongoAutoConfigurationTest {
     @Test
     public void shouldUseRamJobIfForced() throws Exception {
         EnvironmentTestUtils.addEnvironment(this.context,
+                mongoUri(),
                 "neostarter.quartz.forceRamJobStore=true");
         registerAndRefresh();
         Scheduler scheduler = this.context.getBean(Scheduler.class);
@@ -84,5 +87,9 @@ public class QuartzMongoAutoConfigurationTest {
         this.context.register(QuartzRamJobConfiguration.class);
         this.context.register(QuartzDataSourceConfiguration.class);
         this.context.refresh();
+    }
+
+    private String mongoUri() {
+        return String.join("", "spring.data.mongodb.uri=mongodb://localhost:", String.valueOf(freePort), "/test");
     }
 }
