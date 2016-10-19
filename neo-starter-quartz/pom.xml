@@ -128,17 +128,17 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>full-cp</id>
+                        <id>default-test</id>
                         <phase>test</phase>
                         <goals>
                             <goal>test</goal>
                         </goals>
                         <configuration>
                             <includes>
-                                <include>**/Test*.java</include>
+                                <include>**/*Test.java</include>
                             </includes>
                             <excludes>
-                                <exclude>QuartzAutoConfigurationTest.java</exclude>
+                                <exclude>**/QuartzAutoConfigurationTest.java</exclude>
                             </excludes>
                         </configuration>
                     </execution>
@@ -150,10 +150,10 @@
                         </goals>
                         <configuration>
                             <includes>
-                                <include>QuartzAutoConfigurationTest.java</include>
+                                <include>**/QuartzAutoConfigurationTest.java</include>
                             </includes>
                             <classpathDependencyExcludes>
-                                <classpathDependencyExcludes>quartz-mongodb</classpathDependencyExcludes>
+                                <classpathDependencyExcludes>com.novemberain:quartz-mongodb</classpathDependencyExcludes>
                             </classpathDependencyExcludes>
                         </configuration>
                     </execution>

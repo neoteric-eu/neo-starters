@@ -2,7 +2,6 @@ package com.neoteric.starter.quartz;
 
 import org.junit.After;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.quartz.*;
 import org.quartz.impl.calendar.MonthlyCalendar;
 import org.quartz.impl.calendar.WeeklyCalendar;
@@ -25,8 +24,12 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 
-@RunWith(FilteredClassPathRunner.class)
-@ClassPathExclusions("quartz-mongodb-*.jar")
+//@RunWith(FilteredClassPathRunner.class)
+//@ClassPathExclusions("quartz-mongodb-*.jar")
+// TODO: Fix this...
+// shouldUseDatabaseWhenDatasourceAvailable won't work in IDE, but should work properly in Maven
+// Classpath related issue. Find a way to properly exclude library from classpath for a single test,
+// and make sure it work on Jenkins. Currently done by excluding in maven-surefire-plugin.
 public class QuartzAutoConfigurationTest {
 
     private AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
