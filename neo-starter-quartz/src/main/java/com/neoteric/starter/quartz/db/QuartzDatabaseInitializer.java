@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 
 public class QuartzDatabaseInitializer extends AbstractDatabaseInitializer {
 
-    private QuartzProperties quartzProperties;
+    private final QuartzProperties quartzProperties;
 
     public QuartzDatabaseInitializer(DataSource dataSource,
                                      ResourceLoader resourceLoader,

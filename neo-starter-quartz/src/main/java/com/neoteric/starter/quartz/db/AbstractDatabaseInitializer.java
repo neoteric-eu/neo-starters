@@ -57,8 +57,7 @@ public abstract class AbstractDatabaseInitializer {
                 throw new IllegalStateException("Unable to detect database type");
             }
             return databaseDriver.getDriverClassName();
-        }
-        catch (MetaDataAccessException ex) {
+        } catch (MetaDataAccessException ex) {
             throw new IllegalStateException("Unable to detect database type", ex);
         }
     }
