@@ -7,8 +7,6 @@ import org.quartz.*;
 import org.quartz.impl.calendar.MonthlyCalendar;
 import org.quartz.impl.calendar.WeeklyCalendar;
 import org.quartz.simpl.RAMJobStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.EmbeddedDataSourceConfiguration;
@@ -20,6 +18,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,6 +43,15 @@ public class QuartzAutoConfigurationTest {
     public void shouldUseDatabaseWhenDatasourceAvailable() throws Exception {
         registerAndRefresh(EmbeddedDataSourceConfiguration.class);
         Scheduler scheduler = this.context.getBean(Scheduler.class);
+
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+
+        URL[] urls = ((URLClassLoader)cl).getURLs();
+
+        for(URL url: urls){
+            System.out.println(url.getFile());
+        }
+
 
         assertThat(scheduler).isNotNull();
         assertThat(scheduler.getMetaData().getJobStoreClass()).isAssignableFrom(LocalDataSourceJobStore.class);
