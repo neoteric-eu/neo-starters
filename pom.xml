@@ -45,7 +45,7 @@
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
-        <sonar-maven-plugin.version>3.0.1</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
     </properties>
 
     <modules>
