@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-dependencies</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.6.0-SNAPSHOT</version>
         <relativePath>../neo-starter-dependencies</relativePath>
     </parent>
 
@@ -19,17 +19,6 @@
         <name>Neoteric</name>
         <url>http://www.neoteric.eu</url>
     </organization>
-
-    <scm>
-        <url>http://github.com/neoteric-eu/neo-starters</url>
-        <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-    <issueManagement>
-        <system>Github</system>
-        <url>https://github.com/neoteric-eu/neo-starters/issues</url>
-    </issueManagement>
 
     <dependencies>
         <dependency>
@@ -57,6 +46,16 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.mongobee</groupId>
+            <artifactId>mongobee</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongo-java-driver</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -64,6 +63,7 @@
         <dependency>
             <groupId>de.flapdoodle.embed</groupId>
             <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <version>1.50.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -77,6 +77,11 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
         </dependency>
     </dependencies>
 </project>

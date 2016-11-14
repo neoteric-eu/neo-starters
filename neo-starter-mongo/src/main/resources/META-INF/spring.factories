@@ -1,3 +1,4 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 com.neoteric.starter.mongo.MongoConvertersAutoConfiguration,\
+com.neoteric.starter.mongo.MongoBeeAutoConfiguration,\
 com.neoteric.starter.mongo.MongoCriteriaBuilderAutoConfiguration

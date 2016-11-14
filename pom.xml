@@ -5,7 +5,7 @@
 
     <groupId>com.neoteric.starter</groupId>
     <artifactId>neo-starter-build</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <version>0.6.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
 
@@ -19,7 +19,7 @@
 
     <scm>
         <url>https://github.com/neoteric-eu/neo-starters</url>
-        <connection>scm:git:ssh://github.com/neoteric-eu/neo-starters.git</connection>
+        <connection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
@@ -43,12 +43,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-source-plugin.version>2.4</maven-source-plugin.version>
         <maven-javadoc-plugin.version>2.10.3</maven-javadoc-plugin.version>
-        <maven.build.timestamp.format>yyMMddHHmmss</maven.build.timestamp.format>
-        <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
-        <sonar-maven-plugin.version>3.0.1</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
     </properties>
 
     <modules>
@@ -67,10 +64,7 @@
         <module>neo-starter-samples</module>
         <module>neo-starter-parent</module>
         <module>neo-starter-parent-neoteric</module>
-        <module>neo-starter-saasmgr</module>
-        <module>neo-starter-saasmgr-test</module>
-        <module>neo-starter-jersey</module>
-        <module>neo-starter-jersey-test</module>
+        <module>neo-starter-quartz</module>
     </modules>
 
     <build>

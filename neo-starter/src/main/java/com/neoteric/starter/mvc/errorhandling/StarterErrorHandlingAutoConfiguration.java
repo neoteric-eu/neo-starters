@@ -3,11 +3,11 @@ package com.neoteric.starter.mvc.errorhandling;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.neoteric.starter.jackson.StarterJacksonBeforeAutoConfiguration;
 import com.neoteric.starter.mvc.StarterMvcAutoConfiguration;
+import com.neoteric.starter.mvc.StarterMvcProperties;
 import com.neoteric.starter.mvc.errorhandling.handler.RestExceptionHandlerRegistry;
 import com.neoteric.starter.mvc.errorhandling.resolver.ErrorDataBuilder;
 import com.neoteric.starter.mvc.errorhandling.resolver.RestExceptionResolver;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,18 +26,24 @@ import java.time.Clock;
 @AutoConfigureAfter(StarterJacksonBeforeAutoConfiguration.class)
 public class StarterErrorHandlingAutoConfiguration {
 
-    @Autowired
-    private ApplicationContext applicationContext;
+    private final ApplicationContext applicationContext;
+    private final Clock clock;
+    private final ServerProperties serverProperties;
+    private final StarterMvcProperties starterMvcProperties;
 
-    @Autowired
-    private Clock clock;
-
-    @Autowired
-    private ServerProperties serverProperties;
+    public StarterErrorHandlingAutoConfiguration(ApplicationContext applicationContext,
+                                                 Clock clock,
+                                                 ServerProperties serverProperties,
+                                                 StarterMvcProperties starterMvcProperties) {
+        this.applicationContext = applicationContext;
+        this.clock = clock;
+        this.serverProperties = serverProperties;
+        this.starterMvcProperties = starterMvcProperties;
+    }
 
     @Bean
     ErrorDataBuilder errorDataBuilder() {
-        return new ErrorDataBuilder(clock, serverProperties);
+        return new ErrorDataBuilder(clock, serverProperties, starterMvcProperties.getErrorHandling().getCauseMapping());
     }
 
     @Bean

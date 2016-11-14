@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.neoteric.starter</groupId>
         <artifactId>neo-starter-dependencies</artifactId>
-        <version>0.3.0-SNAPSHOT</version>
+        <version>0.6.0-SNAPSHOT</version>
         <relativePath>../neo-starter-dependencies</relativePath>
     </parent>
 
@@ -19,17 +19,6 @@
         <name>Neoteric</name>
         <url>http://www.neoteric.eu</url>
     </organization>
-
-    <scm>
-        <url>http://github.com/neoteric-eu/neo-starters</url>
-        <connection>scm:git:git://github.com/neoteric-eu/neo-starters.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/neoteric-eu/neo-starters.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
-    <issueManagement>
-        <system>Github</system>
-        <url>https://github.com/neoteric-eu/neo-starters/issues</url>
-    </issueManagement>
 
     <dependencies>
         <dependency>
@@ -46,6 +35,22 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.16.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.mfornos</groupId>
+            <artifactId>humanize-slim</artifactId>
+            <version>1.2.2</version>
+        </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -92,12 +97,6 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
