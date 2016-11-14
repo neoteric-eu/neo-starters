@@ -51,7 +51,18 @@ public class RequestParamsCriteriaBuilderTest {
                         ImmutableMap.of(RequestOperator.of(OperatorType.STARTS_WITH), "John")
                 ));
         Criteria result = requestParamsCriteriaBuilder.build(filters);
-        assertThat(result).isEqualTo(new Criteria().orOperator(Criteria.where("name").regex("^John", "i")));
+        assertThat(result).isEqualTo(new Criteria().orOperator(Criteria.where("name").regex("^\\QJohn\\E", "i")));
+    }
+
+    @Test
+    public void testFilterStartingWithContainingSlashes() throws Exception {
+        Map<RequestObject, Object> filters = ImmutableMap.of(
+                RequestLogicalOperator.of(LogicalOperatorType.OR),
+                ImmutableMap.of(RequestField.of("name"),
+                        ImmutableMap.of(RequestOperator.of(OperatorType.STARTS_WITH), "John (")
+                ));
+        Criteria result = requestParamsCriteriaBuilder.build(filters);
+        assertThat(result).isEqualTo(new Criteria().orOperator(Criteria.where("name").regex("^\\QJohn (\\E", "i")));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -102,7 +113,7 @@ public class RequestParamsCriteriaBuilderTest {
                 ImmutableMap.of(RequestOperator.of(OperatorType.STARTS_WITH), "John")
         );
         Criteria result = requestParamsCriteriaBuilder.build(filters);
-        assertThat(result).isEqualTo(Criteria.where("name").regex("^John", "i"));
+        assertThat(result).isEqualTo(Criteria.where("name").regex("^\\QJohn\\E", "i"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -126,7 +137,7 @@ public class RequestParamsCriteriaBuilderTest {
 
         Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(
-                Criteria.where("name").regex("^John", "i"),
+                Criteria.where("name").regex("^\\QJohn\\E", "i"),
                 Criteria.where("name").in("John", "Bob")));
     }
 
@@ -141,7 +152,7 @@ public class RequestParamsCriteriaBuilderTest {
 
         Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().andOperator(
-                Criteria.where("name").regex("^John", "i"),
+                Criteria.where("name").regex("^\\QJohn\\E", "i"),
                 Criteria.where("name").in("John", "Bob")));
     }
 
@@ -159,7 +170,7 @@ public class RequestParamsCriteriaBuilderTest {
 
         Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(
-                Criteria.where("name").regex("^John", "i"),
+                Criteria.where("name").regex("^\\QJohn\\E", "i"),
                 Criteria.where("name").in("Doe", "Smith")));
     }
 
@@ -225,7 +236,7 @@ public class RequestParamsCriteriaBuilderTest {
 
         Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().orOperator(
-                Criteria.where("name").regex("^John", "i"),
+                Criteria.where("name").regex("^\\QJohn\\E", "i"),
                 Criteria.where("lastName").in("Doe", "Smith")));
     }
 
@@ -248,7 +259,7 @@ public class RequestParamsCriteriaBuilderTest {
 
         Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().andOperator(
-                Criteria.where("name").regex("^John", "i"),
+                Criteria.where("name").regex("^\\QJohn\\E", "i"),
                 Criteria.where("name").in("John", "Bob"),
                 Criteria.where("name").lt(4),
                 Criteria.where("name").is("John"),
@@ -283,8 +294,8 @@ public class RequestParamsCriteriaBuilderTest {
         ));
         Criteria result = requestParamsCriteriaBuilder.build(filters, fieldMapper);
         assertThat(result).isEqualTo(new Criteria().orOperator(
-                Criteria.where("remappedName").regex("^John", "i"),
-                Criteria.where("secondName").regex("^Bob", "i"),
+                Criteria.where("remappedName").regex("^\\QJohn\\E", "i"),
+                Criteria.where("secondName").regex("^\\QBob\\E", "i"),
                 Criteria.where("remappedLastName").in("Doe", "Smith")));
     }
 
@@ -305,8 +316,8 @@ public class RequestParamsCriteriaBuilderTest {
         assertThat(result).isEqualTo(new Criteria().andOperator(
                 Criteria.where("initialField").is("initialValue"),
                 new Criteria().orOperator(
-                        Criteria.where("name").regex("^John", "i"),
-                        Criteria.where("secondName").regex("^Bob", "i"),
+                        Criteria.where("name").regex("^\\QJohn\\E", "i"),
+                        Criteria.where("secondName").regex("^\\QBob\\E", "i"),
                         Criteria.where("lastName").in("Doe", "Smith"))
                 )
         );
@@ -322,8 +333,8 @@ public class RequestParamsCriteriaBuilderTest {
 
         Criteria result = requestParamsCriteriaBuilder.build(filters);
         assertThat(result).isEqualTo(new Criteria().andOperator(
-                Criteria.where("name").regex("^John", "i"),
-                Criteria.where("secondName").regex("^Bob", "i"),
+                Criteria.where("name").regex("^\\QJohn\\E", "i"),
+                Criteria.where("secondName").regex("^\\QBob\\E", "i"),
                 Criteria.where("lastName").in("Doe", "Smith")));
     }
 

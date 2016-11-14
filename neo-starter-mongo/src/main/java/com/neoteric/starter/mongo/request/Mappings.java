@@ -35,7 +35,8 @@ public interface Mappings {
             .put(OperatorType.GREATER_THAN_EQUAL, Criteria::gte)
             .put(OperatorType.IN, (criteria, in) -> criteria.in(((List) in).stream().toArray(Object[]::new)))
             .put(OperatorType.NOT_IN, (criteria, nin) -> criteria.nin(((List) nin).stream().toArray(Object[]::new)))
-            .put(OperatorType.STARTS_WITH, (criteria, startsWith) -> criteria.regex(Pattern.compile("^" + startsWith, Pattern.CASE_INSENSITIVE)))
+            .put(OperatorType.STARTS_WITH, (criteria, startsWith) -> criteria.regex(
+                    Pattern.compile("^" + Pattern.quote((String) startsWith), Pattern.CASE_INSENSITIVE)))
             .put(OperatorType.ALL, (criteria, all) -> criteria.all(((List) all).stream().toArray(Object[]::new)))
             .put(OperatorType.REGEX, (criteria, regex) -> buildRegex(criteria, regex))
             .build();
