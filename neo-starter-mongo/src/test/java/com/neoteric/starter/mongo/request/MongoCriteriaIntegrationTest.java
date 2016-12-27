@@ -78,6 +78,17 @@ public class MongoCriteriaIntegrationTest {
     }
 
     @Test
+    public void testReturnObjectBasedOnStartsWithCriteriaWithSpecialChars() throws Exception {
+        mongoTemplate.insert(FooModel.newBuilder().setName("Johnny ( sth )").build());
+        mongoTemplate.insert(FooModel.newBuilder().setName("Paul").build());
+
+        Criteria criteria = requestParamsCriteriaBuilder.build(readFiltersFromResources("startsWithFiltersWithBrackets.json"));
+        List<FooModel> results = performCriteriaCall(criteria);
+        assertThat(results.size()).isEqualTo(1);
+        assertThat(results.get(0)).isEqualTo(FooModel.newBuilder().setName("Johnny ( sth )").build());
+    }
+
+    @Test
     public void testReturnObjectBasedOnInCriteria() throws Exception {
         mongoTemplate.insert(FooModelMother.fullyPopulated("John", 1));
         mongoTemplate.insert(FooModelMother.fullyPopulated("Jill", 5));
