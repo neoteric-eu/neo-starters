@@ -1,7 +1,7 @@
 package neostarter.sample;
 
 import com.jayway.restassured.RestAssured;
-import com.neoteric.starter.test.clock.FixedClock;
+import eu.neoteric.starter.test.clock.FixedClock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,7 @@
 package neostarter.sample;
 
-import com.neoteric.starter.mvc.ApiController;
-import com.neoteric.starter.mvc.annotation.GetJson;
+import eu.neoteric.starter.mvc.ApiController;
+import eu.neoteric.starter.mvc.annotation.GetJson;
 import neostarter.sample.model.Customer;
 
 @ApiController

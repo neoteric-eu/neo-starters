@@ -1,7 +1,7 @@
 package neostarter.sample;
 
-import com.neoteric.starter.test.SpringBootEmbeddedTest;
-import com.neoteric.starter.test.clock.FixedClock;
+import eu.neoteric.starter.test.SpringBootEmbeddedTest;
+import eu.neoteric.starter.test.clock.FixedClock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;

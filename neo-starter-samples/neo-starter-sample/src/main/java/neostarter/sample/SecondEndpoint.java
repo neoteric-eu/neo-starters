@@ -1,10 +1,8 @@
 package neostarter.sample;
 
-import com.neoteric.starter.mvc.ApiController;
-import com.neoteric.starter.mvc.annotation.GetJson;
+import eu.neoteric.starter.mvc.ApiController;
+import eu.neoteric.starter.mvc.annotation.GetJson;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.client.RestTemplate;
 
 @ApiController
 @AllArgsConstructor

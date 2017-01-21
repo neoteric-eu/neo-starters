@@ -1,7 +1,7 @@
 package neostarter.sample;
 
-import com.neoteric.starter.test.SpringBootEmbeddedTest;
-import com.neoteric.starter.test.wiremock.WireMock;
+import eu.neoteric.starter.test.SpringBootEmbeddedTest;
+import eu.neoteric.starter.test.wiremock.WireMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;

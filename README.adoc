@@ -12,7 +12,7 @@ Set up your parent pom.xml:
 [source, xml, indent=0, subs="attributes, verbatim"]
 ----
     <parent>
-        <groupId>com.neoteric.starter</groupId>
+        <groupId>eu.neoteric.starter</groupId>
         <artifactId>neo-starter-parent</artifactId>
         <version>{neo-starter-version}</version>
     </parent>
@@ -23,7 +23,7 @@ add basic starter as a dependency:
 [source, xml, indent=0]
 ----
         <dependency>
-            <groupId>com.neoteric.starter</groupId>
+            <groupId>eu.neoteric.starter</groupId>
             <artifactId>neo-starter</artifactId>
         </dependency>
 ----

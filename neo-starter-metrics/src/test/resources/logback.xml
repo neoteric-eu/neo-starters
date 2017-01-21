@@ -9,7 +9,7 @@
         </layout>
     </appender>
 
-    <logger name="com.neoteric.starter.metrics.report.elastic.ElasticsearchReporterTest" level="ERROR"/>
+    <logger name="eu.neoteric.starter.metrics.report.elastic.ElasticsearchReporterTest" level="ERROR"/>
     <logger name="node" level="ERROR"/>
     <logger name="test" level="ERROR"/>
     <logger name="plugins" level="ERROR"/>

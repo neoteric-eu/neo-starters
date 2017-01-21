@@ -1,3 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.neoteric.starter.rabbit.TracedRabbitTemplateAutoConfiguration,\
-com.neoteric.starter.rabbit.TracedRabbitListenerAutoConfiguration
+eu.neoteric.starter.rabbit.TracedRabbitTemplateAutoConfiguration,\
+eu.neoteric.starter.rabbit.TracedRabbitListenerAutoConfiguration
