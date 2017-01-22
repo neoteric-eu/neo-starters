@@ -400,16 +400,14 @@
                 </plugins>
             </build>
             <distributionManagement>
-                <repository>
-                    <id>neoteric-os-releases</id>
-                    <name>Neoteric OpenSource releases</name>
-                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-releases/</url>
-                </repository>
                 <snapshotRepository>
-                    <id>neoteric-os-snapshots</id>
-                    <name>Neoteric OpenSource snapshots</name>
-                    <url>http://naga.neoteric.eu:8081/nexus/content/repositories/os-snapshots/</url>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
                 </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
             </distributionManagement>
         </profile>
     </profiles>
