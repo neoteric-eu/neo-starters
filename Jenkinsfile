@@ -30,7 +30,7 @@ node {
         stage('Deploy SNAPSHOT') {
             echo 'Deploy SNAPSHOT'
             configFileProvider(
-                    [configFile(fileId: 'OSSRH', variable: 'MAVEN_SETTINGS')]) {
+                    [configFile(fileId: '1d4fc1ee-2ac5-4b80-aec2-e1591a34bb9b', variable: 'MAVEN_SETTINGS')]) {
                 mvn 'deploy -s $MAVEN_SETTINGS -B -e -V -DskipTests -PreleaseStarters'
             }
         }
