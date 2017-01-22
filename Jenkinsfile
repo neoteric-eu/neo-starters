@@ -29,7 +29,10 @@ node {
     if ('development'.equalsIgnoreCase(env.BRANCH_NAME)) {
         stage('Deploy SNAPSHOT') {
             echo 'Deploy SNAPSHOT'
-            mvn 'deploy -B -e -V -DskipTests -PreleaseStarters'
+            configFileProvider(
+                    [configFile(fileId: 'OSSRH', variable: 'MAVEN_SETTINGS')]) {
+                mvn 'deploy -s $MAVEN_SETTINGS -B -e -V -DskipTests -PreleaseStarters'
+            }
         }
     }
 }
