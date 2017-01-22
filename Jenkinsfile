@@ -1,20 +1,20 @@
 #!groovy
 node {
-    stage 'Checkout' {
+    stage('Checkout') {
         echo 'Checkout'
         checkout scm
     }
 
-    stage 'Build' {
+    stage('Build') {
         echo 'Build Neo-Starters'
         mvn 'clean package -DskipTests -B -e -V'
     }
 
-    stage 'Test' {
+    stage('Test') {
         mvn 'test -B -e -V'
     }
 
-    stage 'Sonar' {
+    stage('Sonar') {
         if ('development'.equalsIgnoreCase(env.BRANCH_NAME)) {
             echo 'Development branch - running regular Sonar'
             mvn 'sonar:sonar -B -e -V'
@@ -27,7 +27,7 @@ node {
     }
 
     if ('development'.equalsIgnoreCase(env.BRANCH_NAME)) {
-        stage 'Deploy SNAPSHOT' {
+        stage('Deploy SNAPSHOT') {
             echo 'Deploy SNAPSHOT'
             mvn 'deploy -B -e -V -DskipTests -PreleaseStarters'
         }
