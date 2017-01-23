@@ -2,6 +2,8 @@
 node {
     stage('Checkout') {
         echo 'Checkout'
+        sh "rm -rf *"
+        sh "rh -rf .git"
         checkout scm
     }
 
